@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>bad fixture</title>
+<style>
+  .btn { transition: all .3s linear; }
+  .card { transition: width .4s linear; }
+  .nav { backdrop-filter: blur(40px); }
+  .faq { max-height: 0; transition: max-height .4s linear; }
+  .hero { height: 100vh; }
+  .row:hover { transform: translateX(4px); }
+  .rv { opacity: 0; }
+  input { font-size: 14px; }
+  @keyframes pulse { 50% { opacity: .9; } }
+</style>
+</head>
+<body>
+  <div class="btn" onclick="go()">点我</div>
+  <img src="x.png">
+  <input placeholder="邮箱">
+  <div class="modal" onclick="if(event.target===this) close()"><div>modal</div></div>
+  <button class="row">row</button>
+  <a href="https://example.com" target="_blank">x</a>
+  <script>
+    var i = 0;
+    setInterval(function () {
+      document.querySelector('.btn').style.transform = 'translateX(' + i++ + 'px)';
+    }, 3000);
+    var box = document.querySelector('.btn');
+    box.addEventListener('touchmove', function (e) { e.preventDefault(); });
+    box.addEventListener('pointerdown', function () {});
+    box.addEventListener('pointermove', function () {});
+    box.addEventListener('scroll', function () {
+      box.getBoundingClientRect();
+      box.style.transform = 'translateY(1px)';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+# 本地生成 / 测试
+ui-runs/
+_smoke/
+_smoke-*/
+_test/
+_tmp-check/
+*.log
+
+# 媒体与历史打包（不属于 skill 运行时）
+_video/
+videos/
+参考视频/
+样图/
+github-upload/
+pack-extracted/
+_dist/
+*.zip
+*.tar.gz
+*.mp4
+_b64_*.txt
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 本仓库只发布 ui-interaction-skill 本体；姊妹 skill 单独维护
+ui-visual-skill/
+ui-layout-skill/
+ui-component-skill/
+ui-verify-skill/
+uiux-director/
+uiux-design-suite-v1.0.0/
+
+# 本地 agent 配置 / 计划
+.claude/
+.zcode/

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Template · Dashboard（Cmd+K / Tabs / 数字 / 主题揭示）</title>
+<link rel="stylesheet" href="../../library/motion-kit.css">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f2efe6;
+    --panel: #fffdf8;
+    --panel-2: #f7f3ea;
+    --ink: #1a1712;
+    --ink-soft: #4e4a41;
+    --muted: #756f64;
+    --line: rgba(26, 23, 18, 0.13);
+    --accent: #2f5d50;
+    --accent-2: #b85940;
+    --gold: #c9a368;
+    --serif: "Iowan Old Style", "Palatino Linotype", "Songti SC", Georgia, serif;
+    --sans: "Inter", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+    --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    --mk-accent: var(--accent);
+    --mk-accent-ink: #f7f3ea;
+    --mk-surface: var(--panel);
+    --mk-ink: var(--ink);
+    --mk-muted: var(--muted);
+    --mk-border: var(--line);
+    --mk-radius: 16px;
+  }
+  html[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0f1210;
+    --panel: #171b18;
+    --panel-2: #1d221e;
+    --ink: #edefe8;
+    --ink-soft: #b9bdb3;
+    --muted: #8b9187;
+    --line: rgba(237, 239, 232, 0.14);
+    --accent: #8fbfa8;
+    --accent-2: #d98b72;
+    --gold: #c9a368;
+    --mk-accent: var(--accent);
+    --mk-accent-ink: #0f1210;
+    --mk-surface: var(--panel);
+    --mk-ink: var(--ink);
+    --mk-muted: var(--muted);
+    --mk-border: var(--line);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--sans); line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 240ms linear, color 240ms linear;
+  }
+  button, input { font: inherit; }
+  a { color: inherit; text-decoration: none; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+  .shell { display: grid; grid-template-columns: 228px 1fr; min-height: 100dvh; }
+
+  /* ---------- 侧栏 ---------- */
+  .side {
+    position: sticky; top: 0; height: 100dvh;
+    display: flex; flex-direction: column;
+    padding: 22px 16px;
+    border-right: 1px solid var(--line);
+    background: var(--panel-2);
+  }
+  .brand { display: flex; align-items: center; gap: 9px; padding: 0 8px; font-weight: 700; letter-spacing: -0.02em; }
+  .brand i {
+    display: grid; width: 28px; height: 28px; place-items: center;
+    border-radius: 8px; background: var(--accent); color: var(--panel);
+    font-family: var(--mono); font-size: 10px; font-style: normal;
+  }
+  .side__nav { display: grid; gap: 3px; margin-top: 28px; }
+  .side__nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px; border-radius: 9px;
+    color: var(--muted); font-size: 13px; text-decoration: none;
+  }
+  .side__nav a:hover { background: rgba(127, 127, 127, 0.08); color: var(--ink); }
+  .side__nav a[aria-current="page"] { background: var(--panel); color: var(--ink); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); }
+  .side__nav i { width: 16px; text-align: center; font-style: normal; opacity: 0.8; }
+  .side__foot { margin-top: auto; padding: 0 8px; color: var(--muted); font-family: var(--mono); font-size: 9px; line-height: 1.7; }
+
+  /* ---------- 顶栏 ---------- */
+  .main { min-width: 0; padding: 0 28px 48px; }
+  .top {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 0;
+    background: linear-gradient(180deg, var(--bg) 70%, transparent);
+  }
+  .search {
+    display: flex; align-items: center; gap: 9px;
+    width: min(340px, 46vw); height: 38px; padding: 0 12px;
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--panel); color: var(--muted); font-size: 12px;
+    cursor: pointer; text-align: left;
+  }
+  .search kbd { margin-left: auto; padding: 1px 5px; border: 1px solid var(--line); border-radius: 4px; font-family: var(--mono); font-size: 9px; }
+  .top__spacer { flex: 1; }
+  .icon {
+    display: grid; width: 38px; height: 38px; place-items: center;
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--panel); color: var(--ink); font-size: 14px; cursor: pointer;
+  }
+  .avatar {
+    display: grid; width: 34px; height: 34px; place-items: center;
+    border-radius: 50%; background: var(--accent); color: var(--panel);
+    font-family: var(--mono); font-size: 10px;
+  }
+
+  /* ---------- 标题 ---------- */
+  .head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 18px; padding: 16px 0 24px; }
+  .kicker { color: var(--accent-2); font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
+  h1 { margin-top: 6px; font-family: var(--serif); font-size: clamp(32px, 4vw, 46px); font-weight: 500; line-height: 1.05; letter-spacing: -0.03em; }
+  .head p { max-width: 52ch; margin-top: 8px; color: var(--muted); font-size: 13px; }
+  .head__badge { padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; }
+
+  /* ---------- KPI ---------- */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .kpi {
+    padding: 18px; border: 1px solid var(--line); border-radius: 14px;
+    background: var(--panel); min-width: 0;
+  }
+  .kpi small { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 10px; letter-spacing: 0.04em; }
+  .kpi strong { display: block; margin-top: 10px; font-family: var(--serif); font-size: clamp(28px, 3vw, 40px); font-weight: 500; line-height: 1; letter-spacing: -0.03em; }
+  .kpi em { display: block; margin-top: 8px; color: var(--accent); font-size: 10px; font-style: normal; font-family: var(--mono); }
+  .kpi em.down { color: var(--accent-2); }
+  .spark { display: flex; align-items: end; gap: 3px; height: 26px; margin-top: 12px; }
+  .spark i { flex: 1; height: var(--h, 40%); border-radius: 2px 2px 0 0; background: rgba(47, 93, 80, 0.25); }
+  html[data-theme="dark"] .spark i { background: rgba(143, 191, 168, 0.28); }
+
+  /* ---------- Tabs / 面板 ---------- */
+  .panel { margin-top: 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); overflow: hidden; }
+  .panel__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px 0; }
+  .panel__head h2 { font-family: var(--serif); font-size: 20px; font-weight: 500; }
+  .panel__head span { color: var(--muted); font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; }
+  .mk-tabs { padding: 10px 18px 18px; }
+  .mk-tabs__bar { gap: 2px; }
+  .mk-tabs__tab { padding: 9px 13px; font-size: 12px; }
+  .mk-tabs__viewport { border-radius: 12px; }
+  .tab-panel { padding: 20px; }
+  .chart-wrap { display: grid; grid-template-columns: 1fr 190px; gap: 22px; align-items: start; }
+  .chart { width: 100%; height: auto; }
+  .legend { display: grid; gap: 10px; }
+  .legend div { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 11px; }
+  .legend i { width: 8px; height: 8px; border-radius: 50%; background: var(--dot, var(--accent)); }
+  .legend b { margin-left: auto; font-family: var(--mono); font-size: 10px; font-weight: 500; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .mini { padding: 14px; border: 1px solid var(--line); border-radius: 12px; }
+  .mini h3 { font-size: 12px; }
+  .mini p { margin-top: 4px; color: var(--muted); font-size: 11px; }
+  .bar-list { display: grid; gap: 12px; margin-top: 16px; }
+  .bar { display: grid; grid-template-columns: 76px 1fr 44px; gap: 10px; align-items: center; font-size: 11px; }
+  .bar__track { height: 6px; border-radius: 999px; background: rgba(127, 127, 127, 0.16); overflow: hidden; }
+  .bar__fill { height: 100%; width: var(--w, 40%); border-radius: 999px; background: var(--accent); }
+  .bar b { text-align: right; font-family: var(--mono); font-size: 10px; font-weight: 500; }
+
+  /* ---------- 表格 ---------- */
+  .table { margin-top: 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); overflow: hidden; }
+  .table__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--line); }
+  .table__head h2 { font-family: var(--serif); font-size: 20px; font-weight: 500; }
+  .table__head a { color: var(--muted); font-size: 11px; text-decoration: none; }
+  .row {
+    display: grid; grid-template-columns: minmax(160px, 1.5fr) 0.7fr 0.8fr 0.7fr 90px;
+    gap: 14px; align-items: center;
+    padding: 13px 18px; border-bottom: 1px solid var(--line); font-size: 12px;
+  }
+  .row:last-child { border-bottom: 0; }
+  .row--head { color: var(--muted); font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; background: var(--panel-2); }
+  .row strong { font-weight: 600; }
+  .row span { color: var(--muted); font-family: var(--mono); font-size: 10px; }
+  .pill { display: inline-flex; width: fit-content; padding: 3px 8px; border-radius: 999px; font-family: var(--mono); font-size: 9px; }
+  .pill--ok { background: rgba(47, 93, 80, 0.14); color: var(--accent); }
+  .pill--warn { background: rgba(184, 89, 64, 0.14); color: var(--accent-2); }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; z-index: 200;
+    padding: 11px 18px; border: 1px solid var(--line); border-radius: 999px;
+    background: var(--ink); color: var(--bg); font-size: 12px;
+    transform: translate(-50%, 20px); opacity: 0;
+    transition: opacity 200ms linear, transform 260ms var(--mk-ease-out);
+    pointer-events: none;
+  }
+  .toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 1040px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .chart-wrap { grid-template-columns: 1fr; }
+    .legend { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 820px) {
+    .shell { grid-template-columns: 1fr; }
+    .side {
+      position: static; height: auto; flex-direction: row; align-items: center; gap: 12px;
+      padding: 12px 16px; border-right: 0; border-bottom: 1px solid var(--line);
+    }
+    .side__nav { display: flex; gap: 4px; margin: 0 0 0 auto; overflow-x: auto; }
+    .side__nav a { padding: 7px 10px; white-space: nowrap; }
+    .side__foot { display: none; }
+    .main { padding: 0 16px 40px; }
+    .search { width: auto; flex: 1; }
+    .head { padding-top: 8px; }
+    .row { grid-template-columns: 1.4fr 0.8fr 0.8fr; }
+    .row > :nth-child(4), .row > :nth-child(5) { display: none; }
+    .tab-panel { padding: 16px; }
+  }
+  @media (max-width: 520px) {
+    .kpis { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .kpi { padding: 14px; }
+    .kpi strong { font-size: 28px; }
+    .split { grid-template-columns: 1fr; }
+    .legend { grid-template-columns: 1fr; }
+    .search kbd { display: none; }
+  }
+</style>
+<script>
+  document.documentElement.classList.add('mk-js');
+  setTimeout(function () { if (!window.MotionKit) document.documentElement.classList.remove('mk-js'); }, 2500);
+</script>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="#"><i>N</i> Northwind</a>
+    <nav class="side__nav" aria-label="侧栏导航">
+      <a href="#overview" aria-current="page"><i>▦</i> 概览</a>
+      <a href="#overview"><i>◔</i> 漏斗</a>
+      <a href="#overview"><i>◫</i> 留存</a>
+      <a href="#revenue"><i>◇</i> 收入</a>
+      <a href="#" data-toast="设置页待接入（演示）"><i>⚙</i> 设置</a>
+    </nav>
+    <p class="side__foot">NORTHWIND OPS<br>v2.6 · 2026 Q4</p>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <button type="button" class="search" data-cmdk-open title="打开命令栏（⌘/Ctrl+K）">
+        <span aria-hidden="true">⌕</span>
+        <span>搜索指标、看板或命令</span>
+        <kbd>⌘K</kbd>
+      </button>
+      <span class="top__spacer"></span>
+      <button type="button" class="icon" id="themeBtn" aria-label="切换深浅色主题" title="切换主题">◐</button>
+      <button type="button" class="icon" aria-label="通知">⌁</button>
+      <span class="avatar" aria-hidden="true">LY</span>
+    </header>
+
+    <section class="head" id="overview" data-reveal>
+      <div>
+        <p class="kicker">Overview / Week 42</p>
+        <h1>本周经营概览</h1>
+        <p>数据更新于 09:42。异常项已标记，点击命令栏（⌘K）可以快速跳转或切换视图。</p>
+      </div>
+      <span class="head__badge">⑧ ⑩ ㉓ ㉘ ㊹</span>
+    </section>
+
+    <section class="kpis" aria-label="核心指标">
+      <article class="kpi" data-reveal>
+        <small><span>激活率</span><span>W42</span></small>
+        <strong data-counter="62.4" data-counter-decimals="1" data-counter-suffix="%">0%</strong>
+        <em>↑ 14.2% vs 上周</em>
+        <div class="spark" aria-hidden="true"><i style="--h:30%"></i><i style="--h:44%"></i><i style="--h:38%"></i><i style="--h:56%"></i><i style="--h:62%"></i><i style="--h:58%"></i><i style="--h:78%"></i></div>
+      </article>
+      <article class="kpi" data-reveal data-reveal-delay="70">
+        <small><span>周留存</span><span>W42</span></small>
+        <strong data-counter="41.8" data-counter-decimals="1" data-counter-suffix="%">0%</strong>
+        <em>↑ 6.2% vs 上周</em>
+        <div class="spark" aria-hidden="true"><i style="--h:40%"></i><i style="--h:36%"></i><i style="--h:48%"></i><i style="--h:52%"></i><i style="--h:49%"></i><i style="--h:60%"></i><i style="--h:64%"></i></div>
+      </article>
+      <article class="kpi" data-reveal data-reveal-delay="140">
+        <small><span>MRR</span><span>OCT</span></small>
+        <strong data-counter="482" data-counter-prefix="¥" data-counter-suffix="k">¥0k</strong>
+        <em>↑ 12.0% vs 上月</em>
+        <div class="spark" aria-hidden="true"><i style="--h:34%"></i><i style="--h:42%"></i><i style="--h:46%"></i><i style="--h:44%"></i><i style="--h:58%"></i><i style="--h:66%"></i><i style="--h:72%"></i></div>
+      </article>
+      <article class="kpi" data-reveal data-reveal-delay="210">
+        <small><span>流失率</span><span>OCT</span></small>
+        <strong data-counter="2.4" data-counter-decimals="1" data-counter-suffix="%">0%</strong>
+        <em class="down">↓ 0.6% vs 上月</em>
+        <div class="spark" aria-hidden="true"><i style="--h:62%"></i><i style="--h:58%"></i><i style="--h:54%"></i><i style="--h:50%"></i><i style="--h:46%"></i><i style="--h:42%"></i><i style="--h:38%"></i></div>
+      </article>
+    </section>
+
+    <section class="panel" data-reveal data-reveal-delay="80" aria-label="趋势视图">
+      <div class="panel__head">
+        <h2>趋势</h2>
+        <span>㉘ SNAP TABS · SCROLL-DRIVEN INDICATOR</span>
+      </div>
+      <div class="mk-tabs" data-tabs>
+        <div class="mk-tabs__bar" role="tablist" aria-label="趋势视图">
+          <button type="button" class="mk-tabs__tab" role="tab" aria-selected="true" id="tab-0" aria-controls="panel-0">概览</button>
+          <button type="button" class="mk-tabs__tab" role="tab" aria-selected="false" tabindex="-1" id="tab-1" aria-controls="panel-1">留存</button>
+          <button type="button" class="mk-tabs__tab" role="tab" aria-selected="false" tabindex="-1" id="tab-2" aria-controls="panel-2">收入</button>
+          <span class="mk-tabs__indicator" aria-hidden="true"></span>
+        </div>
+        <div class="mk-tabs__viewport" data-tabs-viewport>
+          <div class="tab-panel mk-tabs__panel" role="tabpanel" id="panel-0" aria-labelledby="tab-0" tabindex="0">
+            <div class="chart-wrap">
+              <svg class="chart" viewBox="0 0 640 260" role="img" aria-label="激活率与留存率趋势图">
+                <g stroke="rgba(127,127,127,0.16)" stroke-width="1">
+                  <path d="M0 50h640M0 110h640M0 170h640M0 230h640"/>
+                </g>
+                <path d="M16 208C80 200 110 168 170 176S270 132 320 140s62-44 112-48 66 18 116-22 44-6 44-6" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M16 224C80 218 118 198 170 204S268 180 320 186s66-22 112-20 70 6 116-18 44-4 44-4" fill="none" stroke="var(--accent-2)" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="6 6"/>
+                <circle cx="594" cy="64" r="5" fill="var(--accent)"/>
+              </svg>
+              <div class="legend">
+                <div><i style="--dot: var(--accent)"></i> 激活率 <b>62.4%</b></div>
+                <div><i style="--dot: var(--accent-2)"></i> 周留存 <b>41.8%</b></div>
+                <div><i style="--dot: var(--gold)"></i> 目标线 <b>60.0%</b></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel mk-tabs__panel" role="tabpanel" id="panel-1" aria-labelledby="tab-1" tabindex="0">
+            <div class="split">
+              <div class="mini">
+                <h3>次周留存</h3>
+                <p>按注册渠道拆分，自然搜索最高。</p>
+                <div class="bar-list">
+                  <div class="bar"><span>自然搜索</span><span class="bar__track"><span class="bar__fill" style="--w:54%"></span></span><b>54%</b></div>
+                  <div class="bar"><span>内容合作</span><span class="bar__track"><span class="bar__fill" style="--w:47%"></span></span><b>47%</b></div>
+                  <div class="bar"><span>付费搜索</span><span class="bar__track"><span class="bar__fill" style="--w:31%"></span></span><b>31%</b></div>
+                </div>
+              </div>
+              <div class="mini">
+                <h3>关键结论</h3>
+                <p>付费搜索的注册成本低，但 7 日留存比自然搜索低 23 个百分点。</p>
+                <p style="margin-top:10px">建议把 10–15% 的预算转向内容合作，并观察 30 日留存。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel mk-tabs__panel" role="tabpanel" id="panel-2" aria-labelledby="tab-2" tabindex="0">
+            <div class="split">
+              <div class="mini">
+                <h3>MRR 构成</h3>
+                <p>本月净增长 ¥222k。</p>
+                <div class="bar-list">
+                  <div class="bar"><span>新增</span><span class="bar__track"><span class="bar__fill" style="--w:78%"></span></span><b>¥186k</b></div>
+                  <div class="bar"><span>扩张</span><span class="bar__track"><span class="bar__fill" style="--w:52%"></span></span><b>¥74k</b></div>
+                  <div class="bar"><span>流失</span><span class="bar__track"><span class="bar__fill" style="--w:26%;background:var(--accent-2)"></span></span><b>-¥38k</b></div>
+                </div>
+              </div>
+              <div class="mini">
+                <h3>风险</h3>
+                <p>流失集中在注册 3 个月内的新客户。建议在第 30 天增加一次健康检查。</p>
+                <p style="margin-top:10px">企业客户续费率 96%，保持稳定。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="table" id="revenue" data-reveal data-reveal-delay="120" aria-label="重点账户">
+      <div class="table__head">
+        <h2>重点账户</h2>
+        <a href="#" data-command="export">导出 CSV ↗</a>
+      </div>
+      <div class="row row--head"><span>账户</span><span>状态</span><span>MRR</span><span>健康度</span><span>负责人</span></div>
+      <div class="row"><strong>Acme</strong><span><em class="pill pill--ok">健康</em></span><span>¥86k</span><span>92</span><span>LIN</span></div>
+      <div class="row"><strong>Globex</strong><span><em class="pill pill--ok">健康</em></span><span>¥64k</span><span>88</span><span>ZHOU</span></div>
+      <div class="row"><strong>Initech</strong><span><em class="pill pill--warn">关注</em></span><span>¥41k</span><span>61</span><span>CHEN</span></div>
+      <div class="row"><strong>Umbrella</strong><span><em class="pill pill--ok">健康</em></span><span>¥38k</span><span>84</span><span>LIN</span></div>
+    </section>
+  </main>
+</div>
+
+<dialog class="mk-cmdk" data-cmdk id="cmdk" aria-label="命令栏">
+  <input class="mk-cmdk__search" data-cmdk-input type="text" placeholder="搜索命令…" role="combobox" aria-label="搜索命令" aria-expanded="true" aria-controls="cmdList" autocomplete="off" spellcheck="false">
+  <ul class="mk-cmdk__list" id="cmdList" role="listbox" aria-label="命令">
+    <li data-cmdk-item data-keywords="theme dark light 主题 深浅色"><button type="button" class="mk-cmdk__item" data-command="theme"><span>◐</span> 切换深浅色主题 <kbd style="margin-left:auto">T</kbd></button></li>
+    <li data-cmdk-item data-keywords="overview 概览 首页 top"><button type="button" class="mk-cmdk__item" data-command="top"><span>⌂</span> 回到概览顶部 <kbd style="margin-left:auto">G</kbd></button></li>
+    <li data-cmdk-item data-keywords="tab overview 概览 趋势"><button type="button" class="mk-cmdk__item" data-command="tab-0"><span>▦</span> 切换到「概览」趋势 <kbd style="margin-left:auto">1</kbd></button></li>
+    <li data-cmdk-item data-keywords="retention 留存 tab"><button type="button" class="mk-cmdk__item" data-command="tab-1"><span>◔</span> 切换到「留存」趋势 <kbd style="margin-left:auto">2</kbd></button></li>
+    <li data-cmdk-item data-keywords="revenue 收入 tab"><button type="button" class="mk-cmdk__item" data-command="tab-2"><span>◇</span> 切换到「收入」趋势 <kbd style="margin-left:auto">3</kbd></button></li>
+    <li data-cmdk-item data-keywords="export csv 导出"><button type="button" class="mk-cmdk__item" data-command="export"><span>↧</span> 导出重点账户 CSV <kbd style="margin-left:auto">E</kbd></button></li>
+  </ul>
+  <div class="mk-cmdk__empty" data-cmdk-empty hidden>没有匹配的命令</div>
+  <div class="mk-cmdk__foot"><span>↑↓ 选择</span><span>↵ 执行</span><span>esc 关闭</span><span style="margin-left:auto">⌘K / Ctrl+K</span></div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="../../library/motion-kit.js" defer></script>
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    var kit = window.MotionKit;
+    var html = document.documentElement;
+    var toast = document.getElementById('toast');
+    var toastTimer = 0;
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('is-on');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toast.classList.remove('is-on'); }, 1800);
+    }
+
+    /* ---------- 主题切换：View Transitions 圆形揭示（㊹） ---------- */
+    function applyTheme(next) {
+      html.dataset.theme = next;
+      var btn = document.getElementById('themeBtn');
+      if (btn) btn.setAttribute('aria-label', next === 'dark' ? '切换到浅色主题' : '切换到深色主题');
+    }
+
+    function toggleTheme(x, y) {
+      var next = html.dataset.theme === 'dark' ? 'light' : 'dark';
+      if (!document.startViewTransition || (kit && kit.reduced)) {
+        applyTheme(next);
+        return;
+      }
+      var px = typeof x === 'number' ? x : window.innerWidth - 48;
+      var py = typeof y === 'number' ? y : 48;
+      var radius = Math.hypot(Math.max(px, window.innerWidth - px), Math.max(py, window.innerHeight - py));
+      var transition = document.startViewTransition(function () { applyTheme(next); });
+      transition.ready.then(function () {
+        html.animate(
+          {
+            clipPath: [
+              'circle(0px at ' + px + 'px ' + py + 'px)',
+              'circle(' + radius + 'px at ' + px + 'px ' + py + 'px)'
+            ]
+          },
+          { duration: 480, easing: 'cubic-bezier(0.32, 0.72, 0, 1)', pseudoElement: '::view-transition-new(root)' }
+        );
+      }).catch(function () {});
+    }
+
+    var themeBtn = document.getElementById('themeBtn');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function (e) {
+        var rect = themeBtn.getBoundingClientRect();
+        var x = e.clientX || rect.left + rect.width / 2;
+        var y = e.clientY || rect.top + rect.height / 2;
+        toggleTheme(x, y);
+      });
+    }
+
+    /* ---------- 命令执行 ---------- */
+    function runCommand(name) {
+      if (name === 'theme') {
+        toggleTheme();
+        showToast('已切换主题');
+        return;
+      }
+      if (name === 'top') {
+        window.scrollTo({ top: 0, behavior: kit && kit.reduced ? 'auto' : 'smooth' });
+        showToast('已回到概览');
+        return;
+      }
+      if (name.indexOf('tab-') === 0) {
+        var index = Number(name.split('-')[1]);
+        var tab = document.getElementById('tab-' + index);
+        if (tab) tab.click();
+        var panel = document.getElementById('panel-' + index);
+        if (panel) panel.scrollIntoView({ behavior: kit && kit.reduced ? 'auto' : 'smooth', block: 'center' });
+        showToast('已切换到「' + (tab ? tab.textContent.trim() : '趋势') + '」');
+        return;
+      }
+      if (name === 'export') {
+        showToast('演示：已生成 accounts-2026-w42.csv');
+        if (kit) kit.haptic('success');
+      }
+    }
+
+    document.addEventListener('click', function (e) {
+      var command = e.target.closest('[data-command]');
+      if (!command) return;
+      runCommand(command.dataset.command);
+      var dialog = command.closest('dialog[data-cmdk]');
+      if (dialog && dialog.open) dialog.close();
+    });
+
+    /* ---------- 快捷键 ---------- */
+    document.addEventListener('keydown', function (e) {
+      if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      var key = e.key.toLowerCase();
+      if (key === 't') { toggleTheme(); showToast('已切换主题'); }
+      else if (key === 'g') { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+      else if (key === '1' || key === '2' || key === '3') {
+        var index = Number(key) - 1;
+        var tab = document.getElementById('tab-' + index);
+        if (tab) tab.click();
+      } else if (key === 'e') { runCommand('export'); }
+    });
+  });
+</script>
+</body>
+</html>

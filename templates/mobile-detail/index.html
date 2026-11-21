@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Template · Mobile Detail（push/pop / 滑动返回 / 坍缩头图 / 下拉刷新）</title>
+<link rel="stylesheet" href="../../library/motion-kit.css">
+<style>
+  :root {
+    --bg: #f2eee4;
+    --panel: #fffdf8;
+    --ink: #1b1813;
+    --muted: #756e62;
+    --line: rgba(27, 24, 19, 0.13);
+    --accent: #2f5d50;
+    --accent-2: #b85940;
+    --sans: "Inter", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", "Songti SC", Georgia, serif;
+    --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    --mk-accent: var(--accent);
+    --mk-accent-ink: #f7f3ea;
+    --mk-surface: var(--panel);
+    --mk-ink: var(--ink);
+    --mk-border: var(--line);
+    --mk-ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100%; }
+  body {
+    background: #d8d3c6; color: var(--ink);
+    font-family: var(--sans); line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font: inherit; }
+  a { color: inherit; text-decoration: none; }
+
+  .app {
+    position: relative;
+    width: min(440px, 100%);
+    height: min(900px, 100dvh);
+    margin-inline: auto;
+    overflow: hidden;
+    background: var(--bg);
+    box-shadow: 0 0 90px rgba(27, 24, 19, 0.2);
+  }
+
+  .screen {
+    position: absolute; inset: 0;
+    background: var(--bg);
+    will-change: transform;
+    transition: transform 380ms var(--mk-ease-ios);
+  }
+  .screen--list { display: grid; grid-template-rows: auto 1fr; }
+  .screen--list::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    background: #0a0c0a;
+    opacity: var(--dim, 0);
+    pointer-events: none;
+    transition: opacity 380ms var(--mk-ease-ios);
+  }
+  .screen--list.is-swiping::after { transition: none; }
+  .app.is-detail .screen--list {
+    transform: translateX(-25%) scale(0.98);
+    --dim: 0.18;
+    pointer-events: none;
+  }
+
+  /* ---------- 列表页 ---------- */
+  .list-top {
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 14px;
+    padding: 22px 20px 14px;
+    background: linear-gradient(180deg, rgba(242, 238, 228, 0.98), rgba(242, 238, 228, 0.86));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    z-index: 2;
+  }
+  .kicker { color: var(--accent-2); font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; }
+  .list-top h1 { margin-top: 4px; font-family: var(--serif); font-size: 30px; font-weight: 500; line-height: 1; letter-spacing: -0.03em; }
+  .filter-btn {
+    min-height: 36px; padding: 6px 14px;
+    border: 1px solid var(--line); border-radius: 999px;
+    background: var(--panel); color: var(--ink); font-size: 12px; cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .list-scroll {
+    position: relative;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+  }
+  .ptr {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 3;
+    display: flex; height: 56px; align-items: center; justify-content: center; gap: 8px;
+    color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em;
+    transform: translateY(-56px);
+    transition: transform 320ms var(--mk-ease-out);
+    pointer-events: none;
+  }
+  .ptr__icon { display: inline-grid; width: 20px; height: 20px; place-items: center; font-size: 14px; }
+  .ptr.is-loading .ptr__icon { animation: spin 0.9s linear infinite; }
+  .ptr.is-done { color: var(--accent); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .ptr-content { padding: 16px 20px 30px; will-change: transform; transition: transform 320ms var(--mk-ease-out); }
+  .intro { max-width: 36ch; color: var(--muted); font-size: 12px; }
+  .place {
+    display: block; width: 100%; margin-top: 16px; padding: 0;
+    color: inherit; text-decoration: none;
+    border: 1px solid var(--line); border-radius: 20px; overflow: hidden;
+    background: var(--panel); text-align: left; cursor: pointer;
+    touch-action: manipulation;
+    transition: transform 180ms var(--mk-ease-out);
+  }
+  .place:active { transform: scale(0.99); }
+  .place__img {
+    position: relative; height: 168px;
+    background: var(--bg-img, linear-gradient(145deg, #2f5d50, #a8b99f));
+  }
+  .place__img::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(circle at 76% 26%, rgba(255, 255, 255, 0.3), transparent 28%),
+      radial-gradient(circle at 18% 74%, rgba(255, 255, 255, 0.12), transparent 34%);
+  }
+  .place__img::after {
+    content: attr(data-label);
+    position: absolute; left: 14px; bottom: 12px;
+    color: rgba(255, 255, 255, 0.82); font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
+  }
+  .place__body { padding: 15px 16px 16px; }
+  .place__tag { color: var(--accent-2); font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; }
+  .place h2 { margin-top: 5px; font-family: var(--serif); font-size: 22px; font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
+  .place p { margin-top: 6px; color: var(--muted); font-size: 12px; }
+  .place__meta { display: flex; justify-content: space-between; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-family: var(--mono); font-size: 9px; letter-spacing: 0.05em; }
+
+  /* ---------- 详情页 ---------- */
+  .screen--detail {
+    transform: translateX(100%);
+    visibility: hidden;
+    transition:
+      transform 380ms var(--mk-ease-ios),
+      visibility 0s linear 380ms;
+    z-index: 3;
+  }
+  .app.is-detail .screen--detail {
+    transform: translateX(0);
+    visibility: visible;
+    transition:
+      transform 380ms var(--mk-ease-ios),
+      visibility 0s linear 0s;
+  }
+  .detail-scroll {
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    background: var(--bg);
+  }
+  .detail-hero {
+    position: relative;
+    height: 360px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 22px;
+    color: #fff;
+    background: var(--hero-bg, linear-gradient(150deg, #2f5d50, #a8b99f));
+    transform-origin: 50% 100%;
+    will-change: transform;
+    overflow: hidden;
+  }
+  .detail-hero::before {
+    content: ""; position: absolute; inset: -10%; pointer-events: none;
+    background:
+      radial-gradient(circle at 74% 24%, rgba(255, 255, 255, 0.28), transparent 28%),
+      radial-gradient(circle at 16% 70%, rgba(255, 255, 255, 0.14), transparent 34%);
+  }
+  .detail-hero::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10, 12, 10, 0.08) 20%, rgba(10, 12, 10, 0.62));
+  }
+  .detail-hero > * { position: relative; z-index: 1; }
+  .detail-hero small { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; opacity: 0.8; }
+  .detail-hero h2 { max-width: 12ch; margin-top: 6px; font-family: var(--serif); font-size: 40px; font-weight: 500; line-height: 0.98; letter-spacing: -0.04em; }
+  .back {
+    position: absolute; top: 16px; left: 16px;
+    display: grid; width: 38px; height: 38px; place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
+    background: rgba(10, 12, 10, 0.25); color: #fff;
+    font-size: 17px; cursor: pointer; touch-action: manipulation;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .detail-topbar {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 4;
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    background: rgba(242, 238, 228, 0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+    transform: translateY(-100%);
+    transition: transform 260ms var(--mk-ease-out);
+  }
+  .detail-topbar.is-on { transform: none; }
+  .detail-topbar button {
+    display: grid; width: 34px; height: 34px; place-items: center;
+    border: 1px solid var(--line); border-radius: 50%;
+    background: var(--panel); color: var(--ink); font-size: 15px; cursor: pointer;
+  }
+  .detail-topbar b { flex: 1; overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+
+  .detail-body {
+    position: relative; z-index: 2;
+    margin-top: -26px;
+    padding: 28px 22px 80px;
+    border-radius: 26px 26px 0 0;
+    background: var(--bg);
+  }
+  .detail-lede { font-family: var(--serif); font-size: 21px; line-height: 1.42; letter-spacing: -0.01em; }
+  .detail-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .detail-meta span { padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; }
+  .detail-body p.body { margin-top: 18px; color: var(--ink-soft, #4f4a41); font-size: 14px; }
+  .detail-body blockquote {
+    margin: 22px 0; padding: 18px 20px;
+    border-left: 2px solid var(--accent-2); border-radius: 0 12px 12px 0;
+    background: rgba(184, 89, 64, 0.07);
+    font-family: var(--serif); font-size: 18px; line-height: 1.45;
+  }
+  .detail-body h3 { margin-top: 26px; font-family: var(--serif); font-size: 20px; font-weight: 500; }
+  .detail-body .info { display: grid; gap: 8px; margin-top: 12px; color: var(--muted); font-size: 12px; }
+  .detail-body .info b { color: var(--ink); font-weight: 600; }
+  .detail-foot { display: flex; gap: 10px; margin-top: 28px; }
+  .detail-foot .mk-btn { flex: 1; }
+
+  /* ---------- 筛选抽屉 ---------- */
+  .mk-sheet { width: min(440px, 100%); }
+  .filter-group { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .filter-group h3 { font-size: 13px; }
+  .filter-options { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .filter-options label {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px;
+    font-size: 12px; cursor: pointer;
+  }
+  .filter-options input { accent-color: var(--accent); }
+  .sheet-actions { display: flex; gap: 10px; margin-top: 20px; }
+  .sheet-actions .mk-btn { flex: 1; }
+
+  .mk-toast { bottom: 92px; }
+
+  @media (max-width: 520px) {
+    body { padding: 0; }
+    .app { height: 100dvh; border-radius: 0; }
+  }
+  @media (min-width: 521px) {
+    body { padding-block: 24px; }
+    .app { border-radius: 30px; height: min(860px, calc(100dvh - 48px)); }
+  }
+</style>
+<script>
+  document.documentElement.classList.add('mk-js');
+  setTimeout(function () { if (!window.MotionKit) document.documentElement.classList.remove('mk-js'); }, 2500);
+</script>
+</head>
+<body>
+
+<div class="app" id="app">
+  <section class="screen screen--list" id="listScreen" aria-label="地点列表">
+    <header class="list-top">
+      <div>
+        <p class="kicker">Atlas Journal · Weekend</p>
+        <h1>周末慢行</h1>
+      </div>
+      <button type="button" class="filter-btn" data-sheet-open="filters" data-haptic="tap">筛选</button>
+    </header>
+
+    <div class="list-scroll" id="listScroll">
+      <div class="ptr" id="ptr" aria-hidden="true">
+        <span class="ptr__icon" id="ptrIcon">↓</span>
+        <span id="ptrText">下拉刷新</span>
+      </div>
+      <div class="ptr-content" id="ptrContent">
+        <p class="intro">三座城市、三家小店。每一处都适合待上一个下午，点开看详细的手记与到达方式。</p>
+
+        <a class="place" href="#detail" data-open-detail
+          data-kicker="CAFE · SHANGHAI"
+          data-title="梧桐区的手冲角落"
+          data-desc="藏在弄堂尽头的 12 个座位，豆单每周三换一次。"
+          data-meta="衡山路 · 人均 ¥48 · 周二休"
+          data-hero="linear-gradient(150deg, #2f5d50 0%, #6f8f78 58%, #d7c9a8 100%)"
+          aria-label="打开「梧桐区的手冲角落」详情">
+          <div class="place__img" data-label="FIELD NOTE 01" style="--bg-img: linear-gradient(150deg, #2f5d50 0%, #6f8f78 58%, #d7c9a8 100%)"></div>
+          <div class="place__body">
+            <span class="place__tag">CAFE</span>
+            <h2>梧桐区的手冲角落</h2>
+            <p>藏在弄堂尽头的 12 个座位，豆单每周三换一次。</p>
+            <div class="place__meta"><span>衡山路 · 人均 ¥48</span><span>↗</span></div>
+          </div>
+        </a>
+
+        <a class="place" href="#detail" data-open-detail
+          data-kicker="BOOKSTORE · HANGZHOU"
+          data-title="运河边的旧书与茶"
+          data-desc="二楼靠窗的位置能看到船，店主会给你续第三杯茶。"
+          data-meta="小河直街 · 人均 ¥36 · 周一休"
+          data-hero="linear-gradient(150deg, #3b4257 0%, #6c7590 55%, #cfd0c4 100%)"
+          aria-label="打开「运河边的旧书与茶」详情">
+          <div class="place__img" data-label="FIELD NOTE 02" style="--bg-img: linear-gradient(150deg, #3b4257 0%, #6c7590 55%, #cfd0c4 100%)"></div>
+          <div class="place__body">
+            <span class="place__tag">BOOKSTORE</span>
+            <h2>运河边的旧书与茶</h2>
+            <p>二楼靠窗的位置能看到船，店主会给你续第三杯茶。</p>
+            <div class="place__meta"><span>小河直街 · 人均 ¥36</span><span>↗</span></div>
+          </div>
+        </a>
+
+        <a class="place" href="#detail" data-open-detail
+          data-kicker="BAKERY · CHENGDU"
+          data-title="只卖三款面包的早晨"
+          data-desc="十点开门，卖完就关。酸种和桂花季限定值得早起。"
+          data-meta="玉林西路 · 人均 ¥28 · 周三至周日"
+          data-hero="linear-gradient(150deg, #6b4a3a 0%, #ad7d5c 56%, #e6d2b8 100%)"
+          aria-label="打开「只卖三款面包的早晨」详情">
+          <div class="place__img" data-label="FIELD NOTE 03" style="--bg-img: linear-gradient(150deg, #6b4a3a 0%, #ad7d5c 56%, #e6d2b8 100%)"></div>
+          <div class="place__body">
+            <span class="place__tag">BAKERY</span>
+            <h2>只卖三款面包的早晨</h2>
+            <p>十点开门，卖完就关。酸种和桂花季限定值得早起。</p>
+            <div class="place__meta"><span>玉林西路 · 人均 ¥28</span><span>↗</span></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen screen--detail" id="detailScreen" aria-label="地点详情" aria-hidden="true" inert>
+    <div class="detail-topbar" id="detailTopbar">
+      <button type="button" data-close-detail aria-label="返回列表">←</button>
+      <b id="topbarTitle">详情</b>
+      <button type="button" data-toast="已复制分享链接（演示）" aria-label="分享">↗</button>
+    </div>
+
+    <div class="detail-scroll" id="detailScroll">
+      <div class="detail-hero" id="detailHero">
+        <button type="button" class="back" data-close-detail aria-label="返回列表">←</button>
+        <small id="detailKicker">CAFE · SHANGHAI</small>
+        <h2 id="detailTitle">梧桐区的手冲角落</h2>
+      </div>
+      <article class="detail-body">
+        <p class="detail-lede" id="detailLede">藏在弄堂尽头的 12 个座位，豆单每周三换一次。</p>
+        <div class="detail-meta">
+          <span>衡山路</span><span>人均 ¥48</span><span>周二休</span><span>12 座</span>
+        </div>
+        <p class="body">从地铁走出来要拐三个弯，门口没有招牌，只有一块写着当天豆单的小黑板。店主会把冲煮过程放在吧台上，愿意聊就聊两句，不愿意也可以安静喝完。</p>
+        <blockquote>“下午三点以后光线最好，靠窗第二张桌子能看到整条弄堂的树影。”</blockquote>
+        <h3>怎么去</h3>
+        <p class="body">地铁 10 号线上海图书馆站 3 号口，步行约 8 分钟。附近不好停车，建议骑车或步行。</p>
+        <div class="info">
+          <span><b>地址</b> · 徐汇区衡山路某弄 12 号</span>
+          <span><b>时间</b> · 10:00–18:00（周二休）</span>
+          <span><b>提示</b> · 不支持预订，工作日下午更安静</span>
+        </div>
+        <div class="detail-foot">
+          <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="success" data-toast="已加入清单（演示）">收藏到清单</button>
+          <button type="button" class="mk-btn mk-btn--ghost" data-close-detail>返回</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <dialog class="mk-sheet" data-sheet="filters" id="filters" aria-labelledby="filters-title">
+    <div class="mk-sheet__handle" data-sheet-handle aria-hidden="true"></div>
+    <div class="mk-sheet__body">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:4px 0 6px">
+        <h2 id="filters-title" style="font-family:var(--serif);font-size:22px;font-weight:500">筛选</h2>
+        <button type="button" class="filter-btn" data-sheet-close>完成</button>
+      </div>
+      <div class="filter-group">
+        <h3>类型</h3>
+        <div class="filter-options">
+          <label><input type="checkbox" checked> 咖啡</label>
+          <label><input type="checkbox" checked> 书店</label>
+          <label><input type="checkbox"> 面包</label>
+          <label><input type="checkbox"> 展览</label>
+        </div>
+      </div>
+      <div class="filter-group">
+        <h3>距离</h3>
+        <div class="filter-options">
+          <label><input type="radio" name="dist" checked> 3km 内</label>
+          <label><input type="radio" name="dist"> 10km 内</label>
+          <label><input type="radio" name="dist"> 不限</label>
+        </div>
+      </div>
+      <div class="filter-group">
+        <h3>适合</h3>
+        <div class="filter-options">
+          <label><input type="checkbox" checked> 独处</label>
+          <label><input type="checkbox"> 两人</label>
+          <label><input type="checkbox"> 带电脑</label>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button type="button" class="mk-btn mk-btn--ghost" data-sheet-close>重置</button>
+        <button type="button" class="mk-btn mk-btn--primary" data-sheet-close data-haptic="success" data-toast="已应用筛选（演示）">查看 3 个结果</button>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+
+<script src="../../library/motion-kit.js" defer></script>
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    var kit = window.MotionKit;
+    var app = document.getElementById('app');
+    var listScreen = document.getElementById('listScreen');
+    var detailScreen = document.getElementById('detailScreen');
+    var detailScroll = document.getElementById('detailScroll');
+    var detailHero = document.getElementById('detailHero');
+    var detailTopbar = document.getElementById('detailTopbar');
+    var listScroll = document.getElementById('listScroll');
+    var ptr = document.getElementById('ptr');
+    var ptrText = document.getElementById('ptrText');
+    var ptrIcon = document.getElementById('ptrIcon');
+    var ptrContent = document.getElementById('ptrContent');
+    var lastCard = null;
+    var width = app.clientWidth;
+    /* ---------- 列表 → 详情（push） ---------- */
+    function openDetail(card) {
+      lastCard = card;
+      document.getElementById('detailKicker').textContent = card.dataset.kicker || '';
+      document.getElementById('detailTitle').textContent = card.dataset.title || '';
+      document.getElementById('topbarTitle').textContent = card.dataset.title || '详情';
+      document.getElementById('detailLede').textContent = card.dataset.desc || '';
+      detailHero.style.setProperty('--hero-bg', card.dataset.hero || '');
+      detailScroll.scrollTop = 0;
+      listScreen.inert = true;
+      detailScreen.inert = false;
+      detailScreen.setAttribute('aria-hidden', 'false');
+      app.classList.add('is-detail');
+      var back = detailScreen.querySelector('.back');
+      if (back) back.focus({ preventScroll: true });
+    }
+
+    function closeDetail() {
+      if (!app.classList.contains('is-detail')) return;
+      app.classList.remove('is-detail');
+      listScreen.inert = false;
+      detailScreen.inert = true;
+      detailScreen.setAttribute('aria-hidden', 'true');
+      detailTopbar.classList.remove('is-on');
+      if (lastCard) lastCard.focus({ preventScroll: true });
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-open-detail]'), function (card) {
+      card.addEventListener('click', function (e) {
+        e.preventDefault();
+        openDetail(card);
+      });
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openDetail(card);
+        }
+      });
+    });
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-close-detail]'), function (btn) {
+      btn.addEventListener('click', closeDetail);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeDetail();
+    });
+
+    /* ---------- 详情页滑动返回（㉗） ---------- */
+    var edge = 26;
+    var dragging = false;
+    var axis = null;
+    var startX = 0;
+    var startY = 0;
+    var dx = 0;
+    var t0 = 0;
+
+    detailScreen.addEventListener('pointerdown', function (e) {
+      if (!app.classList.contains('is-detail')) return;
+      var rect = detailScreen.getBoundingClientRect();
+      if (e.clientX - rect.left > edge) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      dragging = true;
+      axis = null;
+      startX = e.clientX;
+      startY = e.clientY;
+      dx = 0;
+      t0 = performance.now();
+      listScreen.classList.add('is-swiping');
+    });
+
+    function resetInline() {
+      detailScreen.style.transition = '';
+      listScreen.style.transition = '';
+      detailScreen.style.transform = '';
+      listScreen.style.transform = '';
+      listScreen.style.removeProperty('--dim');
+      listScreen.classList.remove('is-swiping');
+    }
+
+    function settle(close) {
+      detailScreen.style.transition = '';
+      listScreen.style.transition = '';
+      listScreen.classList.remove('is-swiping');
+      listScreen.style.removeProperty('--dim');
+      if (close) {
+        detailScreen.style.transform = 'translateX(' + width + 'px)';
+        listScreen.style.transform = 'translateX(-25%) scale(0.98)';
+        setTimeout(function () {
+          app.classList.remove('is-detail');
+          listScreen.inert = false;
+          detailScreen.inert = true;
+          detailScreen.setAttribute('aria-hidden', 'true');
+          detailTopbar.classList.remove('is-on');
+          resetInline();
+          if (lastCard) lastCard.focus({ preventScroll: true });
+        }, 380);
+      } else {
+        detailScreen.style.transform = '';
+        listScreen.style.transform = '';
+      }
+    }
+
+    detailScreen.addEventListener(
+      'pointermove',
+      function (e) {
+        if (!dragging) return;
+        dx = e.clientX - startX;
+        var dy = e.clientY - startY;
+        if (!axis) {
+          if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+          axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+          if (axis === 'y') {
+            dragging = false;
+            listScreen.classList.remove('is-swiping');
+            return;
+          }
+        }
+        if (dx < 0) dx = 0;
+        var p = Math.min(1, dx / width);
+        detailScreen.style.transition = 'none';
+        listScreen.style.transition = 'none';
+        detailScreen.style.transform = 'translateX(' + dx + 'px)';
+        listScreen.style.transform = 'translateX(' + (-25 + 25 * p) + '%) scale(' + (0.98 + 0.02 * p) + ')';
+        listScreen.style.setProperty('--dim', (0.18 * (1 - p)).toFixed(3));
+        if (e.cancelable) e.preventDefault();
+      },
+      { passive: false }
+    );
+
+    function endSwipe() {
+      if (!dragging) return;
+      dragging = false;
+      var dt = Math.max(1, performance.now() - t0);
+      var vx = dx / dt;
+      if (dx > width * 0.28 || vx > 0.5) {
+        settle(true);
+      } else {
+        settle(false);
+      }
+      if (kit) kit.haptic('snap');
+    }
+
+    detailScreen.addEventListener('pointerup', endSwipe);
+    detailScreen.addEventListener('pointercancel', endSwipe);
+    window.addEventListener('resize', function () { width = app.clientWidth; });
+
+    /* ---------- 坍缩头图（㉟） ---------- */
+    var ticking = false;
+    detailScroll.addEventListener(
+      'scroll',
+      function () {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function () {
+          ticking = false;
+          var y = detailScroll.scrollTop;
+          var offset = Math.max(0, y) * 0.45;
+          var scale = 1 + Math.max(0, y) * 0.00025;
+          detailHero.style.transform = 'translate3d(0,' + offset + 'px,0) scale(' + scale + ')';
+          detailTopbar.classList.toggle('is-on', y > 160);
+        });
+      },
+      { passive: true }
+    );
+
+    /* ---------- 下拉刷新（㊲） ---------- */
+    var pull = 0;
+    var startPullY = 0;
+    var pullDragging = false;
+    var refreshing = false;
+
+    function setPull(value, animate) {
+      pull = value;
+      ptrContent.style.transition = animate ? '' : 'none';
+      ptr.style.transition = animate ? '' : 'none';
+      ptrContent.style.transform = 'translateY(' + value + 'px)';
+      ptr.style.transform = 'translateY(' + Math.max(-56, value - 56) + 'px)';
+    }
+
+    function resetPull() {
+      setPull(0, true);
+      ptr.classList.remove('is-loading', 'is-done');
+      ptrIcon.textContent = '↓';
+      ptrText.textContent = '下拉刷新';
+    }
+
+    listScroll.addEventListener('pointerdown', function (e) {
+      if (refreshing || listScroll.scrollTop > 0) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      pullDragging = true;
+      startPullY = e.clientY;
+      pull = 0;
+    });
+
+    listScroll.addEventListener(
+      'pointermove',
+      function (e) {
+        if (!pullDragging || refreshing) return;
+        if (listScroll.scrollTop > 0) {
+          pullDragging = false;
+          resetPull();
+          return;
+        }
+        var dy = e.clientY - startPullY;
+        if (dy <= 0) {
+          if (pull > 0) setPull(0, true);
+          return;
+        }
+        var value = Math.min(120, dy * 0.45);
+        setPull(value, false);
+        if (value > 52) {
+          ptrIcon.textContent = '↻';
+          ptrText.textContent = '松开刷新';
+        } else {
+          ptrIcon.textContent = '↓';
+          ptrText.textContent = '下拉刷新';
+        }
+        if (e.cancelable) e.preventDefault();
+      },
+      { passive: false }
+    );
+
+    function endPull() {
+      if (!pullDragging) return;
+      pullDragging = false;
+      if (pull > 52) {
+        refreshing = true;
+        ptr.classList.add('is-loading');
+        ptrIcon.textContent = '◌';
+        ptrText.textContent = '正在刷新';
+        setPull(56, true);
+        if (kit) kit.haptic('snap');
+        setTimeout(function () {
+          ptr.classList.remove('is-loading');
+          ptr.classList.add('is-done');
+          ptrIcon.textContent = '✓';
+          ptrText.textContent = '已更新';
+          if (kit) kit.haptic('success');
+          setTimeout(function () {
+            refreshing = false;
+            resetPull();
+          }, 620);
+        }, 1100);
+      } else {
+        resetPull();
+      }
+    }
+
+    listScroll.addEventListener('pointerup', endPull);
+    listScroll.addEventListener('pointercancel', endPull);
+
+    resetPull();
+  });
+</script>
+</body>
+</html>

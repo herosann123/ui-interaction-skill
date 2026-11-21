@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Template · Hero（视差 / 揭示 / 磁吸 / 数字）</title>
+<link rel="stylesheet" href="../../library/motion-kit.css">
+<style>
+  :root {
+    --bg: #0d0f0e;
+    --panel: #151817;
+    --line: rgba(243, 241, 234, 0.14);
+    --ink: #f3f1ea;
+    --muted: #9d9c93;
+    --accent: #d6ff5e;
+    --accent-ink: #0b0d0c;
+    --serif: "Iowan Old Style", "Palatino Linotype", "Songti SC", Georgia, serif;
+    --sans: "Inter", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+    --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    --mk-accent: var(--accent);
+    --mk-accent-ink: var(--accent-ink);
+    --mk-surface: var(--panel);
+    --mk-ink: var(--ink);
+    --mk-border: var(--line);
+    --mk-glow: rgba(214, 255, 94, 0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--sans); line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: "";
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background:
+      radial-gradient(700px 500px at 82% 6%, rgba(214, 255, 94, 0.1), transparent 62%),
+      radial-gradient(600px 400px at 6% 32%, rgba(108, 142, 255, 0.08), transparent 60%);
+  }
+  .wrap { width: min(1180px, calc(100% - 48px)); margin-inline: auto; }
+  a { color: inherit; text-decoration: none; }
+
+  .nav {
+    display: flex; align-items: center; gap: 28px;
+    width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 22px 0;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -0.02em; }
+  .brand svg { width: 30px; height: 30px; color: var(--accent); overflow: visible; }
+  .brand svg path {
+    stroke-dasharray: 1; stroke-dashoffset: 1;
+    animation: draw 1.8s var(--mk-ease-out) 0.15s forwards;
+  }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .nav__links { display: flex; gap: 24px; margin-left: auto; font-size: 13px; color: var(--muted); }
+  .nav__links a { text-decoration: none; }
+  .nav__links a:hover { color: var(--ink); }
+  .nav .mk-btn { min-height: 38px; padding: 8px 16px; font-size: 13px; }
+
+  .hero {
+    display: grid; grid-template-columns: 1.02fr 0.98fr;
+    gap: clamp(30px, 5vw, 72px); align-items: center;
+    min-height: calc(100dvh - 86px); padding: 40px 0 80px;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: var(--accent); font-family: var(--mono);
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .eyebrow::before { content: ""; width: 26px; height: 1px; background: currentColor; }
+  h1 {
+    margin-top: 22px;
+    font-family: var(--serif); font-weight: 500;
+    font-size: clamp(50px, 7vw, 96px); line-height: 0.94; letter-spacing: -0.04em;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  h1 span { display: inline-block; }
+  .lead { max-width: 44ch; margin-top: 26px; color: var(--muted); font-size: 17px; }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 32px; }
+  .actions .mk-btn { min-height: 50px; padding: 0 26px; }
+  .micro { margin-top: 18px; color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; }
+
+  .hero__visual { position: relative; min-height: 520px; }
+  .panel {
+    position: absolute; border: 1px solid var(--line); border-radius: 20px;
+    background: linear-gradient(180deg, rgba(243,241,234,0.08), rgba(243,241,234,0.02));
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.38);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    overflow: hidden;
+  }
+  .panel--main {
+    inset: 40px 0 auto 30px; height: 360px; padding: 22px;
+    background: rgba(21, 24, 23, 0.82);
+  }
+  .panel--back {
+    inset: 10px 34px auto 0; height: 360px; opacity: 0.5;
+    background: rgba(21, 24, 23, 0.5);
+  }
+  .panel--float {
+    width: 190px; padding: 16px;
+    background: rgba(243, 241, 234, 0.96); color: #0d0f0e;
+    border-color: rgba(13, 15, 14, 0.1);
+  }
+  .panel--a { right: -6px; bottom: 52px; }
+  .panel--b { left: -14px; bottom: 0; }
+  .panel__bar { display: flex; align-items: center; gap: 7px; margin-bottom: 18px; }
+  .panel__bar i { width: 7px; height: 7px; border-radius: 50%; background: rgba(243, 241, 234, 0.22); }
+  .panel__bar b { margin-left: 8px; color: var(--muted); font-family: var(--mono); font-size: 9px; font-weight: 500; letter-spacing: 0.1em; }
+  .panel__grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 12px; height: calc(100% - 46px); }
+  .panel__chart {
+    display: flex; align-items: end; gap: 7px; padding: 14px;
+    border: 1px solid var(--line); border-radius: 14px;
+    background: rgba(13, 15, 14, 0.42);
+  }
+  .panel__chart span {
+    flex: 1; border-radius: 4px 4px 2px 2px;
+    background: linear-gradient(180deg, var(--accent), rgba(214, 255, 94, 0.18));
+    height: var(--h, 40%);
+    transform-origin: bottom;
+    animation: grow 1.2s var(--mk-ease-spring) backwards;
+    animation-delay: var(--d, 0ms);
+  }
+  @keyframes grow { from { transform: scaleY(0.1); opacity: 0.4; } }
+  .panel__side { display: grid; gap: 10px; align-content: start; }
+  .panel__side div { padding: 12px; border: 1px solid var(--line); border-radius: 12px; }
+  .panel__side small { display: block; color: var(--muted); font-size: 9px; letter-spacing: 0.08em; }
+  .panel__side strong { display: block; margin-top: 2px; font-family: var(--serif); font-size: 22px; font-weight: 500; }
+  .panel--float b { display: block; font-family: var(--serif); font-size: 30px; line-height: 1.05; }
+  .panel--float span { color: rgba(13, 15, 14, 0.56); font-size: 11px; }
+  .panel--float em { display: inline-block; margin-top: 8px; padding: 2px 7px; border-radius: 999px; background: rgba(13, 15, 14, 0.08); font-family: var(--mono); font-size: 9px; font-style: normal; }
+
+  .scroll-cue {
+    position: absolute; right: 0; left: auto; bottom: -24px; z-index: 2;
+    display: inline-flex; align-items: center; gap: 10px;
+    color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+  }
+  .scroll-cue i {
+    display: block; width: 1px; height: 34px; background: linear-gradient(var(--accent), transparent);
+    animation: cue 1.8s ease-in-out infinite;
+  }
+  @keyframes cue { 50% { transform: translateY(8px); opacity: 0.4; } }
+
+  .strip {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+    padding: 64px 0 90px; border-top: 1px solid var(--line);
+  }
+  .feature {
+    position: relative; padding: 26px; border: 1px solid var(--line);
+    border-radius: 18px; background: rgba(21, 24, 23, 0.6); overflow: hidden;
+  }
+  .feature__num { color: var(--accent); font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; }
+  .feature h2 { margin-top: 18px; font-family: var(--serif); font-size: 25px; font-weight: 500; }
+  .feature p { margin-top: 10px; color: var(--muted); font-size: 14px; }
+  .feature__stats { display: flex; gap: 22px; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .feature__stats b { display: block; font-family: var(--mono); font-size: 18px; }
+  .feature__stats span { color: var(--muted); font-size: 10px; }
+
+  @media (max-width: 900px) {
+    .nav__links { display: none; }
+    .nav .mk-btn { margin-left: auto; }
+    .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 20px; }
+    .hero__visual { min-height: 430px; margin-top: 20px; }
+    .panel--main { inset: 30px 0 auto 10px; height: 310px; }
+    .panel--back { inset: 0 20px auto 0; height: 310px; }
+    .panel--a { right: 0; bottom: 30px; }
+    .panel--b { left: 0; bottom: 0; }
+    .strip { grid-template-columns: 1fr; padding-bottom: 56px; }
+    .scroll-cue { display: none; }
+  }
+  @media (max-width: 560px) {
+    .wrap, .nav { width: calc(100% - 32px); }
+    .panel--float { width: 150px; padding: 13px; }
+    .panel--float b { font-size: 24px; }
+    .panel__grid { grid-template-columns: 1fr; }
+    .panel__side { display: none; }
+  }
+</style>
+<script>
+  document.documentElement.classList.add('mk-js');
+  setTimeout(function () { if (!window.MotionKit) document.documentElement.classList.remove('mk-js'); }, 2500);
+</script>
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="#" aria-label="Atlas 首页">
+    <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+      <path d="M18 3 33 31H24L18 19 12 31H3L18 3Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" pathLength="1"/>
+    </svg>
+    <span>Atlas</span>
+  </a>
+  <nav class="nav__links" aria-label="主导航">
+    <a href="#features">能力</a>
+    <a href="#features">案例</a>
+    <a href="#features">定价</a>
+  </nav>
+  <button type="button" class="mk-btn mk-btn--primary" data-magnetic="0.25" data-ripple data-ripple-color="rgba(214,255,94,0.35)" data-haptic="tap" data-toast="已打开演示预约（演示）">预约演示</button>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="hero__copy">
+      <p class="eyebrow" data-reveal="fade">Product studio / 2026</p>
+      <h1 data-reveal-stagger="80">
+        <span>把想法变成</span><br>
+        <span><em>可交付</em>的产品</span>
+      </h1>
+      <p class="lead" data-reveal data-reveal-delay="140">Atlas 是一支产品、设计与工程混编的小队。两周一个可点击原型，六周一个能上线的版本。</p>
+      <div class="actions" data-reveal data-reveal-delay="200">
+        <button type="button" class="mk-btn mk-btn--primary" data-magnetic="0.3" data-ripple data-ripple-color="rgba(214,255,94,0.4)" data-haptic="tap" data-toast="已进入构建流程（演示）">开始构建</button>
+        <a class="mk-btn mk-btn--ghost" href="#features" style="border-color: var(--line); color: var(--ink)">看我们的方法 →</a>
+      </div>
+      <p class="micro" data-reveal="fade" data-reveal-delay="260">120+ 产品 · 14 天原型 · 98% 按期交付</p>
+    </div>
+
+    <div class="hero__visual" data-parallax-scope>
+      <div class="panel panel--back" aria-hidden="true"></div>
+      <div class="panel panel--main" data-parallax="0.12">
+        <div class="panel__bar"><i></i><i></i><i></i><b>ATLAS / DELIVERY PULSE</b></div>
+        <div class="panel__grid">
+          <div class="panel__chart" aria-hidden="true">
+            <span style="--h: 34%; --d: 60ms"></span>
+            <span style="--h: 52%; --d: 120ms"></span>
+            <span style="--h: 44%; --d: 180ms"></span>
+            <span style="--h: 68%; --d: 240ms"></span>
+            <span style="--h: 58%; --d: 300ms"></span>
+            <span style="--h: 82%; --d: 360ms"></span>
+            <span style="--h: 72%; --d: 420ms"></span>
+          </div>
+          <div class="panel__side">
+            <div><small>SPRINT</small><strong>06</strong></div>
+            <div><small>VELOCITY</small><strong>+24%</strong></div>
+            <div><small>BLOCKERS</small><strong>00</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel--float panel--a" data-parallax="0.42">
+        <b>14 天</b>
+        <span>从 Brief 到可点击原型</span>
+        <em>CLICKABLE</em>
+      </div>
+      <div class="panel panel--float panel--b" data-parallax="-0.3">
+        <b>98%</b>
+        <span>按期交付率</span>
+        <em>ON TIME</em>
+      </div>
+
+      <span class="scroll-cue" aria-hidden="true"><i></i> SCROLL TO EXPLORE</span>
+    </div>
+  </section>
+
+  <section class="strip" id="features" aria-label="能力">
+    <article class="feature" data-tilt="7" data-reveal>
+      <div class="mk-tilt-glow" aria-hidden="true"></div>
+      <span class="feature__num">01 / DISCOVER</span>
+      <h2>先把问题问对</h2>
+      <p>两天的工作坊，把业务目标、用户路径与成功指标压到一页纸上。</p>
+      <div class="feature__stats">
+        <div><b data-counter="120" data-counter-suffix="+">0</b><span>已交付产品</span></div>
+        <div><b data-counter="14" data-counter-suffix=" 天">0</b><span>原型周期</span></div>
+      </div>
+    </article>
+    <article class="feature" data-tilt="7" data-reveal data-reveal-delay="90">
+      <div class="mk-tilt-glow" aria-hidden="true"></div>
+      <span class="feature__num">02 / BUILD</span>
+      <h2>设计与工程同频</h2>
+      <p>设计稿直接落到组件与令牌，开发不再“照着图猜”。</p>
+      <div class="feature__stats">
+        <div><b data-counter="6" data-counter-suffix=" 周">0</b><span>首个版本</span></div>
+        <div><b data-counter="98" data-counter-suffix="%">0</b><span>按期交付</span></div>
+      </div>
+    </article>
+    <article class="feature" data-tilt="7" data-reveal data-reveal-delay="180">
+      <div class="mk-tilt-glow" aria-hidden="true"></div>
+      <span class="feature__num">03 / SHIP</span>
+      <h2>上线只是开始</h2>
+      <p>埋点、可用性检查与性能预算一起交付，发布后继续迭代。</p>
+      <div class="feature__stats">
+        <div><b data-counter="4.9" data-counter-decimals="1" data-counter-suffix="/5">0</b><span>客户评分</span></div>
+        <div><b data-counter="72" data-counter-suffix="h">0</b><span>响应时间</span></div>
+      </div>
+    </article>
+  </section>
+</main>
+
+<script src="../../library/motion-kit.js" defer></script>
+</body>
+</html>

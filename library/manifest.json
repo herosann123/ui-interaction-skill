@@ -1,0 +1,900 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-11-20",
+  "skill": "ui-interaction-skill",
+  "counts": {
+    "patterns": 56,
+    "templates": 7,
+    "behaviors": 18
+  },
+  "kit": {
+    "css": "library/motion-kit.css",
+    "js": "library/motion-kit.js",
+    "behaviors": [
+      {
+        "attr": "data-reveal",
+        "api": "—",
+        "pattern": "②",
+        "desc": "IntersectionObserver 滚动入场；html.mk-js 门控，JS 失败不隐藏内容"
+      },
+      {
+        "attr": "data-reveal-stagger",
+        "api": "—",
+        "pattern": "⑤",
+        "desc": "子元素自动错峰"
+      },
+      {
+        "attr": "data-parallax",
+        "api": "—",
+        "pattern": "①",
+        "desc": "父级为测量基准，避免 transform 反馈循环"
+      },
+      {
+        "attr": "data-magnetic",
+        "api": "—",
+        "pattern": "④",
+        "desc": "hover/pointer:fine 才启用"
+      },
+      {
+        "attr": "data-tilt",
+        "api": "—",
+        "pattern": "⑨",
+        "desc": "3D 倾斜 + --mk-mx/--mk-my 径向高光"
+      },
+      {
+        "attr": "data-ripple",
+        "api": "—",
+        "pattern": "⑬",
+        "desc": "从 pointerdown 坐标生成涟漪"
+      },
+      {
+        "attr": "data-counter",
+        "api": "—",
+        "pattern": "⑧",
+        "desc": "数字滚动，支持前缀/后缀/小数/分隔"
+      },
+      {
+        "attr": "data-stream",
+        "api": "MotionKit.stream(el,text,opts)",
+        "pattern": "⑰",
+        "desc": "流式打字，标点 ×3、换行 ×4；reduced 直接全文"
+      },
+      {
+        "attr": "data-modal-open",
+        "api": "—",
+        "pattern": "⑩/50",
+        "desc": "原生 dialog 开关与背景点击关闭"
+      },
+      {
+        "attr": "data-sheet-open",
+        "api": "—",
+        "pattern": "㉚",
+        "desc": "底部抽屉，多 snap 点 + 拖拽 + 速度判定"
+      },
+      {
+        "attr": "data-tabs",
+        "api": "—",
+        "pattern": "㉘",
+        "desc": "内容 scroll-snap，指示器由 scrollLeft 驱动"
+      },
+      {
+        "attr": "data-swipe-row",
+        "api": "—",
+        "pattern": "㉛",
+        "desc": "列表行滑开，行间互斥，按钮可键盘聚焦"
+      },
+      {
+        "attr": "data-cmdk",
+        "api": "—",
+        "pattern": "㉓",
+        "desc": "⌘/Ctrl+K 命令栏，过滤 + ↑↓ Enter Esc"
+      },
+      {
+        "attr": "data-haptic",
+        "api": "MotionKit.haptic(kind)",
+        "pattern": "㉜",
+        "desc": "tap/snap/success/warn；无 vibrate 静默降级"
+      },
+      {
+        "attr": "—",
+        "api": "MotionKit.bump(el,delta)",
+        "pattern": "㊼",
+        "desc": "角标弹跳 + delta≥2 时 +N 飞出"
+      },
+      {
+        "attr": "—",
+        "api": "MotionKit.capture/flip",
+        "pattern": "⑮",
+        "desc": "WAAPI FLIP 共享元素"
+      },
+      {
+        "attr": "—",
+        "api": "MotionKit.animateValue",
+        "pattern": "⑦",
+        "desc": "rAF 数值动画，reduced 直接跳终值"
+      },
+      {
+        "attr": "data-toast",
+        "api": "MotionKit.toast(message, opts)",
+        "pattern": "⑤ / ㉜",
+        "desc": "点击显示统一 toast；data-toast-close 关闭所在 dialog；无 JS 时无副作用"
+      }
+    ],
+    "principles": [
+      "零依赖；可只引 CSS 或只引 JS",
+      "所有动效默认尊重 prefers-reduced-motion",
+      "拖拽用 Pointer Events + pointercancel；hover 行为用能力检测门控",
+      "同一元素可叠加多种行为（data-mk-bound 记录多条）"
+    ]
+  },
+  "templates": [
+    {
+      "name": "demo-shell",
+      "path": "templates/demo-shell/",
+      "patterns": [
+        "①",
+        "②",
+        "④",
+        "⑤",
+        "⑧",
+        "⑨",
+        "⑬",
+        "㉖",
+        "㉜",
+        "53"
+      ],
+      "use": "Before/After/Split 对照壳 + Northwind 改版示例；new-demo 的默认模板"
+    },
+    {
+      "name": "hero",
+      "path": "templates/hero/",
+      "patterns": [
+        "①",
+        "②",
+        "④",
+        "⑤",
+        "⑥",
+        "⑧",
+        "⑨",
+        "⑬",
+        "㉜"
+      ],
+      "use": "桌面落地页 Hero：分层视差、词级揭示、磁吸 CTA、倾斜特性卡"
+    },
+    {
+      "name": "feature-grid",
+      "path": "templates/feature-grid/",
+      "patterns": [
+        "②",
+        "⑦",
+        "⑧",
+        "⑨"
+      ],
+      "use": "定价 / 特性网格：3D 倾斜、玻璃开关、数字滚动"
+    },
+    {
+      "name": "ai-chat",
+      "path": "templates/ai-chat/",
+      "patterns": [
+        "⑩",
+        "⑫",
+        "⑰",
+        "㉜"
+      ],
+      "use": "AI 对话：流式打字、玻璃输入区、可暂停粒子背景"
+    },
+    {
+      "name": "mobile-feed",
+      "path": "templates/mobile-feed/",
+      "patterns": [
+        "㉖",
+        "㉚",
+        "㉛",
+        "㉜",
+        "㊶",
+        "㊻",
+        "㊼"
+      ],
+      "use": "手机信息流：snap 轨道、滑动行、双击点赞、评论抽屉、骨架屏、角标"
+    },
+    {
+      "name": "mobile-detail",
+      "path": "templates/mobile-detail/",
+      "patterns": [
+        "㉗",
+        "㉙",
+        "㉚",
+        "㉟",
+        "㊲",
+        "㉜"
+      ],
+      "use": "手机列表→详情：push/pop、左缘滑动返回、坍缩头图、下拉刷新"
+    },
+    {
+      "name": "dashboard",
+      "path": "templates/dashboard/",
+      "patterns": [
+        "⑧",
+        "⑩",
+        "㉓",
+        "㉘",
+        "㊹"
+      ],
+      "use": "工具型后台：Cmd+K、scroll-snap Tabs、数字卡、圆形主题揭示"
+    }
+  ],
+  "patterns": [
+    {
+      "id": "①",
+      "name": "视差滚动 Parallax",
+      "slug": "parallax",
+      "group": "base",
+      "demo": "10-ui-interactions.html",
+      "patterns": "PATTERNS.md · ① 视差滚动 Parallax",
+      "kit": "data-parallax",
+      "deps": "none",
+      "fallback": "静态背景层",
+      "mobile": "速度 ≤0.3，只动 transform"
+    },
+    {
+      "id": "②",
+      "name": "滚动触发 Reveal",
+      "slug": "reveal",
+      "group": "base",
+      "demo": "10-ui-interactions.html",
+      "patterns": "PATTERNS.md · ② 滚动触发 Reveal",
+      "kit": "data-reveal / data-reveal-stagger",
+      "deps": "none",
+      "fallback": "元素直接可见",
+      "mobile": "IO + rAF；可重入"
+    },
+    {
+      "id": "③",
+      "name": "卡片堆叠 Swipe",
+      "slug": "card-stack",
+      "group": "base",
+      "demo": "10-ui-interactions.html",
+      "patterns": "PATTERNS.md · ③ 卡片堆叠 Swipe",
+      "kit": "—",
+      "deps": "pointer events",
+      "fallback": "普通列表 / 按钮",
+      "mobile": "touch-action:none + pointercancel"
+    },
+    {
+      "id": "④",
+      "name": "磁吸按钮 Magnetic",
+      "slug": "magnetic",
+      "group": "base",
+      "demo": "10-ui-interactions.html",
+      "patterns": "PATTERNS.md · ④ 磁吸按钮 Magnetic",
+      "kit": "data-magnetic",
+      "deps": "none",
+      "fallback": "静态按钮",
+      "mobile": "必须 hover/pointer 门控，触摸禁用"
+    },
+    {
+      "id": "⑤",
+      "name": "文字揭示 Text Reveal",
+      "slug": "text-reveal",
+      "group": "base",
+      "demo": "10-ui-interactions.html",
+      "patterns": "PATTERNS.md · ⑤ 文字揭示 Text Reveal",
+      "kit": "data-reveal-stagger",
+      "deps": "none",
+      "fallback": "文字直接显示",
+      "mobile": "stagger 40–80ms"
+    },
+    {
+      "id": "⑥",
+      "name": "SVG 路径绘制",
+      "slug": "svg-draw",
+      "group": "base",
+      "demo": "10-ui-interactions.html",
+      "patterns": "PATTERNS.md · ⑥ SVG 路径绘制",
+      "kit": "CSS pathLength",
+      "deps": "none",
+      "fallback": "直接显示完整路径",
+      "mobile": "duration 1.5–2.5s"
+    },
+    {
+      "id": "⑦",
+      "name": "弹性回弹 Spring",
+      "slug": "spring",
+      "group": "base",
+      "demo": "10-ui-interactions.html",
+      "patterns": "PATTERNS.md · ⑦ 弹性回弹 Spring",
+      "kit": "MotionKit.animateValue / CSS spring",
+      "deps": "none",
+      "fallback": "即时跳到 final state",
+      "mobile": "拖拽松手后再上曲线"
+    },
+    {
+      "id": "⑧",
+      "name": "数字翻牌 Counter",
+      "slug": "counter",
+      "group": "base",
+      "demo": "10-ui-interactions.html",
+      "patterns": "PATTERNS.md · ⑧ 数字翻牌 Counter",
+      "kit": "data-counter",
+      "deps": "none",
+      "fallback": "直接显示最终数字",
+      "mobile": "tabular-nums 防抖动"
+    },
+    {
+      "id": "⑨",
+      "name": "3D 倾斜 Tilt",
+      "slug": "tilt",
+      "group": "base",
+      "demo": "10-ui-interactions.html",
+      "patterns": "PATTERNS.md · ⑨ 3D 倾斜 Tilt",
+      "kit": "data-tilt",
+      "deps": "none",
+      "fallback": "普通静态卡",
+      "mobile": "hover/pointer 门控，触摸禁用"
+    },
+    {
+      "id": "⑩",
+      "name": "玻璃拟态 Glassmorphism",
+      "slug": "glass",
+      "group": "base",
+      "demo": "10-ui-interactions.html",
+      "patterns": "PATTERNS.md · ⑩ 玻璃拟态 Glassmorphism",
+      "kit": "CSS .mk-glass",
+      "deps": "none",
+      "fallback": "不透明实色背景",
+      "mobile": "backdrop blur ≤24px，移动端更低"
+    },
+    {
+      "id": "⑪",
+      "name": "极光渐变 Aurora",
+      "slug": "aurora",
+      "group": "advanced",
+      "demo": "advanced-ui-v2.html",
+      "patterns": "PATTERNS.md · ⑪ 极光渐变 Aurora",
+      "kit": "CSS radial-gradient",
+      "deps": "none",
+      "fallback": "纯色静态背景",
+      "mobile": "移动端减层 / 关动画"
+    },
+    {
+      "id": "⑫",
+      "name": "粒子网络 Particles",
+      "slug": "particles",
+      "group": "advanced",
+      "demo": "advanced-ui-v2.html",
+      "patterns": "PATTERNS.md · ⑫ 粒子网络 Particles",
+      "kit": "—",
+      "deps": "Canvas 2D",
+      "fallback": "静态背景图 / 关 canvas",
+      "mobile": "60–100 节点，离屏暂停"
+    },
+    {
+      "id": "⑬",
+      "name": "水波纹涟漪 Ripple",
+      "slug": "ripple",
+      "group": "advanced",
+      "demo": "advanced-ui-v2.html",
+      "patterns": "PATTERNS.md · ⑬ 水波纹涟漪 Ripple",
+      "kit": "data-ripple",
+      "deps": "none",
+      "fallback": "普通颜色反馈",
+      "mobile": "从点击坐标扩散"
+    },
+    {
+      "id": "⑭",
+      "name": "粘性滚动堆叠 Sticky",
+      "slug": "sticky-stack",
+      "group": "advanced",
+      "demo": "advanced-ui-v2.html",
+      "patterns": "PATTERNS.md · ⑭ 粘性滚动堆叠 Sticky",
+      "kit": "—",
+      "deps": "position:sticky",
+      "fallback": "普通竖排",
+      "mobile": "≤5 屏；移动端改竖排"
+    },
+    {
+      "id": "⑮",
+      "name": "FLIP 共享元素",
+      "slug": "flip",
+      "group": "advanced",
+      "demo": "advanced-ui-v2.html",
+      "patterns": "PATTERNS.md · ⑮ FLIP 共享元素",
+      "kit": "MotionKit.capture / flip",
+      "deps": "WAAPI",
+      "fallback": "普通 fade-in",
+      "mobile": "只用 transform 反演"
+    },
+    {
+      "id": "⑯",
+      "name": "View Transitions",
+      "slug": "view-transitions",
+      "group": "advanced",
+      "demo": "advanced-ui-v2.html",
+      "patterns": "PATTERNS.md · ⑯ View Transitions",
+      "kit": "—",
+      "deps": "浏览器原生",
+      "fallback": "即时切换",
+      "mobile": "Chrome 111+/Safari 18+"
+    },
+    {
+      "id": "⑰",
+      "name": "AI 流式打字机",
+      "slug": "streaming",
+      "group": "advanced",
+      "demo": "advanced-ui-v2.html",
+      "patterns": "PATTERNS.md · ⑰ AI 流式打字机",
+      "kit": "data-stream / MotionKit.stream",
+      "deps": "none",
+      "fallback": "一次性显示全文",
+      "mobile": "标点延迟 ×3；光标保留"
+    },
+    {
+      "id": "⑱",
+      "name": "自定义光标",
+      "slug": "custom-cursor",
+      "group": "frontier",
+      "demo": "advanced-ui-v3.html",
+      "patterns": "PATTERNS.md · ⑱ 自定义光标",
+      "kit": "—",
+      "deps": "pointer events",
+      "fallback": "原生光标",
+      "mobile": "触摸设备禁用"
+    },
+    {
+      "id": "⑲",
+      "name": "水平滚动叙事",
+      "slug": "h-scroll",
+      "group": "frontier",
+      "demo": "advanced-ui-v3.html",
+      "patterns": "PATTERNS.md · ⑲ 水平滚动叙事",
+      "kit": "—",
+      "deps": "ScrollTrigger / sticky",
+      "fallback": "普通竖排",
+      "mobile": "移动端改原生横滑"
+    },
+    {
+      "id": "⑳",
+      "name": "噪点纹理 Noise",
+      "slug": "noise",
+      "group": "frontier",
+      "demo": "advanced-ui-v3.html",
+      "patterns": "PATTERNS.md · ⑳ 噪点纹理 Noise",
+      "kit": "—",
+      "deps": "Canvas",
+      "fallback": "纯色背景",
+      "mobile": "0.5x 分辨率，离屏暂停"
+    },
+    {
+      "id": "㉑",
+      "name": "RGB 分离 Glitch",
+      "slug": "glitch",
+      "group": "frontier",
+      "demo": "advanced-ui-v3.html",
+      "patterns": "PATTERNS.md · ㉑ RGB 分离 Glitch",
+      "kit": "CSS mix-blend-mode",
+      "deps": "none",
+      "fallback": "单色文字",
+      "mobile": "只在关键时刻抖，不全程"
+    },
+    {
+      "id": "㉒",
+      "name": "滚动驱动数字",
+      "slug": "scroll-counter",
+      "group": "frontier",
+      "demo": "advanced-ui-v3.html",
+      "patterns": "PATTERNS.md · ㉒ 滚动驱动数字",
+      "kit": "—",
+      "deps": "ScrollTrigger",
+      "fallback": "最终数字",
+      "mobile": "progress → lerp；tabular-nums"
+    },
+    {
+      "id": "㉓",
+      "name": "命令栏 Cmd+K",
+      "slug": "cmdk",
+      "group": "frontier",
+      "demo": "advanced-ui-v3.html",
+      "patterns": "PATTERNS.md · ㉓ 命令栏 Cmd+K",
+      "kit": "data-cmdk",
+      "deps": "none",
+      "fallback": "导航菜单列出全部功能",
+      "mobile": "支持 ↑↓ Enter Esc"
+    },
+    {
+      "id": "㉔",
+      "name": "Blob Morph 液态形变",
+      "slug": "blob",
+      "group": "frontier",
+      "demo": "advanced-ui-v3.html",
+      "patterns": "PATTERNS.md · ㉔ Blob Morph 液态形变",
+      "kit": "—",
+      "deps": "GSAP MorphSVG",
+      "fallback": "静态 SVG",
+      "mobile": "两个 path 点数必须一致"
+    },
+    {
+      "id": "㉕",
+      "name": "Folding Drawer 千层酥",
+      "slug": "folding-drawer",
+      "group": "frontier",
+      "demo": "advanced-ui-v3.html",
+      "patterns": "PATTERNS.md · ㉕ Folding Drawer 千层酥",
+      "kit": "—",
+      "deps": "wheel/touch/keyboard",
+      "fallback": "普通轮播",
+      "mobile": "纯抽拉，末位 opacity ≥0.18"
+    },
+    {
+      "id": "㉖",
+      "name": "原生手感滚动 Snap",
+      "slug": "snap-scroll",
+      "group": "mobile",
+      "demo": "mobile-ui.html",
+      "patterns": "PATTERNS.md · ㉖ 原生手感滚动 Snap",
+      "kit": "CSS .mk-snap",
+      "deps": "none",
+      "fallback": "原生滚动直跳",
+      "mobile": "不劫持 touchmove"
+    },
+    {
+      "id": "㉗",
+      "name": "滑动返回 Swipe-Back",
+      "slug": "swipe-back",
+      "group": "mobile",
+      "demo": "mobile-ui.html",
+      "patterns": "PATTERNS.md · ㉗ 滑动返回 Swipe-Back",
+      "kit": "templates/mobile-detail",
+      "deps": "pointer events",
+      "fallback": "返回按钮",
+      "mobile": "热区 24px；速度+位移双判定"
+    },
+    {
+      "id": "㉘",
+      "name": "Tab 滑动切换",
+      "slug": "tab-swipe",
+      "group": "mobile",
+      "demo": "mobile-ui.html",
+      "patterns": "PATTERNS.md · ㉘ Tab 滑动切换",
+      "kit": "data-tabs",
+      "deps": "none",
+      "fallback": "点 Tab 即时切换",
+      "mobile": "指示器由 scrollLeft 驱动"
+    },
+    {
+      "id": "㉙",
+      "name": "页面推入/推出 Push/Pop",
+      "slug": "push-pop",
+      "group": "mobile",
+      "demo": "mobile-ui.html",
+      "patterns": "PATTERNS.md · ㉙ 页面推入/推出 Push/Pop",
+      "kit": "templates/mobile-detail",
+      "deps": "CSS transform",
+      "fallback": "即时切换",
+      "mobile": "新旧页同动，旧页 -25% 视差"
+    },
+    {
+      "id": "㉚",
+      "name": "底部抽屉 Bottom Sheet",
+      "slug": "bottom-sheet",
+      "group": "mobile",
+      "demo": "mobile-ui.html",
+      "patterns": "PATTERNS.md · ㉚ 底部抽屉 Bottom Sheet",
+      "kit": "data-sheet",
+      "deps": "native dialog",
+      "fallback": "直接显隐",
+      "mobile": "只在 handle 上禁 touch-action"
+    },
+    {
+      "id": "㉛",
+      "name": "列表滑动操作 Swipe Actions",
+      "slug": "swipe-actions",
+      "group": "mobile",
+      "demo": "mobile-ui.html",
+      "patterns": "PATTERNS.md · ㉛ 列表滑动操作 Swipe Actions",
+      "kit": "data-swipe-row",
+      "deps": "pointer events",
+      "fallback": "可见按钮 / 长按菜单",
+      "mobile": "行间互斥；保留可见入口"
+    },
+    {
+      "id": "㉜",
+      "name": "触感反馈 Haptics",
+      "slug": "haptics",
+      "group": "mobile",
+      "demo": "mobile-ui.html",
+      "patterns": "PATTERNS.md · ㉜ 触感反馈 Haptics",
+      "kit": "data-haptic / MotionKit.haptic",
+      "deps": "navigator.vibrate",
+      "fallback": "无震动，保留按压缩放",
+      "mobile": "iOS Safari 静默降级"
+    },
+    {
+      "id": "㉝",
+      "name": "橡皮筋阻尼 Rubber-Band",
+      "slug": "rubber-band",
+      "group": "mobile-pro",
+      "demo": "mobile-ui-pro.html",
+      "patterns": "PATTERNS.md · ㉝ 橡皮筋阻尼 Rubber-Band",
+      "kit": "—",
+      "deps": "pointer + rAF",
+      "fallback": "无拉扯直接停边",
+      "mobile": "对数阻尼 c*(1-1/(dx/c+1))"
+    },
+    {
+      "id": "㉞",
+      "name": "捏合缩放 Pinch",
+      "slug": "pinch",
+      "group": "mobile-pro",
+      "demo": "mobile-ui-pro.html",
+      "patterns": "PATTERNS.md · ㉞ 捏合缩放 Pinch",
+      "kit": "—",
+      "deps": "pointer events",
+      "fallback": "+/− 按钮跳档",
+      "mobile": "origin 锁双指中点"
+    },
+    {
+      "id": "㉟",
+      "name": "坍缩头图 Collapsing",
+      "slug": "collapsing-header",
+      "group": "mobile-pro",
+      "demo": "mobile-ui-pro.html",
+      "patterns": "PATTERNS.md · ㉟ 坍缩头图 Collapsing",
+      "kit": "templates/mobile-detail",
+      "deps": "scroll + rAF",
+      "fallback": "静态头图 + 吸顶栏",
+      "mobile": "origin bottom；只动 transform"
+    },
+    {
+      "id": "㊱",
+      "name": "拖拽排序 Reorder",
+      "slug": "reorder",
+      "group": "mobile-pro",
+      "demo": "mobile-ui-pro.html",
+      "patterns": "PATTERNS.md · ㊱ 拖拽排序 Reorder",
+      "kit": "—",
+      "deps": "pointer events",
+      "fallback": "上移/下移按钮",
+      "mobile": "让位只动 transform，松手结算 DOM"
+    },
+    {
+      "id": "㊲",
+      "name": "完整下拉刷新 PTR",
+      "slug": "pull-refresh",
+      "group": "mobile-pro",
+      "demo": "mobile-ui-pro.html",
+      "patterns": "PATTERNS.md · ㊲ 完整下拉刷新 PTR",
+      "kit": "templates/mobile-detail",
+      "deps": "pointer events",
+      "fallback": "可见刷新按钮",
+      "mobile": "阈值 80px；四态状态机"
+    },
+    {
+      "id": "㊳",
+      "name": "惯性甩动 Fling",
+      "slug": "fling",
+      "group": "mobile-pro",
+      "demo": "mobile-ui-pro.html",
+      "patterns": "PATTERNS.md · ㊳ 惯性甩动 Fling",
+      "kit": "—",
+      "deps": "rAF",
+      "fallback": "松手缓动到最近刻度",
+      "mobile": "末速取最后 3–5 个 move"
+    },
+    {
+      "id": "㊴",
+      "name": "堆叠卡片页 Stacked",
+      "slug": "stacked-cards",
+      "group": "mobile-pro",
+      "demo": "mobile-ui-pro.html",
+      "patterns": "PATTERNS.md · ㊴ 堆叠卡片页 Stacked",
+      "kit": "—",
+      "deps": "pointer events",
+      "fallback": "fade 切换层",
+      "mobile": "≤4 层；后层 2× 跟进"
+    },
+    {
+      "id": "㊵",
+      "name": "液态填充 Liquid",
+      "slug": "liquid",
+      "group": "mobile-pro",
+      "demo": "mobile-ui-pro.html",
+      "patterns": "PATTERNS.md · ㊵ 液态填充 Liquid",
+      "kit": "—",
+      "deps": "SVG + rAF",
+      "fallback": "纯色态切换",
+      "mobile": "同屏 ≤2 个液态源"
+    },
+    {
+      "id": "㊶",
+      "name": "双击点赞爆裂",
+      "slug": "double-tap-like",
+      "group": "mobile-plus",
+      "demo": "mobile-ui-plus.html",
+      "patterns": "PATTERNS.md · ㊶ 双击点赞爆裂",
+      "kit": "templates/mobile-feed",
+      "deps": "pointer events",
+      "fallback": "只保留心形按钮",
+      "mobile": "从第二击坐标长出"
+    },
+    {
+      "id": "㊷",
+      "name": "横滑关闭通知",
+      "slug": "swipe-dismiss",
+      "group": "mobile-plus",
+      "demo": "mobile-ui-plus.html",
+      "patterns": "PATTERNS.md · ㊷ 横滑关闭通知",
+      "kit": "—",
+      "deps": "pointer events",
+      "fallback": "只保留 × 按钮",
+      "mobile": "飞出后高度坍缩"
+    },
+    {
+      "id": "㊸",
+      "name": "3D 滚轮选择器",
+      "slug": "wheel-picker",
+      "group": "mobile-plus",
+      "demo": "mobile-ui-plus.html",
+      "patterns": "PATTERNS.md · ㊸ 3D 滚轮选择器",
+      "kit": "—",
+      "deps": "原生 scroll-snap",
+      "fallback": "原生 select / stepper",
+      "mobile": "22°/档；保留等价控件"
+    },
+    {
+      "id": "㊹",
+      "name": "主题圆形揭示",
+      "slug": "theme-reveal",
+      "group": "mobile-plus",
+      "demo": "mobile-ui-plus.html",
+      "patterns": "PATTERNS.md · ㊹ 主题圆形揭示",
+      "kit": "templates/dashboard",
+      "deps": "View Transitions",
+      "fallback": "直接翻转 class",
+      "mobile": "从按钮坐标扩散"
+    },
+    {
+      "id": "㊺",
+      "name": "按住说话",
+      "slug": "hold-to-talk",
+      "group": "mobile-plus",
+      "demo": "mobile-ui-plus.html",
+      "patterns": "PATTERNS.md · ㊺ 按住说话",
+      "kit": "—",
+      "deps": "pointer events",
+      "fallback": "点按开始/停止",
+      "mobile": "pointercancel = 取消"
+    },
+    {
+      "id": "㊻",
+      "name": "骨架屏 Shimmer",
+      "slug": "skeleton",
+      "group": "mobile-plus",
+      "demo": "mobile-ui-plus.html",
+      "patterns": "PATTERNS.md · ㊻ 骨架屏 Shimmer",
+      "kit": "CSS .mk-skeleton",
+      "deps": "none",
+      "fallback": "静态灰块",
+      "mobile": "骨架与内容逐像素同尺寸"
+    },
+    {
+      "id": "㊼",
+      "name": "角标弹跳 Badge Bump",
+      "slug": "badge-bump",
+      "group": "mobile-plus",
+      "demo": "mobile-ui-plus.html",
+      "patterns": "PATTERNS.md · ㊼ 角标弹跳 Badge Bump",
+      "kit": "MotionKit.bump",
+      "deps": "none",
+      "fallback": "无 scale，颜色一闪",
+      "mobile": "连击合并；aria-live 播报"
+    },
+    {
+      "id": "㊽",
+      "name": "庆祝粒子 Confetti",
+      "slug": "confetti",
+      "group": "mobile-plus",
+      "demo": "mobile-ui-plus.html",
+      "patterns": "PATTERNS.md · ㊽ 庆祝粒子 Confetti",
+      "kit": "—",
+      "deps": "Canvas",
+      "fallback": "不喷，保留 success 触感",
+      "mobile": "每用户流 ≤1 处"
+    },
+    {
+      "id": "49",
+      "name": "滚动驱动动画",
+      "slug": "scroll-driven",
+      "group": "css-native",
+      "demo": "frontier-css.html",
+      "patterns": "PATTERNS.md · 49 滚动驱动动画",
+      "kit": "CSS animation-timeline",
+      "deps": "none",
+      "fallback": "JS/即时显示",
+      "mobile": "@supports 渐进增强"
+    },
+    {
+      "id": "50",
+      "name": "@starting-style 进出场",
+      "slug": "starting-style",
+      "group": "css-native",
+      "demo": "frontier-css.html",
+      "patterns": "PATTERNS.md · 50 @starting-style 进出场",
+      "kit": "CSS",
+      "deps": "none",
+      "fallback": "直接显隐",
+      "mobile": "四条 transition 含 display/overlay"
+    },
+    {
+      "id": "51",
+      "name": "Popover API",
+      "slug": "popover",
+      "group": "css-native",
+      "demo": "frontier-css.html",
+      "patterns": "PATTERNS.md · 51 Popover API",
+      "kit": "native popover",
+      "deps": "none",
+      "fallback": "手写弹层",
+      "mobile": "auto 模式 Esc/外点自动关"
+    },
+    {
+      "id": "52",
+      "name": "linear() 弹簧缓动",
+      "slug": "linear-easing",
+      "group": "css-native",
+      "demo": "frontier-css.html",
+      "patterns": "PATTERNS.md · 52 linear() 弹簧缓动",
+      "kit": "CSS linear()",
+      "deps": "none",
+      "fallback": "普通 ease",
+      "mobile": "拖拽跟手仍用 ⑦"
+    },
+    {
+      "id": "53",
+      "name": "height:auto 过渡",
+      "slug": "auto-height",
+      "group": "css-native",
+      "demo": "frontier-css.html",
+      "patterns": "PATTERNS.md · 53 height:auto 过渡",
+      "kit": "CSS grid 0fr→1fr",
+      "deps": "none",
+      "fallback": "即时展开",
+      "mobile": "min-height:0；interpolate-size 可选"
+    },
+    {
+      "id": "54",
+      "name": "锚点定位 Anchor",
+      "slug": "anchor-position",
+      "group": "css-native",
+      "demo": "frontier-css.html",
+      "patterns": "PATTERNS.md · 54 锚点定位 Anchor",
+      "kit": "CSS position-anchor",
+      "deps": "none",
+      "fallback": "JS 计算定位",
+      "mobile": "先写降级基线再 @supports"
+    },
+    {
+      "id": "55",
+      "name": "跨文档 View Transitions",
+      "slug": "cross-doc-vt",
+      "group": "css-native",
+      "demo": "frontier-css.html",
+      "patterns": "PATTERNS.md · 55 跨文档 View Transitions",
+      "kit": "@view-transition",
+      "deps": "none",
+      "fallback": "整页跳转",
+      "mobile": "SPA 用 ⑯；每页共享元素 ≤2"
+    },
+    {
+      "id": "56",
+      "name": "滚动标记 scroll-marker",
+      "slug": "scroll-marker",
+      "group": "css-native",
+      "demo": "frontier-css.html",
+      "patterns": "PATTERNS.md · 56 滚动标记 scroll-marker",
+      "kit": "CSS ::scroll-marker",
+      "deps": "none",
+      "fallback": "IntersectionObserver 兜底",
+      "mobile": "实验性"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "ignore": [
+    "_video/",
+    "videos/",
+    "参考视频/",
+    "样图/",
+    "github-upload/",
+    "pack-extracted/",
+    "_dist/",
+    "_videorawc4-part1/",
+    "_b64_",
+    "ui-interaction-skills-pack.zip",
+    "motion-pack.tar.gz"
+  ]
+}

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>改版对照 · Northwind Analytics</title>
+<style>
+  :root {
+    --shell-bg: #141210;
+    --shell-panel: #1c1916;
+    --shell-line: rgba(255, 248, 238, 0.12);
+    --shell-ink: #f4eee4;
+    --shell-muted: #a39b8e;
+    --shell-accent: #d07a5e;
+    --shell-accent-ink: #1b1512;
+    --sans: "Inter", "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    --frame-w: 100%;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--shell-bg);
+    color: var(--shell-ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    overflow: hidden;
+  }
+  button, a { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--shell-accent); outline-offset: 2px; }
+
+  .app { display: grid; grid-template-rows: auto 1fr auto; height: 100dvh; }
+
+  /* ---------- 顶栏 ---------- */
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 18px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--shell-line);
+    background: rgba(20, 18, 16, 0.92);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .brand__mark {
+    display: grid; width: 30px; height: 30px; place-items: center;
+    border-radius: 9px; background: var(--shell-accent); color: var(--shell-accent-ink);
+    font-family: var(--mono); font-size: 11px; font-weight: 700;
+  }
+  .brand__text { display: flex; flex-direction: column; min-width: 0; }
+  .brand__text b { font-size: 13px; letter-spacing: 0.01em; white-space: nowrap; }
+  .brand__text span { color: var(--shell-muted); font-size: 11px; white-space: nowrap; }
+  .bar__spacer { flex: 1; }
+
+  .seg {
+    display: inline-flex;
+    padding: 3px;
+    border: 1px solid var(--shell-line);
+    border-radius: 999px;
+    background: var(--shell-panel);
+  }
+  .seg button {
+    display: inline-flex; align-items: center; gap: 7px;
+    min-height: 34px; padding: 6px 14px;
+    border: 0; border-radius: 999px; background: transparent;
+    color: var(--shell-muted); font-size: 12px; font-weight: 600;
+    transition: background-color 160ms linear, color 160ms linear;
+  }
+  .seg button[aria-pressed="true"] { background: var(--shell-ink); color: var(--shell-bg); }
+  kbd {
+    padding: 1px 5px; border: 1px solid currentColor; border-radius: 4px;
+    font-family: var(--mono); font-size: 9px; opacity: 0.55;
+  }
+
+  .tool {
+    display: inline-flex; align-items: center; gap: 7px;
+    min-height: 34px; padding: 6px 12px;
+    border: 1px solid var(--shell-line); border-radius: 999px;
+    background: transparent; color: var(--shell-muted);
+    font-size: 12px; text-decoration: none;
+    transition: border-color 160ms linear, color 160ms linear;
+  }
+  .tool:hover { border-color: rgba(255, 248, 238, 0.3); color: var(--shell-ink); }
+  .tool[aria-pressed="true"] { border-color: var(--shell-accent); color: var(--shell-accent); }
+  .tool--accent { border-color: var(--shell-accent); background: var(--shell-accent); color: var(--shell-accent-ink); }
+  .tool--accent:hover { color: var(--shell-accent-ink); opacity: 0.9; }
+
+  /* ---------- 主区 ---------- */
+  .main { display: flex; min-height: 0; }
+  .stage {
+    display: flex;
+    flex: 1;
+    gap: 14px;
+    min-width: 0;
+    padding: 14px;
+    background:
+      radial-gradient(800px 400px at 50% -10%, rgba(208, 122, 94, 0.08), transparent 60%);
+    overflow: auto;
+    justify-content: center;
+  }
+  .pane {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--shell-line);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+  }
+  .pane[hidden] { display: none; }
+  .pane__label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    background: #f7f4ed;
+    color: #6b655b;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .pane__label b { color: #1b1713; font-weight: 700; }
+  .pane__label a { text-decoration: none; color: #8a8378; }
+  .pane__label a:hover { color: #1b1713; }
+  .pane iframe { flex: 1; width: 100%; min-height: 0; border: 0; background: #fff; }
+
+  body.is-mobile .pane { flex: 0 0 min(390px, 100%); }
+  body.is-mobile .stage { align-items: stretch; }
+
+  /* ---------- 改动说明 ---------- */
+  .notes {
+    width: 368px;
+    flex: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-left: 1px solid var(--shell-line);
+    background: var(--shell-panel);
+    transition: transform 240ms ease;
+  }
+  .app.notes-off .notes { display: none; }
+  .notes__head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px 12px;
+    border-bottom: 1px solid var(--shell-line);
+    background: var(--shell-panel);
+  }
+  .notes__head b { font-size: 13px; }
+  .notes__head span { color: var(--shell-muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; }
+  .notes__list { list-style: none; padding: 6px 0 18px; }
+  .change {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255, 248, 238, 0.07);
+  }
+  .change__num {
+    display: grid; width: 26px; height: 26px; place-items: center;
+    border: 1px solid var(--shell-line); border-radius: 50%;
+    color: var(--shell-accent); font-family: var(--mono); font-size: 10px;
+  }
+  .change b { display: block; font-size: 13px; }
+  .change p { margin-top: 5px; color: var(--shell-muted); font-size: 12px; line-height: 1.55; }
+  .change code {
+    padding: 1px 5px; border-radius: 4px; background: rgba(255, 248, 238, 0.08);
+    color: #e8ddcd; font-family: var(--mono); font-size: 10px;
+  }
+  .notes__section { padding: 14px 18px 4px; color: var(--shell-muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .removed { margin: 0; padding: 4px 18px 18px 38px; color: var(--shell-muted); font-size: 12px; line-height: 1.7; }
+  .removed li::marker { color: var(--shell-accent); }
+
+  /* ---------- 状态栏 ---------- */
+  .status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 18px;
+    padding: 9px 18px;
+    border-top: 1px solid var(--shell-line);
+    color: var(--shell-muted);
+    font-size: 11px;
+  }
+  .status .dot { width: 6px; height: 6px; border-radius: 50%; background: #6fae8d; box-shadow: 0 0 0 3px rgba(111, 174, 141, 0.14); }
+  .status strong { color: var(--shell-ink); font-weight: 600; }
+  .status code { font-family: var(--mono); font-size: 10px; }
+
+  @media (max-width: 1180px) {
+    .notes {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 30;
+      width: min(380px, 92vw);
+      box-shadow: -20px 0 60px rgba(0, 0, 0, 0.4);
+    }
+  }
+  @media (max-width: 760px) {
+    .brand__text span { display: none; }
+    .bar { gap: 8px 10px; padding: 10px 12px; }
+    .seg button { padding: 6px 10px; }
+    .seg kbd { display: none; }
+    .tool span { display: none; }
+    .pane__label { font-size: 9px; }
+    .status { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <header class="bar">
+    <div class="brand">
+      <span class="brand__mark">UI</span>
+      <span class="brand__text">
+        <b>Northwind Analytics · 改版对照</b>
+        <span>ui-interaction-skill · demo shell</span>
+      </span>
+    </div>
+    <div class="bar__spacer"></div>
+
+    <div class="seg" role="group" aria-label="对照模式">
+      <button type="button" data-mode="before" aria-pressed="false">Before <kbd>1</kbd></button>
+      <button type="button" data-mode="after" aria-pressed="true">After <kbd>2</kbd></button>
+      <button type="button" data-mode="split" aria-pressed="false">Split <kbd>3</kbd></button>
+    </div>
+
+    <button type="button" class="tool" id="deviceBtn" aria-pressed="false" title="切换 390px 移动视图（D）">
+      <span aria-hidden="true">▭</span><span>390px</span>
+    </button>
+    <button type="button" class="tool" id="reloadBtn" title="重新加载当前预览">
+      <span aria-hidden="true">↻</span><span>重载</span>
+    </button>
+    <button type="button" class="tool" id="notesBtn" aria-pressed="true" title="显示/隐藏改动说明（N）">
+      <span aria-hidden="true">☰</span><span>改动说明</span>
+    </button>
+    <a class="tool tool--accent" id="openAfter" href="after.html" target="_blank" rel="noopener">打开 After ↗</a>
+  </header>
+
+  <div class="main">
+    <main class="stage" id="stage">
+      <section class="pane" data-pane="before" hidden aria-label="改版前页面">
+        <div class="pane__label"><span><b>Before</b> · 原页面</span><a href="before.html" target="_blank" rel="noopener">单独打开 ↗</a></div>
+        <iframe src="before.html" title="改版前页面预览"></iframe>
+      </section>
+      <section class="pane" data-pane="after" aria-label="改版后页面">
+        <div class="pane__label"><span><b>After</b> · 交互升级</span><a href="after.html" target="_blank" rel="noopener">单独打开 ↗</a></div>
+        <iframe src="after.html" title="改版后页面预览"></iframe>
+      </section>
+    </main>
+
+    <aside class="notes" id="notes" aria-label="改动说明">
+      <div class="notes__head">
+        <b>改动说明</b>
+        <span>v1 · 同一内容</span>
+      </div>
+      <ol class="notes__list">
+        <li class="change">
+          <span class="change__num">01</span>
+          <div>
+            <b>首屏分层入场</b>
+            <p><code>① 视差</code> + <code>② 滚动入场</code>：标题逐行出现，仪表盘浮动卡以不同速度跟随滚动；首屏信息 1 秒内完成，不藏内容。</p>
+          </div>
+        </li>
+        <li class="change">
+          <span class="change__num">02</span>
+          <div>
+            <b>CTA 的桌面手感</b>
+            <p><code>④ 磁吸</code> + <code>⑬ 涟漪</code> + <code>㉜ 触感</code>：桌面在 0.3 强度内跟手；触摸设备自动退化为按压与轻震动，不做不可靠的磁吸。</p>
+          </div>
+        </li>
+        <li class="change">
+          <span class="change__num">03</span>
+          <div>
+            <b>特性卡的“活”</b>
+            <p><code>⑨ 3D 倾斜</code>：hover 时 ±7° 跟随光标，叠加径向高光；仅鼠标设备启用，触摸端保持静态。</p>
+          </div>
+        </li>
+        <li class="change">
+          <span class="change__num">04</span>
+          <div>
+            <b>数字进入视口时生长</b>
+            <p><code>⑧ 数字滚动</code>：12,000+ / 98.6% / 4.9 用 easeOutExpo 到终值，<code>tabular-nums</code> 保证宽度不抖。</p>
+          </div>
+        </li>
+        <li class="change">
+          <span class="change__num">05</span>
+          <div>
+            <b>评价区交给原生滚动</b>
+            <p><code>㉖ snap 轨道</code>：惯性、回弹、边界全部由浏览器提供；删掉 setInterval 手写轮播，用户可自由停在任意一张。</p>
+          </div>
+        </li>
+        <li class="change">
+          <span class="change__num">06</span>
+          <div>
+            <b>FAQ 不再用 max-height</b>
+            <p><code>53 grid 0fr→1fr</code>：展开高度自适应，动画不猜像素；<code>&lt;details&gt;</code> 自带键盘与语义。</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="notes__section">已移除 / 已修复</div>
+      <ul class="removed">
+        <li>40px <code>backdrop-filter</code> 降到 18px，移动端不再掉帧</li>
+        <li>删除 <code>setInterval</code> 每 3 秒强制翻页</li>
+        <li>删除 <code>touchmove</code> preventDefault 劫持滚动</li>
+        <li>删除 <code>transition: all</code> 与 <code>linear</code> 缓动</li>
+        <li>非 passive 的 scroll 监听改为 rAF 节流 + passive</li>
+        <li>自绘 modal → 原生 <code>&lt;dialog&gt;</code>，焦点与 Esc 交给浏览器</li>
+        <li>补齐 <code>prefers-reduced-motion</code>、<code>:focus-visible</code>、16px 输入字号</li>
+      </ul>
+
+      <div class="notes__section">继续修改</div>
+      <ul class="removed">
+        <li>把反馈写进 <code>CHANGELOG.md</code>，新版本存到 <code>versions/</code></li>
+        <li>改完重新跑 <code>scripts/audit.mjs</code>，对应项应下降</li>
+      </ul>
+    </aside>
+  </div>
+
+  <footer class="status">
+    <span class="dot" aria-hidden="true"></span>
+    <span><strong>同一份内容</strong> · 只改交互、层级与质感</span>
+    <span>快捷键 <code>1/2/3</code> 模式 · <code>D</code> 移动视图 · <code>N</code> 说明</span>
+    <span style="margin-left:auto">reduced-motion ✓ · 键盘可达 ✓ · 无外部依赖</span>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var app = document.getElementById('app');
+    var panes = {
+      before: document.querySelector('[data-pane="before"]'),
+      after: document.querySelector('[data-pane="after"]')
+    };
+    var modeButtons = Array.prototype.slice.call(document.querySelectorAll('[data-mode]'));
+    var deviceBtn = document.getElementById('deviceBtn');
+    var reloadBtn = document.getElementById('reloadBtn');
+    var notesBtn = document.getElementById('notesBtn');
+    var openAfter = document.getElementById('openAfter');
+
+    var state = { mode: 'after', mobile: false, notes: true };
+
+    try {
+      var saved = JSON.parse(localStorage.getItem('ui-demo-shell') || '{}');
+      if (saved.mode) state.mode = saved.mode;
+      if (typeof saved.mobile === 'boolean') state.mobile = saved.mobile;
+      if (typeof saved.notes === 'boolean') state.notes = saved.notes;
+    } catch (err) { /* file:// 下 localStorage 可能不可用 */ }
+
+    var hash = (location.hash || '').replace('#', '');
+    if (hash === 'before' || hash === 'after' || hash === 'split') state.mode = hash;
+
+    function persist() {
+      try {
+        localStorage.setItem('ui-demo-shell', JSON.stringify(state));
+      } catch (err) { /* noop */ }
+    }
+
+    function render() {
+      var showBefore = state.mode === 'before' || state.mode === 'split';
+      var showAfter = state.mode === 'after' || state.mode === 'split';
+      panes.before.hidden = !showBefore;
+      panes.after.hidden = !showAfter;
+
+      modeButtons.forEach(function (btn) {
+        btn.setAttribute('aria-pressed', String(btn.dataset.mode === state.mode));
+      });
+
+      document.body.classList.toggle('is-mobile', state.mobile);
+      deviceBtn.setAttribute('aria-pressed', String(state.mobile));
+
+      app.classList.toggle('notes-off', !state.notes);
+      notesBtn.setAttribute('aria-pressed', String(state.notes));
+
+      var hashValue = state.mode === 'split' ? '#split' : '#' + state.mode;
+      if (location.hash !== hashValue) {
+        history.replaceState(null, '', hashValue);
+      }
+      persist();
+    }
+
+    modeButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        state.mode = btn.dataset.mode;
+        render();
+      });
+    });
+
+    deviceBtn.addEventListener('click', function () {
+      state.mobile = !state.mobile;
+      render();
+    });
+
+    notesBtn.addEventListener('click', function () {
+      state.notes = !state.notes;
+      render();
+    });
+
+    reloadBtn.addEventListener('click', function () {
+      ['before', 'after'].forEach(function (key) {
+        if (panes[key].hidden) return;
+        var frame = panes[key].querySelector('iframe');
+        frame.src = frame.getAttribute('src');
+      });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+      if (e.key === '1') { state.mode = 'before'; render(); }
+      else if (e.key === '2') { state.mode = 'after'; render(); }
+      else if (e.key === '3') { state.mode = 'split'; render(); }
+      else if (e.key === 'd' || e.key === 'D') { state.mobile = !state.mobile; render(); }
+      else if (e.key === 'n' || e.key === 'N') { state.notes = !state.notes; render(); }
+    });
+
+    window.addEventListener('hashchange', function () {
+      var next = location.hash.replace('#', '');
+      if (next === 'before' || next === 'after' || next === 'split') {
+        state.mode = next;
+        render();
+      }
+    });
+
+    render();
+  })();
+</script>
+</body>
+</html>

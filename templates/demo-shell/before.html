@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<!--
+  示例 Before：故意保留了常见反例（setInterval 轮播 / 40px blur / 非 passive scroll /
+  touchmove 劫持 / max-height 手风琴 / 无 reduced-motion 等）。
+  不要把它当生产模板；复制 before 时应换成用户原页面。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Before · Northwind Analytics</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', -apple-system, sans-serif;
+    color: #111827; background: #fff; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  button, input { font-family: inherit; outline: none; }
+  button { cursor: pointer; }
+
+  /* 问题：大面积 blur 40px + 半透明，滚动时持续重绘 */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    display: flex; align-items: center; gap: 28px;
+    height: 64px; padding: 0 32px;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+    transition: all 0.3s linear; /* 问题：transition all + linear */
+  }
+  .logo { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 17px; }
+  .logo-mark {
+    display: grid; width: 30px; height: 30px; place-items: center;
+    border-radius: 8px; color: #fff; font-size: 15px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  }
+  .nav nav { display: flex; gap: 22px; font-size: 14px; color: #4b5563; }
+  .nav .search { margin-left: auto; }
+  .nav input {
+    width: 180px; height: 34px; padding: 0 12px;
+    border: 1px solid #e5e7eb; border-radius: 8px;
+    font-size: 14px; /* 问题：iOS 聚焦会缩放 */
+  }
+  .nav-cta {
+    padding: 9px 18px; border-radius: 8px; color: #fff; font-size: 14px;
+    background: #3b82f6; cursor: pointer;
+    transition: all 0.3s linear;
+  }
+
+  .hero {
+    display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px;
+    align-items: center; max-width: 1180px; margin: 0 auto;
+    padding: 128px 32px 80px;
+    height: 100vh; /* 问题：100vh，移动端地址栏遮挡 */
+    background: linear-gradient(180deg, #eff6ff 0%, #ffffff 70%);
+  }
+  .eyebrow {
+    display: inline-block; margin-bottom: 18px; padding: 5px 10px;
+    border-radius: 999px; background: #dbeafe; color: #1d4ed8;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+  }
+  .hero h1 { font-size: clamp(40px, 5vw, 64px); line-height: 1.05; letter-spacing: -0.03em; }
+  .hero h1 span { color: #2563eb; }
+  .lead { max-width: 52ch; margin-top: 20px; color: #4b5563; font-size: 17px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 48px; padding: 0 24px; border: 0; border-radius: 10px;
+    font-size: 15px; font-weight: 600; text-decoration: none;
+    transition: all 0.3s linear;
+  }
+  .primary { color: #fff; background: #2563eb; box-shadow: 0 6px 18px rgba(37, 99, 235, 0.32); }
+  .ghost { color: #111827; background: #fff; border: 1px solid #d1d5db; }
+  .micro { margin-top: 14px; color: #9ca3af; font-size: 13px; }
+  .hero-visual {
+    position: relative; padding: 16px; border-radius: 18px;
+    background: #fff; border: 1px solid #e5e7eb;
+    box-shadow: 0 24px 60px rgba(30, 64, 175, 0.16);
+    will-change: all; /* 问题：will-change: all */
+  }
+  .chart { display: block; width: 100%; border-radius: 12px; }
+  .float-card {
+    position: absolute; right: -18px; bottom: 38px; width: 168px;
+    padding: 14px; border-radius: 12px; background: #fff;
+    border: 1px solid #e5e7eb; box-shadow: 0 14px 30px rgba(37, 99, 235, 0.18);
+  }
+  .float-card b { display: block; font-size: 26px; color: #2563eb; }
+  .float-card span { font-size: 12px; color: #6b7280; }
+
+  .logos {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 44px;
+    max-width: 1000px; margin: 0 auto; padding: 24px 32px 64px;
+    color: #9ca3af; font-weight: 700; letter-spacing: 0.04em;
+  }
+  .logos span { font-size: 17px; }
+
+  section { max-width: 1180px; margin: 0 auto; padding: 72px 32px; }
+  h2 { font-size: clamp(28px, 3vw, 40px); line-height: 1.15; letter-spacing: -0.02em; }
+  .sub { max-width: 60ch; margin-top: 12px; color: #6b7280; }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; }
+  .card {
+    padding: 24px; border: 1px solid #e5e7eb; border-radius: 14px;
+    background: #fff; transition: all 0.3s linear;
+    box-shadow: 0 4px 14px rgba(17, 24, 39, 0.06);
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(17, 24, 39, 0.14); }
+  .card .ico {
+    display: grid; width: 40px; height: 40px; place-items: center;
+    margin-bottom: 16px; border-radius: 10px; background: #dbeafe; color: #1d4ed8;
+    font-weight: 700;
+  }
+  .card h3 { font-size: 18px; margin-bottom: 8px; }
+  .card p { color: #6b7280; font-size: 14px; }
+
+  .stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+    padding-top: 0;
+  }
+  .stat { padding: 26px; border-radius: 14px; background: #f8fafc; text-align: center; }
+  .stat b { display: block; font-size: 36px; color: #1d4ed8; letter-spacing: -0.02em; }
+  .stat span { color: #6b7280; font-size: 13px; }
+
+  .carousel { margin-top: 32px; overflow: hidden; border-radius: 16px; }
+  .carousel-track {
+    display: flex; transition: transform 0.5s linear;
+    animation: pulse 2s linear infinite; /* 问题：2s 循环 + linear */
+  }
+  @keyframes pulse { 50% { opacity: 0.96; } }
+  .testimonial {
+    flex: 0 0 100%; padding: 32px; background: #f8fafc;
+    border: 1px solid #e5e7eb; border-radius: 16px;
+  }
+  .testimonial blockquote { font-size: 20px; line-height: 1.5; }
+  .testimonial cite { display: block; margin-top: 16px; color: #6b7280; font-size: 14px; font-style: normal; }
+  .dots { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #d1d5db; }
+  .dot.on { background: #2563eb; }
+
+  .row-list { margin-top: 28px; border-top: 1px solid #e5e7eb; }
+  .row {
+    display: flex; justify-content: space-between; gap: 24px;
+    padding: 18px 6px; border-bottom: 1px solid #e5e7eb;
+    transition: transform 0.25s linear; /* 问题：列表行 hover transform */
+  }
+  .row:hover { transform: translateX(6px); }
+  .row span { color: #6b7280; font-size: 14px; }
+
+  .faq-item { border-bottom: 1px solid #e5e7eb; }
+  .faq-q {
+    display: flex; width: 100%; justify-content: space-between; align-items: center;
+    padding: 18px 4px; border: 0; background: none; font-size: 16px; font-weight: 600;
+    text-align: left;
+  }
+  .faq-a {
+    max-height: 0; overflow: hidden; color: #6b7280; font-size: 15px;
+    transition: max-height 0.4s linear; /* 问题：max-height hack */
+  }
+  .faq-a p { padding: 0 4px 18px; }
+
+  .cta {
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
+    margin: 24px auto 0; padding: 56px 32px; border-radius: 20px;
+    background: linear-gradient(135deg, #1d4ed8, #7c3aed); color: #fff; text-align: center;
+  }
+  .cta p { color: rgba(255, 255, 255, 0.78); }
+
+  footer {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px;
+    max-width: 1180px; margin: 0 auto; padding: 32px;
+    color: #9ca3af; font-size: 13px;
+  }
+
+  .modal {
+    position: fixed; inset: 0; z-index: 100; display: none;
+    align-items: center; justify-content: center;
+    background: rgba(17, 24, 39, 0.5); /* 问题：自绘 modal，无 role / 焦点管理 */
+  }
+  .modal.open { display: flex; }
+  .modal-box { width: min(420px, calc(100% - 40px)); padding: 26px; border-radius: 16px; background: #fff; }
+  .modal-box h3 { margin-bottom: 16px; }
+  .modal-box input {
+    width: 100%; height: 42px; margin-bottom: 12px; padding: 0 12px;
+    border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;
+  }
+  .modal-box .btn { width: 100%; }
+  .modal-close {
+    float: right; border: 0; background: none; font-size: 22px; line-height: 1;
+    color: #6b7280;
+  }
+
+  .drag-zone {
+    margin-top: 28px; padding: 18px; border-radius: 12px; background: #f8fafc;
+    border: 1px dashed #cbd5e1; touch-action: auto;
+  }
+  .drag-track { position: relative; height: 6px; margin-top: 14px; border-radius: 999px; background: #e5e7eb; }
+  .drag-fill { height: 100%; width: 38%; border-radius: 999px; background: #2563eb; transition: width 0.6s linear; }
+  .drag-knob {
+    position: absolute; top: 50%; left: 38%; width: 22px; height: 22px;
+    border-radius: 50%; background: #fff; border: 2px solid #2563eb;
+    transform: translate(-50%, -50%);
+  }
+
+  @media (max-width: 860px) {
+    .nav nav, .nav .search { display: none; }
+    .hero { grid-template-columns: 1fr; height: auto; padding-top: 96px; }
+    .cards, .stats { grid-template-columns: 1fr; }
+    .float-card { right: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="logo"><span class="logo-mark">N</span> Northwind</div>
+  <nav>
+    <a href="#features">产品</a>
+    <a href="#testimonials">客户</a>
+    <a href="#faq">定价</a>
+  </nav>
+  <form class="search" onsubmit="return false">
+    <input type="search" placeholder="搜索文档">
+  </form>
+  <div class="nav-cta" onclick="openDemo()">预约演示</div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">ANALYTICS PLATFORM</p>
+      <h1>把数据变成<br><span>真正的决策</span></h1>
+      <p class="lead">Northwind 把产品、增长与收入数据放进同一块看板。无需 SQL，五分钟接入，团队每个人都看得懂。</p>
+      <div class="actions">
+        <button class="btn primary" onclick="openDemo()">免费试用 14 天</button>
+        <a class="btn ghost" href="#features">看看功能</a>
+      </div>
+      <p class="micro">无需信用卡 · 5 分钟接入 · 随时导出</p>
+    </div>
+    <div class="hero-visual" onmousemove="tiltHero(event)" onmouseleave="resetHero()">
+      <img class="chart" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='420' viewBox='0 0 720 420'%3E%3Crect width='720' height='420' rx='24' fill='%23eff6ff'/%3E%3Cpath d='M60 320 L180 250 L300 280 L420 170 L540 200 L660 90' fill='none' stroke='%232563eb' stroke-width='9' stroke-linecap='round'/%3E%3Ccircle cx='660' cy='90' r='12' fill='%232563eb'/%3E%3C/svg%3E">
+      <div class="float-card"><b>+38%</b><span>本月激活率</span></div>
+    </div>
+  </section>
+
+  <div class="logos" aria-label="客户">
+    <span>Acme</span><span>Globex</span><span>Initech</span><span>Umbrella</span><span>Hooli</span>
+  </div>
+
+  <section id="features">
+    <h2>为增长团队准备的仪表盘</h2>
+    <p class="sub">从第一天的埋点到季度复盘，所有问题都能在一个地方回答。</p>
+    <div class="cards">
+      <article class="card">
+        <div class="ico">01</div>
+        <h3>实时看板</h3>
+        <p>漏斗、留存、收入一屏看完，刷新延迟低于 30 秒。</p>
+      </article>
+      <article class="card">
+        <div class="ico">02</div>
+        <h3>自动洞察</h3>
+        <p>异常波动自动标记，并告诉你可能受影响的指标。</p>
+      </article>
+      <article class="card">
+        <div class="ico">03</div>
+        <h3>团队协作</h3>
+        <p>看板评论、订阅与权限分级，让决策留下上下文。</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="stat"><b>12,000+</b><span>使用团队</span></div>
+    <div class="stat"><b>98.6%</b><span>客户满意度</span></div>
+    <div class="stat"><b>4.9/5</b><span>应用商店评分</span></div>
+  </section>
+
+  <section id="testimonials">
+    <h2>客户怎么说</h2>
+    <div class="carousel">
+      <div class="carousel-track" id="track">
+        <div class="testimonial">
+          <blockquote>“以前每周要花两天拉数，现在早会前就能看到结论。”</blockquote>
+          <cite>林芸 · Acme 增长负责人</cite>
+        </div>
+        <div class="testimonial">
+          <blockquote>“自动洞察帮我们提前一周发现了注册漏斗的异常。”</blockquote>
+          <cite>周航 · Globex 产品总监</cite>
+        </div>
+        <div class="testimonial">
+          <blockquote>“权限和评论让数据真正进入了团队的决策流程。”</blockquote>
+          <cite>陈默 · Initech 运营负责人</cite>
+        </div>
+      </div>
+    </div>
+    <div class="dots" id="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
+  </section>
+
+  <section>
+    <h2>一个看板，覆盖三种角色</h2>
+    <div class="row-list">
+      <div class="row"><strong>产品经理</strong><span>功能采用率、留存曲线、实验分组</span></div>
+      <div class="row"><strong>增长运营</strong><span>渠道质量、激活漏斗、生命周期</span></div>
+      <div class="row"><strong>管理层</strong><span>收入结构、预测、团队目标进度</span></div>
+    </div>
+    <div class="drag-zone">
+      <strong>拖拽调整数据窗口</strong>
+      <div class="drag-track" id="dragTrack"><div class="drag-fill" id="dragFill"></div><div class="drag-knob" id="dragKnob"></div></div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <h2>常见问题</h2>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">需要工程师接入吗？<span>+</span></button>
+      <div class="faq-a"><p>大部分场景用现成 SDK 即可，平均接入时间 5 分钟。复杂口径可以由数据团队补充。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">数据可以导出吗？<span>+</span></button>
+      <div class="faq-a"><p>可以。CSV、Parquet 与 API 三种方式都支持，导出不额外收费。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">支持私有化部署吗？<span>+</span></button>
+      <div class="faq-a"><p>企业版支持私有化部署，包含 SSO、审计日志与专属支持。</p></div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>今天就开始，把数据用起来</h2>
+    <p>14 天完整功能试用，不需要信用卡。</p>
+    <button class="btn ghost" onclick="openDemo()">预约一次演示</button>
+  </section>
+</main>
+
+<footer>
+  <span>© 2026 Northwind Analytics</span>
+  <span><a href="#features">产品</a> · <a href="#faq">帮助</a> · <a href="https://example.com" target="_blank">帮助中心</a></span>
+</footer>
+
+<div class="modal" id="demoModal" onclick="if(event.target===this) closeDemo()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeDemo()">×</button>
+    <h3>预约演示</h3>
+    <p class="sub">留下联系方式，我们会在一个工作日内回复。</p>
+    <div style="height:16px"></div>
+    <input placeholder="工作邮箱">
+    <input placeholder="公司名称">
+    <button class="btn primary" onclick="closeDemo()">提交</button>
+  </div>
+</div>
+
+<script>
+  function tiltHero(e) {
+    var el = document.querySelector('.hero-visual');
+    var r = el.getBoundingClientRect();
+    var x = (e.clientX - r.left) / r.width - 0.5;
+    var y = (e.clientY - r.top) / r.height - 0.5;
+    el.style.transform = 'perspective(900px) rotateY(' + (x * 14) + 'deg) rotateX(' + (-y * 14) + 'deg)';
+  }
+  function resetHero() {
+    document.querySelector('.hero-visual').style.transform = '';
+  }
+
+  function openDemo() {
+    document.getElementById('demoModal').classList.add('open');
+  }
+  function closeDemo() {
+    document.getElementById('demoModal').classList.remove('open');
+  }
+
+  // 问题：scroll 监听非 passive + 处理器内读取布局
+  window.addEventListener('scroll', function () {
+    var y = window.scrollY;
+    var nav = document.getElementById('nav');
+    nav.style.boxShadow = y > 10 ? '0 4px 20px rgba(0,0,0,0.08)' : 'none';
+    var hero = document.querySelector('.hero');
+    var r = hero.getBoundingClientRect();
+    document.querySelector('.hero-visual').style.translate = '0 ' + (r.top * 0.15) + 'px';
+  });
+
+  // 问题：setInterval 轮播 + transform 手写翻页
+  var index = 0;
+  var track = document.getElementById('track');
+  var dots = Array.prototype.slice.call(document.querySelectorAll('.dot'));
+  setInterval(function () {
+    index = (index + 1) % 3;
+    track.style.transform = 'translateX(-' + index * 100 + '%)';
+    dots.forEach(function (dot, i) { dot.classList.toggle('on', i === index); });
+  }, 3000);
+
+  // 问题：max-height hack
+  function toggleFaq(btn) {
+    var answer = btn.nextElementSibling;
+    answer.style.maxHeight = answer.style.maxHeight ? '' : answer.scrollHeight + 'px';
+  }
+
+  // 问题：touchmove preventDefault 劫持滚动
+  var dragTrack = document.getElementById('dragTrack');
+  dragTrack.addEventListener('touchmove', function (e) {
+    e.preventDefault();
+    var r = dragTrack.getBoundingClientRect();
+    var pct = Math.min(100, Math.max(0, ((e.touches[0].clientX - r.left) / r.width) * 100));
+    document.getElementById('dragFill').style.width = pct + '%';
+    document.getElementById('dragKnob').style.left = pct + '%';
+  }, { passive: false });
+</script>
+</body>
+</html>

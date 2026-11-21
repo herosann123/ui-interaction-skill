@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After · Northwind Analytics</title>
+<link rel="stylesheet" href="../../library/motion-kit.css">
+<style>
+  :root {
+    --bg: #f7f3ea;
+    --bg-2: #efe9db;
+    --ink: #1a1712;
+    --ink-soft: #4f4a41;
+    --muted: #756f64;
+    --line: rgba(26, 23, 18, 0.14);
+    --accent: #b85940;
+    --accent-ink: #fff8f0;
+    --green: #2f5d50;
+    --gold: #c9a368;
+    --serif: "Iowan Old Style", "Palatino Linotype", "Songti SC", "SimSun", Georgia, serif;
+    --sans: "Inter", "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    --mk-accent: var(--accent);
+    --mk-accent-ink: var(--accent-ink);
+    --mk-surface: #fffdf8;
+    --mk-ink: var(--ink);
+    --mk-muted: var(--muted);
+    --mk-border: var(--line);
+    --mk-radius: 18px;
+    --mk-shadow-1: 0 1px 2px rgba(26, 23, 18, 0.05), 0 14px 40px rgba(26, 23, 18, 0.08);
+    --mk-shadow-2: 0 2px 8px rgba(26, 23, 18, 0.06), 0 30px 70px rgba(26, 23, 18, 0.14);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(900px 600px at 78% -8%, rgba(201, 163, 104, 0.22), transparent 62%),
+      radial-gradient(700px 500px at -6% 26%, rgba(184, 89, 64, 0.1), transparent 60%);
+  }
+  a { color: inherit; }
+  button { font: inherit; }
+  img, svg { max-width: 100%; }
+
+  .wrap { width: min(1180px, calc(100% - 48px)); margin-inline: auto; }
+
+  /* ---------- 导航 ---------- */
+  .nav {
+    position: fixed;
+    inset: 14px 0 auto;
+    z-index: 60;
+    pointer-events: none;
+  }
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    width: min(1120px, calc(100% - 32px));
+    margin-inline: auto;
+    padding: 10px 12px 10px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    background: rgba(247, 243, 234, 0.72);
+    box-shadow: 0 10px 40px rgba(26, 23, 18, 0.08);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    pointer-events: auto;
+  }
+  .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; letter-spacing: -0.01em; }
+  .brand svg { width: 26px; height: 26px; color: var(--accent); }
+  .nav__links { display: flex; gap: 24px; margin-left: auto; font-size: 14px; color: var(--ink-soft); }
+  .nav__links a { text-decoration: none; }
+  .nav__links a:hover { color: var(--ink); }
+  .nav .mk-btn { min-height: 40px; padding: 9px 18px; font-size: 14px; }
+  .skip {
+    position: fixed; top: 10px; left: 10px; z-index: 100;
+    padding: 10px 16px; border-radius: 999px;
+    background: var(--ink); color: var(--bg);
+    transform: translateY(-160%);
+  }
+  .skip:focus { transform: none; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.02fr 0.98fr;
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+    min-height: 92dvh;
+    padding: 130px 0 80px;
+  }
+  .aurora { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+  .aurora span {
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+    opacity: 0.62;
+    background: radial-gradient(circle at 50% 50%, var(--blob, rgba(184, 89, 64, 0.32)), transparent 66%);
+    animation: drift var(--dur, 18s) ease-in-out infinite alternate;
+  }
+  .aurora span:nth-child(1) { width: 540px; height: 540px; top: -140px; right: -80px; --dur: 22s; }
+  .aurora span:nth-child(2) { width: 420px; height: 420px; top: 30%; left: -180px; --blob: rgba(47, 93, 80, 0.2); --dur: 26s; }
+  .aurora span:nth-child(3) { width: 320px; height: 320px; bottom: -120px; right: 26%; --blob: rgba(201, 163, 104, 0.28); --dur: 19s; }
+  .aurora.is-paused span { animation-play-state: paused; }
+  @keyframes drift {
+    from { transform: translate3d(0, 0, 0) scale(1); }
+    to { transform: translate3d(28px, -22px, 0) scale(1.08); }
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .eyebrow::before { content: ""; width: 28px; height: 1px; background: currentColor; }
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(46px, 6.4vw, 86px);
+    font-weight: 500;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  h1 span { display: inline-block; }
+  .lead {
+    max-width: 46ch;
+    margin-top: 26px;
+    color: var(--ink-soft);
+    font-size: 17px;
+  }
+  .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 30px; }
+  .micro {
+    display: flex; flex-wrap: wrap; gap: 8px 18px;
+    margin-top: 18px; color: var(--muted); font-size: 13px;
+  }
+  .micro span { display: inline-flex; align-items: center; gap: 6px; }
+  .micro span::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
+
+  .hero__visual { position: relative; }
+  .dash {
+    position: relative;
+    z-index: 1;
+    padding: 18px;
+    border: 1px solid rgba(26, 23, 18, 0.1);
+    border-radius: 22px;
+    background: rgba(255, 253, 248, 0.9);
+    box-shadow: var(--mk-shadow-2);
+    transform-style: preserve-3d;
+  }
+  .dash__bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .dash__bar i { width: 8px; height: 8px; border-radius: 50%; background: rgba(26, 23, 18, 0.16); }
+  .dash__bar b { margin-left: 8px; color: var(--muted); font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: 0.08em; }
+  .dash__metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  .dash__metric { padding: 12px; border-radius: 12px; background: var(--bg-2); }
+  .dash__metric small { display: block; color: var(--muted); font-size: 10px; letter-spacing: 0.04em; }
+  .dash__metric strong { display: block; margin-top: 2px; font-size: 20px; letter-spacing: -0.02em; }
+  .dash__metric em { color: var(--green); font-size: 10px; font-style: normal; }
+  .dash svg { display: block; width: 100%; height: auto; border-radius: 12px; background: #fffdf8; }
+  .float-card {
+    position: absolute;
+    z-index: 2;
+    width: 156px;
+    padding: 14px 16px;
+    border: 1px solid rgba(26, 23, 18, 0.1);
+    border-radius: 16px;
+    background: rgba(255, 253, 248, 0.94);
+    box-shadow: 0 18px 44px rgba(26, 23, 18, 0.14);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .float-card b { display: block; font-family: var(--serif); font-size: 26px; font-weight: 500; line-height: 1.1; }
+  .float-card span { color: var(--muted); font-size: 11px; }
+  .float-card--a { top: -34px; right: -22px; }
+  .float-card--b { bottom: 18px; left: -34px; }
+  .float-card--a b { color: var(--accent); }
+  .float-card--b b { color: var(--green); }
+
+  /* ---------- 客户 ---------- */
+  .logos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 26px;
+    padding: 26px 0 64px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-family: var(--serif);
+    font-size: 19px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ---------- 通用 section ---------- */
+  .section { padding: 84px 0; }
+  .section__head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 20px; }
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4.2vw, 52px);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+  }
+  .sub { max-width: 56ch; margin-top: 14px; color: var(--ink-soft); }
+  .pattern-chip {
+    display: inline-flex;
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  /* ---------- 特性卡 ---------- */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 40px; }
+  .feature {
+    position: relative;
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-radius: var(--mk-radius);
+    background: #fffdf8;
+    box-shadow: 0 1px 2px rgba(26, 23, 18, 0.04);
+    overflow: hidden;
+  }
+  .feature__num { color: var(--accent); font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; }
+  .feature h3 { margin-top: 22px; font-family: var(--serif); font-size: 24px; font-weight: 500; letter-spacing: -0.02em; }
+  .feature p { margin-top: 10px; color: var(--muted); font-size: 14px; }
+  .feature__line { height: 1px; margin-top: 24px; background: var(--line); }
+  .feature__foot { display: flex; justify-content: space-between; margin-top: 14px; color: var(--ink-soft); font-size: 12px; }
+  .mk-tilt-glow { --mk-glow: rgba(201, 163, 104, 0.34); }
+
+  /* ---------- 数据 ---------- */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--line);
+  }
+  .stat { padding: 34px 28px; background: #fffdf8; text-align: center; }
+  .stat b {
+    display: block;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(38px, 5vw, 58px);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .stat span { display: block; margin-top: 10px; color: var(--muted); font-size: 13px; }
+
+  /* ---------- 客户评价 ---------- */
+  .rail {
+    margin-top: 36px;
+    padding-bottom: 8px;
+    border-radius: 20px;
+  }
+  .quote {
+    flex: 0 0 min(430px, 84vw);
+    padding: 30px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: #fffdf8;
+  }
+  .quote::before { content: "“"; display: block; margin-bottom: 6px; color: var(--gold); font-family: var(--serif); font-size: 46px; line-height: 0.8; }
+  .quote p { font-family: var(--serif); font-size: 21px; line-height: 1.45; letter-spacing: -0.01em; }
+  .quote cite { display: block; margin-top: 18px; color: var(--muted); font-size: 12px; font-style: normal; }
+  .rail-hint { margin-top: 12px; color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; }
+
+  /* ---------- 角色表 ---------- */
+  .roles { margin-top: 32px; border-top: 1px solid var(--line); }
+  .role {
+    display: grid;
+    grid-template-columns: 180px 1fr auto;
+    gap: 24px;
+    align-items: baseline;
+    padding: 22px 4px;
+    border-bottom: 1px solid var(--line);
+  }
+  .role strong { font-family: var(--serif); font-size: 20px; font-weight: 500; }
+  .role span { color: var(--muted); font-size: 14px; }
+  .role em { color: var(--accent); font-family: var(--mono); font-size: 10px; font-style: normal; letter-spacing: 0.08em; }
+
+  /* ---------- FAQ（grid 0fr→1fr） ---------- */
+  .faq { margin-top: 30px; border-top: 1px solid var(--line); }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 4px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: "+";
+    color: var(--accent);
+    font-size: 22px;
+    line-height: 1;
+    transition: transform var(--mk-dur-2) var(--mk-ease-out);
+  }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq__body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 380ms var(--mk-ease-out); }
+  .faq details[open] .faq__body { grid-template-rows: 1fr; }
+  .faq__body > div { min-height: 0; overflow: hidden; }
+  .faq__body p { padding: 0 4px 22px; color: var(--ink-soft); font-size: 15px; }
+
+  /* ---------- CTA ---------- */
+  .cta {
+    position: relative;
+    overflow: hidden;
+    margin: 40px 0 80px;
+    padding: clamp(42px, 7vw, 84px);
+    border-radius: 28px;
+    background: var(--ink);
+    color: var(--bg);
+    text-align: center;
+    isolation: isolate;
+  }
+  .cta::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    z-index: -1;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(184, 89, 64, 0.55), transparent 42%),
+      radial-gradient(circle at 76% 68%, rgba(47, 93, 80, 0.5), transparent 40%);
+  }
+  .cta h2 { color: var(--bg); }
+  .cta p { max-width: 46ch; margin: 16px auto 0; color: rgba(247, 243, 234, 0.72); }
+  .cta__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 30px; }
+  .cta .mk-btn--primary { background: var(--bg); color: var(--ink); box-shadow: none; }
+  .cta .mk-btn--ghost { border-color: rgba(247, 243, 234, 0.32); color: var(--bg); }
+
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 28px 0 48px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+  }
+  footer a { text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 940px) {
+    .nav__links { display: none; }
+    .nav__inner { gap: 12px; }
+    .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 116px; }
+    .hero__visual { margin-top: 28px; }
+    .float-card--a { top: -22px; right: 4px; }
+    .float-card--b { bottom: -18px; left: 4px; }
+    .cards { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr; }
+    .role { grid-template-columns: 1fr; gap: 6px; }
+  }
+  @media (max-width: 560px) {
+    .wrap { width: calc(100% - 32px); }
+    .nav__inner { width: calc(100% - 20px); padding-left: 14px; }
+    .brand span { display: none; }
+    h1 { font-size: clamp(40px, 13vw, 58px); }
+    .dash__metrics { grid-template-columns: 1fr 1fr; }
+    .dash__metrics .dash__metric:last-child { display: none; }
+    .float-card { width: 132px; padding: 11px 13px; }
+    .float-card b { font-size: 22px; }
+    .logos { justify-content: center; gap: 18px 28px; }
+  }
+</style>
+<script>
+  // 先隐藏 reveal 元素，避免 JS 加载后闪一下；2.5s 内库未就绪则自动恢复可见
+  document.documentElement.classList.add('mk-js');
+  setTimeout(function () {
+    if (!window.MotionKit) document.documentElement.classList.remove('mk-js');
+  }, 2500);
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">跳到主要内容</a>
+
+<header class="nav">
+  <div class="nav__inner">
+    <a class="brand" href="#" aria-label="Northwind 首页">
+      <svg viewBox="0 0 32 32" aria-hidden="true" fill="none">
+        <path d="M5 26V6l22 20V6" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Northwind</span>
+    </a>
+    <nav class="nav__links" aria-label="主导航">
+      <a href="#features">产品</a>
+      <a href="#customers">客户</a>
+      <a href="#faq">常见问题</a>
+    </nav>
+    <button type="button" class="mk-btn mk-btn--primary" data-magnetic="0.25" data-ripple data-haptic="tap" data-modal-open="demo">预约演示</button>
+  </div>
+</header>
+
+<main id="main">
+  <section class="wrap hero">
+    <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+
+    <div class="hero__copy">
+      <p class="eyebrow" data-reveal="fade">Analytics Platform</p>
+      <h1 data-reveal-stagger="70">
+        <span>把数据变成</span><br>
+        <span><em>真正的决策</em></span>
+      </h1>
+      <p class="lead" data-reveal data-reveal-delay="120">Northwind 把产品、增长与收入数据放进同一块看板。无需 SQL，五分钟接入，团队每个人都看得懂。</p>
+      <div class="hero__actions" data-reveal data-reveal-delay="180">
+        <button type="button" class="mk-btn mk-btn--primary" data-magnetic="0.3" data-ripple data-haptic="tap" data-modal-open="demo">免费试用 14 天</button>
+        <a class="mk-btn mk-btn--ghost" href="#features">看看功能</a>
+      </div>
+      <p class="micro" data-reveal="fade" data-reveal-delay="240">
+        <span>无需信用卡</span><span>5 分钟接入</span><span>随时导出</span>
+      </p>
+    </div>
+
+    <div class="hero__visual" data-parallax-scope>
+      <div class="dash" data-tilt="6" role="img" aria-label="Northwind 实时看板示意图：本月激活率上升 38%">
+        <div class="dash__bar"><i></i><i></i><i></i><b>OVERVIEW / 2026 Q4</b></div>
+        <div class="dash__metrics">
+          <div class="dash__metric"><small>激活率</small><strong>62.4%</strong><em>+38%</em></div>
+          <div class="dash__metric"><small>周留存</small><strong>41.8%</strong><em>+6.2%</em></div>
+          <div class="dash__metric"><small>MRR</small><strong>¥ 482k</strong><em>+12%</em></div>
+        </div>
+        <svg viewBox="0 0 640 300" aria-hidden="true">
+          <defs>
+            <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#b85940" stop-opacity="0.28"/>
+              <stop offset="1" stop-color="#b85940" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <g stroke="rgba(26,23,18,0.08)" stroke-width="1">
+            <path d="M0 60h640M0 130h640M0 200h640M0 270h640"/>
+          </g>
+          <path d="M20 250C90 236 120 190 180 202S280 150 330 160s70-58 120-66 70 22 120-26 50-8 50-8v190H20z" fill="url(#area)"/>
+          <path d="M20 250C90 236 120 190 180 202S280 150 330 160s70-58 120-66 70 22 120-26 50-8 50-8" fill="none" stroke="#b85940" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="620" cy="60" r="6" fill="#b85940"/>
+        </svg>
+      </div>
+      <div class="float-card float-card--a" data-parallax="0.45">
+        <b>+38%</b><span>本月激活率</span>
+      </div>
+      <div class="float-card float-card--b" data-parallax="-0.32">
+        <b>4.9/5</b><span>应用商店评分</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap logos" data-reveal="fade" aria-label="客户">
+    <span>Acme</span><span>Globex</span><span>Initech</span><span>Umbrella</span><span>Hooli</span>
+  </div>
+
+  <section class="wrap section" id="features">
+    <div class="section__head" data-reveal>
+      <div>
+        <p class="eyebrow">Built for growth teams</p>
+        <h2>为增长团队准备的<br>仪表盘</h2>
+        <p class="sub">从第一天的埋点到季度复盘，所有问题都能在一个地方回答。</p>
+      </div>
+      <span class="pattern-chip">⑨ 3D TILT · ② REVEAL</span>
+    </div>
+
+    <div class="cards">
+      <article class="feature" data-tilt="7" data-reveal>
+        <div class="mk-tilt-glow" aria-hidden="true"></div>
+        <span class="feature__num">01 / REALTIME</span>
+        <h3>实时看板</h3>
+        <p>漏斗、留存、收入一屏看完，刷新延迟低于 30 秒。</p>
+        <div class="feature__line"></div>
+        <div class="feature__foot"><span>12 个预置模板</span><span>↗</span></div>
+      </article>
+      <article class="feature" data-tilt="7" data-reveal data-reveal-delay="90">
+        <div class="mk-tilt-glow" aria-hidden="true"></div>
+        <span class="feature__num">02 / INSIGHT</span>
+        <h3>自动洞察</h3>
+        <p>异常波动自动标记，并告诉你可能受影响的指标。</p>
+        <div class="feature__line"></div>
+        <div class="feature__foot"><span>异常检测</span><span>↗</span></div>
+      </article>
+      <article class="feature" data-tilt="7" data-reveal data-reveal-delay="180">
+        <div class="mk-tilt-glow" aria-hidden="true"></div>
+        <span class="feature__num">03 / TEAM</span>
+        <h3>团队协作</h3>
+        <p>看板评论、订阅与权限分级，让决策留下上下文。</p>
+        <div class="feature__line"></div>
+        <div class="feature__foot"><span>SSO · 审计日志</span><span>↗</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="stats-title">
+    <div class="section__head" data-reveal>
+      <div>
+        <p class="eyebrow">By the numbers</p>
+        <h2 id="stats-title">被 12,000 个团队<br>每天使用</h2>
+      </div>
+      <span class="pattern-chip">⑧ COUNTER</span>
+    </div>
+    <div class="stats" data-reveal data-reveal-delay="80" style="margin-top:36px">
+      <div class="stat"><b data-counter="12000" data-counter-suffix="+">0</b><span>使用团队</span></div>
+      <div class="stat"><b data-counter="98.6" data-counter-decimals="1" data-counter-suffix="%">0%</b><span>客户满意度</span></div>
+      <div class="stat"><b data-counter="4.9" data-counter-decimals="1" data-counter-suffix="/5">0/5</b><span>应用商店评分</span></div>
+    </div>
+  </section>
+
+  <section class="wrap section" id="customers">
+    <div class="section__head" data-reveal>
+      <div>
+        <p class="eyebrow">Customer stories</p>
+        <h2>客户怎么说</h2>
+        <p class="sub">横滑查看三位客户的使用感受。</p>
+      </div>
+      <span class="pattern-chip">㉖ SNAP SCROLL</span>
+    </div>
+
+    <div class="mk-snap rail" tabindex="0" role="region" aria-label="客户评价，可左右滚动" data-reveal data-reveal-delay="80">
+      <figure class="quote">
+        <blockquote><p>“以前每周要花两天拉数，现在早会前就能看到结论。”</p></blockquote>
+        <figcaption><cite>林芸 · Acme 增长负责人</cite></figcaption>
+      </figure>
+      <figure class="quote">
+        <blockquote><p>“自动洞察帮我们提前一周发现了注册漏斗的异常。”</p></blockquote>
+        <figcaption><cite>周航 · Globex 产品总监</cite></figcaption>
+      </figure>
+      <figure class="quote">
+        <blockquote><p>“权限和评论让数据真正进入了团队的决策流程。”</p></blockquote>
+        <figcaption><cite>陈默 · Initech 运营负责人</cite></figcaption>
+      </figure>
+    </div>
+    <p class="rail-hint" aria-hidden="true">← 拖动 / 滑动 →</p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="roles-title">
+    <div class="section__head" data-reveal>
+      <div>
+        <p class="eyebrow">One view, three roles</p>
+        <h2 id="roles-title">一个看板，覆盖三种角色</h2>
+      </div>
+    </div>
+    <div class="roles" data-reveal data-reveal-delay="80">
+      <div class="role"><strong>产品经理</strong><span>功能采用率、留存曲线、实验分组</span><em>PRODUCT</em></div>
+      <div class="role"><strong>增长运营</strong><span>渠道质量、激活漏斗、生命周期</span><em>GROWTH</em></div>
+      <div class="role"><strong>管理层</strong><span>收入结构、预测、团队目标进度</span><em>LEADERSHIP</em></div>
+    </div>
+  </section>
+
+  <section class="wrap section" id="faq">
+    <div class="section__head" data-reveal>
+      <div>
+        <p class="eyebrow">FAQ</p>
+        <h2>常见问题</h2>
+      </div>
+      <span class="pattern-chip">53 GRID AUTO</span>
+    </div>
+    <div class="faq" data-reveal data-reveal-delay="80">
+      <details>
+        <summary>需要工程师接入吗？</summary>
+        <div class="faq__body"><div><p>大部分场景用现成 SDK 即可，平均接入时间 5 分钟。复杂口径可以由数据团队补充。</p></div></div>
+      </details>
+      <details>
+        <summary>数据可以导出吗？</summary>
+        <div class="faq__body"><div><p>可以。CSV、Parquet 与 API 三种方式都支持，导出不额外收费。</p></div></div>
+      </details>
+      <details>
+        <summary>支持私有化部署吗？</summary>
+        <div class="faq__body"><div><p>企业版支持私有化部署，包含 SSO、审计日志与专属支持。</p></div></div>
+      </details>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="cta" data-reveal="scale">
+      <p class="eyebrow" style="color: var(--gold)">Start today</p>
+      <h2>今天就开始，<br>把数据用起来</h2>
+      <p>14 天完整功能试用，不需要信用卡。</p>
+      <div class="cta__actions">
+        <button type="button" class="mk-btn mk-btn--primary" data-magnetic="0.28" data-ripple data-ripple-color="rgba(26,23,18,0.12)" data-haptic="tap" data-modal-open="demo">预约一次演示</button>
+        <a class="mk-btn mk-btn--ghost" href="#features">查看功能</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <span>© 2026 Northwind Analytics</span>
+  <span><a href="#features">产品</a> · <a href="#faq">帮助</a> · <a href="https://example.com" target="_blank" rel="noopener noreferrer">帮助中心</a></span>
+</footer>
+
+<dialog class="mk-dialog" id="demo" data-modal aria-labelledby="demo-title">
+  <div style="display:flex;justify-content:space-between;align-items:start;gap:20px">
+    <div>
+      <p class="eyebrow" style="margin-bottom:8px">Request a demo</p>
+      <h2 id="demo-title" style="font-size:28px">预约演示</h2>
+    </div>
+    <button type="button" class="mk-btn mk-btn--ghost" style="min-height:36px;padding:6px 12px" data-modal-close aria-label="关闭">×</button>
+  </div>
+  <p class="sub" style="margin-top:10px">留下联系方式，我们会在一个工作日内回复。</p>
+  <form style="display:grid;gap:12px;margin-top:20px" onsubmit="event.preventDefault(); this.closest('dialog').close();">
+    <label style="display:grid;gap:6px;font-size:13px;color:var(--muted)">
+      工作邮箱
+      <input type="email" required placeholder="you@company.com" style="height:44px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;font-size:16px;color:var(--ink)">
+    </label>
+    <label style="display:grid;gap:6px;font-size:13px;color:var(--muted)">
+      公司名称
+      <input type="text" required placeholder="Northwind Inc." style="height:44px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;font-size:16px;color:var(--ink)">
+    </label>
+    <button type="submit" class="mk-btn mk-btn--primary" data-ripple data-haptic="success" style="margin-top:6px">提交预约</button>
+  </form>
+</dialog>
+
+<script src="../../library/motion-kit.js" defer></script>
+<script>
+  // 极光滚出视口后暂停，避免后台持续合成
+  (function () {
+    var aurora = document.querySelector('.aurora');
+    if (!aurora || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver(function (entries) {
+      aurora.classList.toggle('is-paused', !entries[0].isIntersecting);
+    }, { threshold: 0 }).observe(aurora);
+  })();
+</script>
+</body>
+</html>

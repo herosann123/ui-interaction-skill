@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Motion Demo — 模板化动效</title>
+<style>
+  html, body {
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    background: #0A0808;
+    overflow: hidden;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Inter", sans-serif;
+    color: #EDD9BC;
+    display: flex; align-items: center; justify-content: center;
+  }
+  /* 16:9 舞台,缩放适配窗口 */
+  #stage {
+    position: relative;
+    width: 1280px; height: 720px;
+    transform-origin: center center;
+    background: #0A0808;
+    overflow: hidden;
+  }
+  /* 纹理替代渐变:SVG 等高线 */
+  .texture {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720'><g fill='none' stroke='%23362A22' stroke-width='1.2' opacity='0.4'><path d='M -100,120 C 420,70 860,170 1380,120'/><path d='M -100,300 C 420,250 860,350 1380,300'/><path d='M -100,480 C 420,430 860,530 1380,480'/><path d='M -100,660 C 420,610 860,710 1380,660'/></g></svg>");
+    pointer-events: none;
+  }
+  .scene { position: absolute; inset: 0; }
+
+  /* ---------- 场景一:大数字 ---------- */
+  #s1 .center {
+    position: absolute; left: 0; right: 0; top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+  }
+  .eyebrow {
+    font-size: 22px; color: #B68C5A; font-weight: 700;
+    letter-spacing: 8px; text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .stat {
+    font-family: ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+    font-size: 240px; font-weight: 900; color: #FFFFFF;
+    line-height: 1; letter-spacing: -8px;
+    text-shadow: 0 8px 28px rgba(217,119,87,0.35);
+  }
+  .stat .unit { color: #D97757; font-size: 110px; }
+  .sub { font-size: 24px; color: #EDD9BC; opacity: 0.85; margin-top: 26px; font-weight: 500; }
+
+  /* ---------- 场景二:终端 ---------- */
+  .terminal {
+    position: absolute;
+    left: 240px; right: 240px; top: 50%;
+    transform: translateY(-50%);
+    background: #161313;
+    border: 2px solid rgba(237,217,188,0.12);
+    border-radius: 20px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.55);
+    padding: 26px 30px;
+  }
+  .titlebar {
+    display: flex; gap: 9px; padding-bottom: 18px;
+    border-bottom: 1px solid rgba(237,217,188,0.08);
+    margin-bottom: 22px;
+  }
+  .dot { width: 14px; height: 14px; border-radius: 50%; }
+  .dot.red { background: #FF5F57; } .dot.yellow { background: #FEBC2E; } .dot.green { background: #28C840; }
+  .title { margin-left: 12px; font-size: 15px; color: #B6AFA6; font-family: ui-monospace, Menlo, monospace; }
+  .tline {
+    font-size: 21px; line-height: 1.6; margin-bottom: 12px;
+    font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+    color: #EDD9BC; opacity: 0;
+  }
+  .tline.prompt::before { content: "▶ "; color: #D97757; font-weight: 700; }
+  .tline.out { color: #76706A; font-size: 18px; }
+  .tline.success { color: #4CD964; }
+  .tline.success::before { content: "✓ "; }
+  .caret {
+    display: inline-block; width: 3px; height: 22px;
+    background: #EDD9BC; margin-left: 4px; vertical-align: middle;
+    animation: blink 1s steps(2) infinite;
+  }
+  @keyframes blink { to { opacity: 0; } }
+
+  /* ---------- 场景三:口号 ---------- */
+  #s3 .center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  #s3 .big {
+    font-size: 96px; font-weight: 900; color: #FFFFFF;
+    letter-spacing: -3px; line-height: 1.15; text-align: center;
+  }
+  #s3 .big em { font-style: normal; color: #D97757; }
+  #s3 .tag {
+    margin-top: 30px; font-size: 24px; color: #B68C5A;
+    letter-spacing: 5px; font-weight: 600;
+  }
+
+  /* 进度条 */
+  #progress {
+    position: absolute; left: 0; bottom: 0; height: 3px;
+    background: #D97757; width: 0%;
+  }
+  /* 重播按钮 */
+  #replay {
+    position: absolute; right: 24px; bottom: 20px;
+    background: transparent; color: #76706A;
+    border: 1px solid rgba(237,217,188,0.18); border-radius: 999px;
+    font-size: 14px; padding: 8px 20px; cursor: pointer;
+    font-family: inherit; opacity: 0; pointer-events: none;
+    transition: color .2s, border-color .2s;
+  }
+  #replay:hover { color: #EDD9BC; border-color: rgba(237,217,188,0.45); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="texture"></div>
+
+  <div class="scene" id="s1">
+    <div class="center">
+      <div class="eyebrow">Code-Driven Motion</div>
+      <div class="stat"><span id="num">0</span><span class="unit">%</span></div>
+      <div class="sub">模板锁死 · 只换内容 · 零即兴发挥</div>
+    </div>
+  </div>
+
+  <div class="scene" id="s2">
+    <div class="terminal">
+      <div class="titlebar">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        <span class="title">claude — ~/motion</span>
+      </div>
+      <div class="tline prompt" id="l1"><span id="t1"></span><span class="caret" id="c1"></span></div>
+      <div class="tline out" id="l2"><span id="t2"></span></div>
+      <div class="tline out" id="l3"><span id="t3"></span></div>
+      <div class="tline success" id="l4"><span id="t4"></span></div>
+    </div>
+  </div>
+
+  <div class="scene" id="s3">
+    <div class="center">
+      <div class="big" id="bigline">先选模板<br><em>再填内容</em></div>
+      <div class="tag">TEMPLATE FIRST · NO IMPROVISATION</div>
+    </div>
+  </div>
+
+  <div id="progress"></div>
+  <button id="replay">↻ 重播</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+  // 舞台缩放适配
+  function fit() {
+    const s = Math.min(innerWidth / 1280, innerHeight / 720);
+    document.getElementById('stage').style.transform = `scale(${s})`;
+  }
+  fit(); addEventListener('resize', fit);
+
+  // 打字机:对象 tween + 绝对时间
+  function typed(id, str, dur) {
+    const el = document.getElementById(id);
+    const state = { n: 0 };
+    return gsap.to(state, {
+      n: str.length, duration: dur, ease: "none",
+      onUpdate: () => el.textContent = str.slice(0, Math.round(state.n))
+    });
+  }
+
+  const TOTAL = 15; // 秒
+  function build() {
+    const tl = gsap.timeline({ onComplete: showReplay });
+
+    // 进度条
+    tl.to("#progress", { width: "100%", duration: TOTAL, ease: "none" }, 0);
+
+    /* ===== 场景一 0–4.5s:大数字 ===== */
+    tl.set(["#s1", "#s2", "#s3"], { autoAlpha: 0 }, 0);
+    tl.set("#s1", { autoAlpha: 1 }, 0);
+    tl.from("#s1 .eyebrow", { y: 24, autoAlpha: 0, duration: 0.6, ease: "power3.out" }, 0.2);
+    const state = { n: 0 };
+    tl.to(state, {
+      n: 100, duration: 1.8, ease: "power3.out",
+      onUpdate: () => document.getElementById("num").textContent = Math.round(state.n)
+    }, 0.5);
+    tl.from("#s1 .sub", { y: 18, autoAlpha: 0, duration: 0.6, ease: "power3.out" }, 1.6);
+    // 落定脉冲
+    tl.to("#s1 .stat", { scale: 1.06, duration: 0.35, yoyo: true, repeat: 1, ease: "sine.inOut" }, 2.4);
+    tl.to("#s1", { autoAlpha: 0, duration: 0.4, ease: "power2.in" }, 4.2);
+
+    /* ===== 场景二 4.6–10.5s:终端打字 ===== */
+    tl.set("#s2", { autoAlpha: 1 }, 4.6);
+    tl.from("#s2 .terminal", { y: 36, autoAlpha: 0, scale: 0.96, duration: 0.6, ease: "power3.out" }, 4.6);
+    tl.set("#l1", { opacity: 1 }, 5.2);
+    tl.add(typed("t1", "claude 帮我做个动效", 1.1), 5.3);
+    tl.set("#l2", { opacity: 1 }, 6.6);
+    tl.add(typed("t2", "→ 命中模板库 #09-stat-counter", 0.7), 6.7);
+    tl.set("#l3", { opacity: 1 }, 7.6);
+    tl.add(typed("t3", "→ 锁定配色 / 版式 / 时序", 0.7), 7.7);
+    tl.set("#l4", { opacity: 1 }, 8.7);
+    tl.add(typed("t4", "完成。demo.mp4 已就绪。", 0.9), 8.8);
+    tl.to("#c1", { opacity: 0, duration: 0.1 }, 9.7);
+    tl.to("#s2", { autoAlpha: 0, duration: 0.4, ease: "power2.in" }, 10.2);
+
+    /* ===== 场景三 10.6–15s:口号 ===== */
+    tl.set("#s3", { autoAlpha: 1 }, 10.6);
+    tl.from("#s3 .big", { y: 40, autoAlpha: 0, duration: 0.8, ease: "power3.out" }, 10.7);
+    tl.from("#s3 .tag", { y: 20, autoAlpha: 0, duration: 0.6, ease: "power3.out" }, 11.4);
+    // 结尾轻脉冲 + hold
+    tl.to("#s3 .big", { scale: 1.03, duration: 0.5, yoyo: true, repeat: 1, ease: "sine.inOut" }, 12.2);
+    tl.to({}, { duration: 2.3 });
+
+    return tl;
+  }
+
+  const replayBtn = document.getElementById('replay');
+  let current = build();
+  function showReplay() {
+    replayBtn.style.opacity = 1;
+    replayBtn.style.pointerEvents = 'auto';
+  }
+  replayBtn.addEventListener('click', () => {
+    replayBtn.style.opacity = 0;
+    replayBtn.style.pointerEvents = 'none';
+    current.kill();
+    gsap.set(["#s1", "#s2", "#s3"], { autoAlpha: 0 });
+    gsap.set(["#s1 .eyebrow", "#s1 .sub", "#s2 .terminal", "#s3 .big", "#s3 .tag"], { clearProps: "all" });
+    ["t1", "t2", "t3", "t4"].forEach(id => document.getElementById(id).textContent = "");
+    gsap.set("#c1", { opacity: 1 });
+    gsap.set("#progress", { width: "0%" });
+    current = build();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UI Interaction Skill · 交互工作台</title>
+<link rel="stylesheet" href="library/motion-kit.css">
+<style>
+  :root {
+    --bg: #0d0f0e;
+    --panel: #151817;
+    --line: rgba(244, 240, 231, 0.14);
+    --ink: #f4f0e7;
+    --muted: #9e9a90;
+    --accent: #d6ff5e;
+    --accent-ink: #0b0d0c;
+    --rust: #d07a5e;
+    --serif: "Iowan Old Style", "Palatino Linotype", "Songti SC", Georgia, serif;
+    --sans: "Inter", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+    --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    --mk-accent: var(--accent);
+    --mk-accent-ink: var(--accent-ink);
+    --mk-surface: var(--panel);
+    --mk-ink: var(--ink);
+    --mk-muted: var(--muted);
+    --mk-border: var(--line);
+    --mk-glow: rgba(214, 255, 94, 0.18);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--sans); line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background:
+      radial-gradient(900px 600px at 82% -8%, rgba(214, 255, 94, 0.1), transparent 62%),
+      radial-gradient(700px 500px at -6% 32%, rgba(208, 122, 94, 0.08), transparent 60%);
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; }
+  .wrap { width: min(1180px, calc(100% - 44px)); margin-inline: auto; }
+
+  .top {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; gap: 24px;
+    padding: 16px 0;
+    background: rgba(13, 15, 14, 0.78);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--line);
+  }
+  .top .wrap { display: flex; align-items: center; gap: 24px; }
+  .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; letter-spacing: -0.02em; }
+  .brand i {
+    display: grid; width: 28px; height: 28px; place-items: center;
+    border-radius: 8px; background: var(--accent); color: var(--accent-ink);
+    font-family: var(--mono); font-size: 10px; font-style: normal;
+  }
+  .top nav { display: flex; gap: 18px; margin-left: auto; color: var(--muted); font-size: 12px; }
+  .top nav a:hover { color: var(--ink); }
+  .github {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em;
+  }
+  .github:hover { border-color: rgba(244, 240, 231, 0.34); }
+
+  .hero {
+    display: grid; grid-template-columns: 1.02fr 0.98fr; gap: clamp(30px, 5vw, 64px);
+    align-items: center; min-height: min(760px, calc(100dvh - 62px));
+    padding: 54px 0 70px;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: var(--accent); font-family: var(--mono);
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .eyebrow::before { content: ""; width: 24px; height: 1px; background: currentColor; }
+  h1 {
+    margin-top: 20px;
+    font-family: var(--serif); font-weight: 500;
+    font-size: clamp(46px, 6.4vw, 82px); line-height: 0.96; letter-spacing: -0.045em;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  h1 span { display: inline-block; }
+  .lead { max-width: 48ch; margin-top: 22px; color: var(--muted); font-size: 16px; }
+  .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 28px; }
+  .hero__actions .mk-btn { min-height: 48px; padding: 0 22px; }
+  .micro { margin-top: 16px; color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: 0.05em; }
+
+  .visual {
+    position: relative; padding: 18px;
+    border: 1px solid var(--line); border-radius: 20px;
+    background: rgba(21, 24, 23, 0.78);
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.38);
+    overflow: hidden;
+  }
+  .visual__bar { display: flex; align-items: center; gap: 7px; margin-bottom: 14px; }
+  .visual__bar i { width: 7px; height: 7px; border-radius: 50%; background: rgba(244, 240, 231, 0.2); }
+  .visual__bar b { margin-left: 8px; color: var(--muted); font-family: var(--mono); font-size: 9px; font-weight: 500; letter-spacing: 0.1em; }
+  .tree {
+    display: grid; gap: 5px; padding: 16px;
+    border: 1px solid var(--line); border-radius: 14px;
+    background: rgba(13, 15, 14, 0.5);
+    font-family: var(--mono); font-size: 11px; line-height: 1.7;
+    color: var(--muted);
+  }
+  .tree b { color: var(--ink); font-weight: 500; }
+  .tree .ok { color: var(--accent); }
+  .tree .dim { opacity: 0.55; }
+  .float {
+    position: absolute; right: -6px; bottom: 22px;
+    width: 172px; padding: 14px 16px;
+    border-radius: 14px; background: var(--accent); color: var(--accent-ink);
+    box-shadow: 0 18px 50px rgba(214, 255, 94, 0.18);
+  }
+  .float b { display: block; font-family: var(--serif); font-size: 26px; font-weight: 500; line-height: 1; }
+  .float span { display: block; margin-top: 4px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; opacity: 0.7; }
+
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    margin-bottom: 56px; overflow: hidden;
+    border: 1px solid var(--line); border-radius: 18px; background: var(--line);
+  }
+  .stat { padding: 20px 18px; background: var(--panel); }
+  .stat b { display: block; font-family: var(--serif); font-size: 34px; font-weight: 500; line-height: 1; letter-spacing: -0.03em; }
+  .stat span { display: block; margin-top: 6px; color: var(--muted); font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; }
+
+  .section { padding: 54px 0 24px; border-top: 1px solid var(--line); }
+  .section__head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 14px; margin-bottom: 24px; }
+  .section__head h2 {
+    font-family: var(--serif); font-size: clamp(30px, 4vw, 46px);
+    font-weight: 500; line-height: 1.05; letter-spacing: -0.03em;
+  }
+  .section__head p { max-width: 46ch; color: var(--muted); font-size: 13px; }
+  .section__head .mono { color: var(--muted); font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; }
+
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .card {
+    position: relative; padding: 20px;
+    border: 1px solid var(--line); border-radius: 16px;
+    background: var(--panel); overflow: hidden;
+    transition: border-color 160ms linear, transform 180ms var(--mk-ease-out);
+  }
+  .card:hover { border-color: rgba(214, 255, 94, 0.34); }
+  .card__tag { color: var(--accent); font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; }
+  .card h3 { margin-top: 14px; font-family: var(--serif); font-size: 21px; font-weight: 500; letter-spacing: -0.02em; }
+  .card p { margin-top: 7px; color: var(--muted); font-size: 12px; }
+  .card__meta { display: flex; justify-content: space-between; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-family: var(--mono); font-size: 9px; }
+  .card a { position: absolute; inset: 0; }
+  .card a:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 16px; }
+
+  .list { display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .list a {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px;
+    padding: 13px 2px; border-bottom: 1px solid var(--line);
+    font-size: 13px;
+  }
+  .list a span { color: var(--muted); font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; }
+  .list a b { font-weight: 500; }
+  .list a em { margin-left: auto; color: var(--muted); font-style: normal; font-family: var(--mono); font-size: 9px; }
+
+  footer {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px;
+    margin-top: 44px; padding: 26px 0 44px; border-top: 1px solid var(--line);
+    color: var(--muted); font-size: 11px;
+  }
+  footer a:hover { color: var(--ink); }
+
+  @media (max-width: 1000px) {
+    .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 36px; }
+    .visual { min-height: 360px; }
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 680px) {
+    .top nav { display: none; }
+    .top .github { margin-left: auto; }
+    .grid, .grid--3 { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .float { position: static; margin-top: 12px; width: 100%; }
+    .wrap { width: calc(100% - 28px); }
+  }
+</style>
+<script>
+  document.documentElement.classList.add('mk-js');
+  setTimeout(function () { if (!window.MotionKit) document.documentElement.classList.remove('mk-js'); }, 2500);
+</script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="./index.html"><i>UI</i> Interaction Skill</a>
+    <nav aria-label="主导航">
+      <a href="#workflow">流程</a>
+      <a href="#components">组件</a>
+      <a href="#templates">模板</a>
+      <a href="#demos">演示</a>
+      <a href="#docs">文档</a>
+    </nav>
+    <a class="github" href="https://github.com/herosann123/ui-interaction-skill" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <p class="eyebrow" data-reveal="fade">Agent UI workbench / v3</p>
+      <h1 data-reveal-stagger="70">
+        <span>把「感觉」</span><br>
+        <span>变成<em>可交付</em>的交互</span>
+      </h1>
+      <p class="lead" data-reveal data-reveal-delay="120">56 种交互模式、零依赖 motion-kit、9 套页面、5 组组件，以及从代码体检到 Before/After 改版的完整链路。</p>
+      <div class="hero__actions" data-reveal data-reveal-delay="180">
+        <a class="mk-btn mk-btn--primary" href="templates/demo-shell/index.html" data-ripple data-haptic="tap">打开对照 Demo</a>
+        <a class="mk-btn mk-btn--ghost" href="10-ui-interactions.html">看 56 种模式</a>
+      </div>
+      <p class="micro" data-reveal="fade" data-reveal-delay="240">SELF-CHECK ✓ · REDUCED-MOTION ✓ · 390PX ✓</p>
+    </div>
+
+    <div class="visual" data-reveal="scale" data-tilt="5">
+      <div class="mk-tilt-glow" aria-hidden="true"></div>
+      <div class="visual__bar"><i></i><i></i><i></i><b>UI-INTERACTION-SKILL / TREE</b></div>
+      <div class="tree" aria-label="目录结构示意">
+        <div><b>.</b></div>
+        <div>├─ <b>SKILL.md</b> <span class="dim">router</span></div>
+        <div>├─ AUDIT.md / DEMO.md / ITERATE.md</div>
+        <div>├─ references/ <span class="dim">mapping · anti-patterns</span></div>
+        <div>├─ library/ <span class="dim">motion-kit · 18 behaviors</span></div>
+        <div>├─ components/ <span class="dim">5 groups</span></div>
+        <div>├─ templates/ <span class="dim">9 pages</span></div>
+        <div>├─ scripts/ <span class="dim">audit · demo · check · smoke</span></div>
+        <div>└─ tests/ <span class="dim">fixtures</span> <span class="ok">PASS</span></div>
+      </div>
+      <div class="float"><b data-counter="18" data-counter-suffix="">0</b><span>ZERO-DEP BEHAVIORS</span></div>
+    </div>
+  </section>
+
+  <section class="stats" aria-label="资产统计" data-reveal="fade">
+    <div class="stat"><b data-counter="56">0</b><span>INTERACTION PATTERNS</span></div>
+    <div class="stat"><b data-counter="18">0</b><span>MOTION-KIT BEHAVIORS</span></div>
+    <div class="stat"><b data-counter="9">0</b><span>PAGE TEMPLATES</span></div>
+    <div class="stat"><b data-counter="32">0</b><span>AUDIT RULES</span></div>
+  </section>
+
+  <section class="section" id="workflow">
+    <div class="section__head" data-reveal>
+      <div>
+        <p class="eyebrow">Workflow</p>
+        <h2>从代码到改版，<br>一条可验收的链路</h2>
+      </div>
+      <span class="mono">AUDIT → DEMO → ITERATE</span>
+    </div>
+    <div class="grid">
+      <article class="card" data-reveal>
+        <span class="card__tag">01 / AUDIT</span>
+        <h3>先看证据</h3>
+        <p>扫描现有前端，输出 P0/P1/P2 + file:line，挑出 3–5 个值得改的点。</p>
+        <div class="card__meta"><span>AUDIT.md</span><span>audit.mjs</span></div>
+      </article>
+      <article class="card" data-reveal data-reveal-delay="70">
+        <span class="card__tag">02 / DEMO</span>
+        <h3>做成可点的对照</h3>
+        <p>同一份内容，Before / After / Split，390px 与 reduced-motion 都可验。</p>
+        <div class="card__meta"><span>DEMO.md</span><span>new-demo.mjs</span></div>
+      </article>
+      <article class="card" data-reveal data-reveal-delay="140">
+        <span class="card__tag">03 / ITERATE</span>
+        <h3>按反馈版本化</h3>
+        <p>拆 CR、存 vN、写 CHANGELOG；能回滚，不越改越乱。</p>
+        <div class="card__meta"><span>ITERATE.md</span><span>iterate.mjs</span></div>
+      </article>
+      <article class="card" data-reveal data-reveal-delay="210">
+        <span class="card__tag">04 / LIBRARY</span>
+        <h3>直接复用的原语</h3>
+        <p>18 个零依赖行为 + 5 组组件；SSR 安全，React / Vue 有薄适配。</p>
+        <div class="card__meta"><span>library/</span><span>components/</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="components">
+    <div class="section__head" data-reveal>
+      <div>
+        <p class="eyebrow">Components</p>
+        <h2>项目里真正会用的零件</h2>
+      </div>
+      <span class="mono">5 GROUPS · COPY / PASTE</span>
+    </div>
+    <div class="grid grid--3">
+      <article class="card" data-reveal><a href="components/buttons.html" aria-label="打开 Buttons 组件"></a><span class="card__tag">ACTIONS</span><h3>Buttons</h3><p>变体、尺寸、图标、磁吸、涟漪、加载态。</p><div class="card__meta"><span>44px MIN</span><span>↗</span></div></article>
+      <article class="card" data-reveal data-reveal-delay="60"><a href="components/feedback.html" aria-label="打开 Feedback 组件"></a><span class="card__tag">FEEDBACK</span><h3>Feedback</h3><p>Toast、骨架、空状态、错误成功、确认弹窗。</p><div class="card__meta"><span>STATUS</span><span>↗</span></div></article>
+      <article class="card" data-reveal data-reveal-delay="120"><a href="components/forms.html" aria-label="打开 Forms 组件"></a><span class="card__tag">INPUT</span><h3>Forms</h3><p>标签、校验、开关、选择组、提交反馈。</p><div class="card__meta"><span>16px INPUT</span><span>↗</span></div></article>
+      <article class="card" data-reveal><a href="components/navigation.html" aria-label="打开 Navigation 组件"></a><span class="card__tag">WAYFINDING</span><h3>Navigation</h3><p>Tabs、面包屑、分页、分段控制、手机底栏。</p><div class="card__meta"><span>SNAP TABS</span><span>↗</span></div></article>
+      <article class="card" data-reveal data-reveal-delay="60"><a href="components/data.html" aria-label="打开 Data 组件"></a><span class="card__tag">DATA</span><h3>Data</h3><p>统计卡、表格、进度、角标、火花线。</p><div class="card__meta"><span>COUNTER</span><span>↗</span></div></article>
+      <article class="card" data-reveal data-reveal-delay="120"><a href="library/README.md" aria-label="打开库文档"></a><span class="card__tag">LIBRARY</span><h3>motion-kit</h3><p>18 个行为、data-attribute 契约、JS API。</p><div class="card__meta"><span>ZERO DEP</span><span>↗</span></div></article>
+    </div>
+  </section>
+
+  <section class="section" id="templates">
+    <div class="section__head" data-reveal>
+      <div>
+        <p class="eyebrow">Templates</p>
+        <h2>9 套可直接运行的页面</h2>
+      </div>
+      <span class="mono">BEFORE / AFTER READY</span>
+    </div>
+    <div class="grid grid--3">
+      <article class="card" data-reveal><a href="templates/demo-shell/index.html" aria-label="打开对照模板"></a><span class="card__tag">REVIEW</span><h3>Demo Shell</h3><p>Before / After / Split + 改动说明；改版默认骨架。</p><div class="card__meta"><span>9 CHANGES</span><span>↗</span></div></article>
+      <article class="card" data-reveal data-reveal-delay="50"><a href="templates/hero/index.html" aria-label="打开 Hero 模板"></a><span class="card__tag">LANDING</span><h3>Hero</h3><p>分层视差、词级揭示、磁吸 CTA、倾斜特性卡。</p><div class="card__meta"><span>01 02 04</span><span>↗</span></div></article>
+      <article class="card" data-reveal data-reveal-delay="100"><a href="templates/feature-grid/index.html" aria-label="打开 Feature Grid 模板"></a><span class="card__tag">PRICING</span><h3>Feature Grid</h3><p>3D 倾斜、月付年付开关、数字滚动。</p><div class="card__meta"><span>09 08 07</span><span>↗</span></div></article>
+      <article class="card" data-reveal><a href="templates/ai-chat/index.html" aria-label="打开 AI Chat 模板"></a><span class="card__tag">AI</span><h3>AI Chat</h3><p>流式打字、玻璃输入区、可暂停粒子背景。</p><div class="card__meta"><span>17 12 10</span><span>↗</span></div></article>
+      <article class="card" data-reveal data-reveal-delay="50"><a href="templates/mobile-feed/index.html" aria-label="打开 Mobile Feed 模板"></a><span class="card__tag">MOBILE</span><h3>Mobile Feed</h3><p>snap 轨道、滑动行、双击赞、评论抽屉、骨架屏。</p><div class="card__meta"><span>26 31 41</span><span>↗</span></div></article>
+      <article class="card" data-reveal data-reveal-delay="100"><a href="templates/mobile-detail/index.html" aria-label="打开 Mobile Detail 模板"></a><span class="card__tag">MOBILE</span><h3>Mobile Detail</h3><p>push/pop、左缘滑动返回、坍缩头图、下拉刷新。</p><div class="card__meta"><span>27 29 37</span><span>↗</span></div></article>
+      <article class="card" data-reveal><a href="templates/dashboard/index.html" aria-label="打开 Dashboard 模板"></a><span class="card__tag">TOOL</span><h3>Dashboard</h3><p>Cmd+K、scroll-snap Tabs、数字卡、主题揭示。</p><div class="card__meta"><span>23 28 44</span><span>↗</span></div></article>
+      <article class="card" data-reveal data-reveal-delay="50"><a href="templates/checkout/index.html" aria-label="打开 Checkout 模板"></a><span class="card__tag">COMMERCE</span><h3>Checkout</h3><p>步骤、配送/支付、订单摘要、成功态。</p><div class="card__meta"><span>FORM FLOW</span><span>↗</span></div></article>
+      <article class="card" data-reveal data-reveal-delay="100"><a href="templates/settings/index.html" aria-label="打开 Settings 模板"></a><span class="card__tag">ACCOUNT</span><h3>Settings</h3><p>分区 Tabs、表单、开关、保存栏、安全/账单。</p><div class="card__meta"><span>TABS 28</span><span>↗</span></div></article>
+    </div>
+  </section>
+
+  <section class="section" id="demos">
+    <div class="section__head" data-reveal>
+      <div>
+        <p class="eyebrow">Showcase</p>
+        <h2>56 种模式，逐个试玩</h2>
+      </div>
+      <span class="mono">OPEN IN BROWSER</span>
+    </div>
+    <div class="list" data-reveal>
+      <a href="10-ui-interactions.html"><b>基础 10 式</b><span>①–⑩</span><em>视差 / 揭示 / 卡片堆叠 / 磁吸 / 翻牌</em></a>
+      <a href="advanced-ui-v2.html"><b>进阶 7 式</b><span>⑪–⑰</span><em>极光 / 粒子 / 涟漪 / 粘性 / FLIP / VT / 打字机</em></a>
+      <a href="advanced-ui-v3.html"><b>前沿 8 式</b><span>⑱–㉕</span><em>光标 / 水平叙事 / 噪点 / Glitch / 命令栏 / 千层酥</em></a>
+      <a href="mobile-ui.html"><b>手机手感 7 式</b><span>㉖–㉜</span><em>snap / 滑动返回 / Tabs / push-pop / 抽屉 / 滑动行</em></a>
+      <a href="mobile-ui-pro.html"><b>高级手感 8 式</b><span>㉝–㊵</span><em>橡皮筋 / Pinch / 坍缩头图 / 排序 / 刷新 / 甩动</em></a>
+      <a href="mobile-ui-plus.html"><b>组件与情绪 8 式</b><span>㊶–㊽</span><em>双击赞 / 通知 / 滚轮 / 主题揭示 / 语音 / 骨架</em></a>
+      <a href="frontier-css.html"><b>前沿 CSS 原生 8 式</b><span>49–56</span><em>滚动驱动 / starting-style / Popover / 锚点 / VT</em></a>
+    </div>
+  </section>
+
+  <section class="section" id="docs">
+    <div class="section__head" data-reveal>
+      <div>
+        <p class="eyebrow">Docs</p>
+        <h2>写给 agent，也写给人</h2>
+      </div>
+      <span class="mono">MARKDOWN</span>
+    </div>
+    <div class="list" data-reveal>
+      <a href="README.md"><b>README</b><span>OVERVIEW</span><em>安装 / 快速开始 / 目录</em></a>
+      <a href="SKILL.md"><b>SKILL.md</b><span>ROUTER</span><em>四模式路由 + 核心决策</em></a>
+      <a href="AUDIT.md"><b>AUDIT.md</b><span>CHECK</span><em>32 条规则 / 报告模板 / demo brief</em></a>
+      <a href="DEMO.md"><b>DEMO.md</b><span>BUILD</span><em>Before/After / 忠实度 / 验证</em></a>
+      <a href="ITERATE.md"><b>ITERATE.md</b><span>LOOP</span><em>CR / 版本 / 回滚 / 四态验收</em></a>
+      <a href="PATTERNS.md"><b>PATTERNS.md</b><span>CODE</span><em>56 种模式的完整实现与调参</em></a>
+      <a href="presets/index.html"><b>Presets</b><span>THEME</span><em>editorial / glass / soft 三套主题令牌</em></a>
+    </div>
+  </section>
+
+  <footer>
+    <span>UI Interaction Skill · v3 · MIT</span>
+    <span><a href="https://github.com/herosann123/ui-interaction-skill" target="_blank" rel="noopener noreferrer">GitHub ↗</a> · <a href="templates/demo-shell/index.html">Demo</a> · <a href="library/README.md">Library</a></span>
+  </footer>
+</main>
+
+<script src="library/motion-kit.js" defer></script>
+</body>
+</html>

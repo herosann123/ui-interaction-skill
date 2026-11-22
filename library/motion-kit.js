@@ -38,6 +38,31 @@
 
   var VERSION = '1.0.0';
   var doc = global.document;
+
+  // SSR / Node 环境：不访问 DOM，返回安全的 no-op API
+  if (!doc) {
+    var noop = function () { return noop; };
+    global.MotionKit = {
+      version: VERSION,
+      init: noop,
+      destroy: noop,
+      stream: function () { return Promise.resolve(); },
+      haptic: noop,
+      toast: noop,
+      bump: noop,
+      capture: function () { return { left: 0, top: 0, width: 0, height: 0 }; },
+      flip: function () { return null; },
+      animateValue: function (opts) {
+        if (opts && opts.onUpdate) opts.onUpdate(opts.to == null ? 1 : opts.to);
+        if (opts && opts.onDone) opts.onDone();
+        return { cancel: noop };
+      },
+      reduced: false,
+      finePointer: false,
+    };
+    return;
+  }
+
   var root = doc.documentElement;
   var reduceMQ = global.matchMedia
     ? global.matchMedia('(prefers-reduced-motion: reduce)')
@@ -1433,4 +1458,4 @@
   } else {
     init();
   }
-})(typeof window !== 'undefined' ? window : this);
+})(typeof window !== 'undefined' ? window : (typeof globalThis !== 'undefined' ? globalThis : {}));

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Components · Forms</title>
+<link rel="stylesheet" href="../library/motion-kit.css">
+<link rel="stylesheet" href="./components.css">
+<script>
+  document.documentElement.classList.add('mk-js');
+  setTimeout(function () { if (!window.MotionKit) document.documentElement.classList.remove('mk-js'); }, 2500);
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="../index.html"><i>UI</i> Motion Kit · Components</a>
+    <nav aria-label="组件导航">
+      <a href="./buttons.html">Buttons</a>
+      <a href="./feedback.html">Feedback</a>
+      <a href="./forms.html" aria-current="page">Forms</a>
+      <a href="./navigation.html">Navigation</a>
+      <a href="./data.html">Data</a>
+    </nav>
+  </header>
+
+  <section class="head">
+    <p class="eyebrow" data-reveal="fade">Components / Forms</p>
+    <h1 data-reveal="scale">Fields that<br><em>don’t fight you</em></h1>
+    <p class="lead" data-reveal data-reveal-delay="80">标签、提示、错误、开关、选择。输入字号 ≥16px；错误说明怎么修，而不是只说“无效”。</p>
+  </section>
+
+  <form id="demoForm" novalidate>
+    <section class="section">
+      <div class="section__head"><h2>Text fields</h2><span>label · hint · error</span></div>
+      <div class="demo" style="align-items:flex-start">
+        <div class="field">
+          <label for="name">工作邮箱</label>
+          <input id="name" name="email" type="email" placeholder="you@company.com" autocomplete="email">
+          <span class="hint">用于接收账单与登录链接。</span>
+        </div>
+        <div class="field is-invalid">
+          <label for="bad">项目名称</label>
+          <input id="bad" name="project" type="text" value="A" aria-invalid="true" aria-describedby="bad-error">
+          <span class="error" id="bad-error">至少 2 个字符。</span>
+        </div>
+        <div class="field">
+          <label for="team">团队规模</label>
+          <select id="team" name="team">
+            <option>1–5 人</option>
+            <option>6–20 人</option>
+            <option>20+ 人</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section__head"><h2>Switches</h2><span>原生 checkbox · 玻璃轨道</span></div>
+      <div class="demo demo--col">
+        <label class="mk-switch">
+          <input type="checkbox" checked>
+          <span class="mk-switch__track"><span class="mk-switch__thumb"></span></span>
+          <span>开启每周摘要邮件</span>
+        </label>
+        <label class="mk-switch">
+          <input type="checkbox">
+          <span class="mk-switch__track"><span class="mk-switch__thumb"></span></span>
+          <span>允许匿名使用数据改进产品</span>
+        </label>
+      </div>
+      <p class="note">开关改变后立刻生效；如果需要“保存”才生效，改用 checkbox + 保存按钮。</p>
+    </section>
+
+    <section class="section">
+      <div class="section__head"><h2>Choices</h2><span>checkbox group · radio group</span></div>
+      <div class="demo demo--col">
+        <fieldset style="border:0;display:grid;gap:10px">
+          <legend class="label" style="margin-top:0">通知方式</legend>
+          <div class="check-row">
+            <label class="check"><input type="checkbox" checked> 邮件</label>
+            <label class="check"><input type="checkbox" checked> 应用内</label>
+            <label class="check"><input type="checkbox"> 短信</label>
+          </div>
+        </fieldset>
+        <fieldset style="border:0;display:grid;gap:10px">
+          <legend class="label" style="margin-top:0">默认视图</legend>
+          <div class="check-row">
+            <label class="check"><input type="radio" name="view" checked> 看板</label>
+            <label class="check"><input type="radio" name="view"> 列表</label>
+            <label class="check"><input type="radio" name="view"> 日历</label>
+          </div>
+        </fieldset>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section__head"><h2>Validation</h2><span>inline error · success toast</span></div>
+      <div class="demo">
+        <button type="submit" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap">保存设置</button>
+        <button type="reset" class="mk-btn mk-btn--ghost">重置</button>
+      </div>
+      <p class="note">提交时只标出错的字段，并把焦点移到第一个错误；成功后用 toast 确认，不跳页。</p>
+    </section>
+  </form>
+
+  <footer><span>components/forms.html</span><span>依赖 library/motion-kit · 可复制</span></footer>
+</div>
+
+<script src="../library/motion-kit.js" defer></script>
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('demoForm');
+    var email = document.getElementById('name');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!email.value || email.value.indexOf('@') === -1) {
+        email.focus();
+        email.setAttribute('aria-invalid', 'true');
+        if (window.MotionKit) window.MotionKit.toast('请填写有效的工作邮箱');
+        return;
+      }
+      email.removeAttribute('aria-invalid');
+      if (window.MotionKit) {
+        window.MotionKit.toast('设置已保存', { duration: 1800 });
+        window.MotionKit.haptic('success');
+      }
+    });
+  });
+</script>
+</body>
+</html>

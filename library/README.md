@@ -245,3 +245,38 @@ useEffect(() => {
 - 标了 `data-*` / `MotionKit.*` 的模式可以直接用库；
 - 标 `—` 的模式仍需参考 `../PATTERNS.md` 的完整实现（例如粒子网络、Folding Drawer、按住说话、惯性甩动）。
 - 长尾模式优先组合现有原语，而不是往库里塞更多默认开启的行为。
+
+## 11. ESM / SSR / 框架适配
+
+`library/package.json` 提供 exports 映射（不是 npm 发布包，复制进项目即可）：
+
+| 入口 | 文件 | 场景 |
+|---|---|---|
+| `motion-kit` | `motion-kit.esm.js` | bundler / Vite / Next client component |
+| `motion-kit/global` | `motion-kit.js` | `<script>` 全局 |
+| `motion-kit/react` | `adapters/react.js` | React hook |
+| `motion-kit/vue` | `adapters/vue.js` | Vue 3 directive / composable |
+| `motion-kit/motion-kit.css` | `motion-kit.css` | 样式 |
+
+```js
+import MotionKit from 'motion-kit';
+import 'motion-kit/motion-kit.css';
+
+MotionKit.init(document.querySelector('#app'));
+```
+
+- **SSR 安全**：Node / 无 `document` 环境会返回 no-op API，不访问 DOM；客户端再 `init`。
+- **TypeScript**：`motion-kit.d.ts` 覆盖 API、stream/toast/flip 参数与返回值。
+- **React**：
+  ```jsx
+  import { useMotionKit, useMotionKitToast } from 'motion-kit/react';
+  const ref = useMotionKit();
+  return <div ref={ref} data-reveal>...</div>;
+  ```
+- **Vue 3**：
+  ```js
+  import { vMotionKit } from 'motion-kit/vue';
+  app.directive('motion-kit', vMotionKit);
+  ```
+- 适配层是薄封装，不自动 `destroy()`；整页卸载时手动 `MotionKit.destroy()`。
+- 详细示例：`adapters/README.md`。

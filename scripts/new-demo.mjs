@@ -29,6 +29,7 @@ import {
 import { basename, dirname, join, resolve, relative, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { selectFindings, briefMarkdown } from './lib/select.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CWD = process.cwd();
@@ -65,6 +66,8 @@ function help() {
     '  --before <file>      直接指定改版前页面',
     '  --out <dir>          输出目录（默认 ui-runs/<日期-slug>）',
     '  --blank              生成空白 before/after 骨架（推荐交付用）',
+    '  --from-audit <json>  从 audit --json 结果自动选 3–5 项，生成 BRIEF.md',
+    '  --max <n>            从体检里最多选几项（默认 5）',
     '  --patterns <文本>    本次使用的模式，如 "①,⑤,④,⑬"',
     '  --files <文本>       变更文件说明（写进 manifest）',
     '  --single             额外生成 before.standalone.html / after.standalone.html',
@@ -309,9 +312,31 @@ function main() {
   }
 
   // 3. manifest
-  const patterns = args.patterns && args.patterns !== true
+  let patterns = args.patterns && args.patterns !== true
     ? String(args.patterns).split(/[,，\s]+/).filter(Boolean)
     : [];
+  let briefText = null;
+  let auditSource = null;
+  if (args['from-audit'] && args['from-audit'] !== true) {
+    const auditPath = resolve(CWD, String(args['from-audit']));
+    if (!existsSync(auditPath)) {
+      console.error('[new-demo] 找不到 audit JSON：' + args['from-audit']);
+      process.exitCode = 1;
+      return;
+    }
+    const report = JSON.parse(readText(auditPath));
+    const selected = selectFindings(report.findings || report, {
+      max: parseInt(args.max, 10) || 5,
+    });
+    if (!patterns.length) {
+      patterns = Array.from(
+        new Set(selected.flatMap(function (f) { return f.patterns || []; }))
+      );
+    }
+    briefText = briefMarkdown(selected, { title: title });
+    auditSource = relative(CWD, auditPath).replace(/\\/g, '/');
+    writeText(join(outDir, 'BRIEF.md'), briefText);
+  }
   const manifest = {
     version: 1,
     name: slug,
@@ -321,6 +346,7 @@ function main() {
     source: {
       after: afterSource ? relative(CWD, afterSource).replace(/\\/g, '/') : null,
       before: beforeSource ? relative(CWD, beforeSource).replace(/\\/g, '/') : null,
+      audit: auditSource,
     },
     patterns,
     files: [
@@ -329,7 +355,7 @@ function main() {
       'after.html',
       'assets/motion-kit.css',
       'assets/motion-kit.js',
-    ],
+    ].concat(briefText ? ['BRIEF.md'] : []),
     notes: args.files && args.files !== true ? String(args.files) : '',
     status: 'draft',
     versions: [{ version: 1, at: new Date().toISOString(), changes: ['初始改版 Demo'] }],

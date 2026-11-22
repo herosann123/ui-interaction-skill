@@ -16,6 +16,8 @@
 | `mobile-feed/` | ㉖ ㉚ ㉛ ㉜ ㊶ ㊻ ㊼ | 手机信息流：snap 轨道、滑动行、双击点赞、评论抽屉、骨架屏、角标 |
 | `mobile-detail/` | ㉗ ㉙ ㉚ ㉟ ㊲ ㉜ | 手机列表→详情：push/pop、左缘滑动返回、坍缩头图、下拉刷新 |
 | `dashboard/` | ⑧ ⑩ ㉓ ㉘ ㊹ | 工具型后台：⌘K 命令栏、scroll-snap Tabs、数字卡、圆形主题揭示 |
+| `checkout/` | ② ⑧ ⑬ ㉜ | 结算流：步骤、配送/支付选项、订单摘要、支付成功态 |
+| `settings/` | ② ㉘ ⑩ ㉜ | 设置页：分区 Tabs、表单、开关、保存栏、安全/账单 |
 
 完整 56 种模式 → 见 `../INDEX.md`；每个模式的实现代码 → `../PATTERNS.md`；kit 支持范围 → `../library/manifest.json`。
 

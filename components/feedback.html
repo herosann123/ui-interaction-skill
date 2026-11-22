@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Components · Feedback</title>
+<link rel="stylesheet" href="../library/motion-kit.css">
+<link rel="stylesheet" href="./components.css">
+<script>
+  document.documentElement.classList.add('mk-js');
+  setTimeout(function () { if (!window.MotionKit) document.documentElement.classList.remove('mk-js'); }, 2500);
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="../index.html"><i>UI</i> Motion Kit · Components</a>
+    <nav aria-label="组件导航">
+      <a href="./buttons.html">Buttons</a>
+      <a href="./feedback.html" aria-current="page">Feedback</a>
+      <a href="./forms.html">Forms</a>
+      <a href="./navigation.html">Navigation</a>
+      <a href="./data.html">Data</a>
+    </nav>
+  </header>
+
+  <section class="head">
+    <p class="eyebrow" data-reveal="fade">Components / Feedback</p>
+    <h1 data-reveal="scale">Tell them<br><em>what happened</em></h1>
+    <p class="lead" data-reveal data-reveal-delay="80">Toast、骨架屏、空状态、错误/成功、确认弹窗。反馈从触发点长出来；成功要克制。</p>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>Toast</h2><span>data-toast · MotionKit.toast</span></div>
+    <div class="demo">
+      <div class="toast-row">
+        <button type="button" class="mk-btn mk-btn--primary" data-toast="已保存（演示）" data-haptic="success">成功</button>
+        <button type="button" class="mk-btn mk-btn--ghost" data-toast="网络不稳定，请重试（演示）">普通提示</button>
+        <button type="button" class="mk-btn mk-btn--ghost" data-toast="这条操作无法撤销（演示）" data-haptic="warn">警告</button>
+      </div>
+    </div>
+    <p class="note">同一时间只保留一个 toast；如果消息里有操作，给一个明确的按钮，而不是让用户猜。</p>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>Skeleton</h2><span>mk-skeleton · 同尺寸零抖动</span></div>
+    <div class="demo demo--col">
+      <div class="skeleton-stack" aria-hidden="true">
+        <div class="mk-skeleton skeleton-line" style="width:42%"></div>
+        <div class="mk-skeleton skeleton-line" style="width:88%"></div>
+        <div class="mk-skeleton skeleton-line" style="width:70%"></div>
+        <div class="mk-skeleton" style="height:120px;border-radius:12px"></div>
+      </div>
+      <p class="note">骨架的尺寸必须和真实内容一致；&lt;300ms 到达的内容不要上骨架。</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>Empty & alerts</h2><span>空状态 · 错误 · 成功</span></div>
+    <div class="grid">
+      <div class="empty">
+        <b>还没有项目</b>
+        <span>创建第一个项目，或从模板开始。</span>
+        <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="已打开新建项目（演示）">新建项目</button>
+      </div>
+      <div class="spec">
+        <div class="alert alert--error" role="alert">保存失败：网络连接中断。你的修改仍在本地。</div>
+        <div class="alert alert--success" style="margin-top:10px" role="status">已保存。所有设备会在 30 秒内同步。</div>
+      </div>
+      <div class="spec">
+        <h3>原则</h3>
+        <p style="margin-top:6px">错误说清「发生了什么 + 影响 + 下一步」；成功只确认，不要撒花。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>Confirm dialog</h2><span>native dialog · focus + Esc</span></div>
+    <div class="demo">
+      <button type="button" class="mk-btn mk-btn--primary" style="background:#c0392b" data-modal-open="confirm-demo">删除项目</button>
+    </div>
+    <p class="note">破坏性操作必须二次确认；确认按钮写具体动作（删除项目），不要只写“确定”。</p>
+  </section>
+
+  <footer><span>components/feedback.html</span><span>依赖 library/motion-kit · 可复制</span></footer>
+</div>
+
+<dialog class="mk-dialog" id="confirm-demo" data-modal aria-labelledby="confirm-title">
+  <div style="display:flex;justify-content:space-between;gap:16px;align-items:start">
+    <div>
+      <p class="eyebrow" style="margin-bottom:6px">Destructive action</p>
+      <h2 id="confirm-title" style="font-family:var(--serif);font-size:26px;font-weight:500">删除这个项目？</h2>
+    </div>
+    <button type="button" class="mk-btn mk-btn--ghost" style="min-height:34px;padding:4px 10px" data-modal-close aria-label="关闭">×</button>
+  </div>
+  <p class="note" style="margin-top:12px">项目、看板与评论都会进入回收站，30 天后永久删除。</p>
+  <div style="display:flex;gap:10px;margin-top:22px">
+    <button type="button" class="mk-btn mk-btn--ghost" data-modal-close style="flex:1">取消</button>
+    <button type="button" class="mk-btn mk-btn--primary" style="flex:1;background:#c0392b" data-modal-close data-toast="项目已移入回收站（演示）" data-haptic="warn">删除项目</button>
+  </div>
+</dialog>
+
+<script src="../library/motion-kit.js" defer></script>
+</body>
+</html>

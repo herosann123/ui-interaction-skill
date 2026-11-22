@@ -52,7 +52,21 @@ function walk(dir, out = []) {
 }
 
 console.log('\n[1/6] JS 语法');
-const jsFiles = ['library/motion-kit.js', 'scripts/audit.mjs', 'scripts/new-demo.mjs', 'scripts/bundle-demo.mjs', 'scripts/check.mjs'];
+const jsFiles = [
+  'library/motion-kit.js',
+  'library/motion-kit.esm.js',
+  'library/adapters/react.js',
+  'library/adapters/vue.js',
+  'scripts/audit.mjs',
+  'scripts/new-demo.mjs',
+  'scripts/bundle-demo.mjs',
+  'scripts/check.mjs',
+  'scripts/smoke.mjs',
+  'scripts/sanitize.mjs',
+  'scripts/brief.mjs',
+  'scripts/iterate.mjs',
+  'scripts/lib/select.mjs',
+];
 for (const file of jsFiles) {
   const result = runNode(['--check', file]);
   if (result.status === 0) ok(file);
@@ -60,7 +74,7 @@ for (const file of jsFiles) {
 }
 
 console.log('\n[2/6] HTML 内联脚本');
-const htmlFiles = walk('templates').filter((f) => extname(f) === '.html');
+const htmlFiles = ['index.html'].concat(walk('templates'), walk('components'), walk('presets')).filter((f) => extname(f) === '.html');
 let inlineCount = 0;
 for (const file of htmlFiles) {
   const html = read(file);
@@ -84,7 +98,7 @@ for (const file of htmlFiles) {
     }
   }
 }
-if (!errors.some((e) => e.includes('内联脚本'))) ok(htmlFiles.length + ' 个模板 / ' + inlineCount + ' 段内联脚本');
+if (!errors.some((e) => e.includes('内联脚本'))) ok(htmlFiles.length + ' 个页面 / ' + inlineCount + ' 段内联脚本');
 
 console.log('\n[3/6] Manifest');
 try {
@@ -92,10 +106,14 @@ try {
   const counts = manifest.counts || {};
   if (counts.patterns === 56) ok('patterns = 56');
   else fail('patterns', String(counts.patterns));
-  if (counts.templates === 7) ok('templates = 7');
+  if (counts.templates === 9) ok('templates = 9');
   else fail('templates', String(counts.templates));
   if (counts.behaviors === (manifest.kit.behaviors || []).length) ok('behaviors = ' + counts.behaviors);
   else fail('behaviors 计数与数组长度不一致');
+  if (counts.components === (manifest.components || []).length) ok('components = ' + counts.components);
+  else fail('components 计数与数组长度不一致');
+  if (counts.presets === (manifest.presets || []).length) ok('presets = ' + counts.presets);
+  else fail('presets 计数与数组长度不一致');
 } catch (err) {
   fail('library/manifest.json', err.message);
 }
@@ -115,6 +133,19 @@ try {
   else fail('clean after', clean.findings.length + ' 项');
 } catch (err) {
   fail('clean after audit', err.message);
+}
+try {
+  const components = auditJson(['components']);
+  if (components.findings.length === 0) ok('components = 0');
+  else fail('components', components.findings.length + ' 项');
+  const presets = auditJson(['presets']);
+  if (presets.findings.length === 0) ok('presets = 0');
+  else fail('presets', presets.findings.length + ' 项');
+  const landing = auditJson(['index.html']);
+  if (landing.findings.length === 0) ok('landing = 0');
+  else fail('landing', landing.findings.length + ' 项');
+} catch (err) {
+  fail('components audit', err.message);
 }
 try {
   const templates = auditJson(['templates']);

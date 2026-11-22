@@ -1,5 +1,8 @@
 # UI Interaction Skill
 
+**在线演示**：https://herosann123.github.io/ui-interaction-skill/
+
+
 一套面向 agent 的 **UI 交互工作台**：查模式、审代码、生成 Before/After 可运行改版、按反馈迭代。
 
 它不是一份“动效清单”，而是把选型、体检、实现、验收串成一条可交付的链路。
@@ -18,11 +21,18 @@
 - **56 种交互模式**：基础 10 + 进阶 7 + 前沿 8 + 手机手感 7 + 高级手感 8 + 组件情绪 8 + 前沿 CSS 8
 - **18 个零依赖行为**：`library/motion-kit.js` / `.css`
   - reveal / stagger / parallax / magnetic / tilt / ripple / counter / stream / dialog / sheet / tabs / swipe-row / cmdk / haptic / toast / bump / flip / animateValue
-- **7 套可运行页面**：`templates/`
-  - demo-shell / hero / feature-grid / ai-chat / mobile-feed / mobile-detail / dashboard
+- **9 套可运行页面**：`templates/`
+  - demo-shell / hero / feature-grid / ai-chat / mobile-feed / mobile-detail / dashboard / checkout / settings
+- **3 套主题**：`presets/`（editorial / glass / soft）
+- **5 组组件**：`components/`
+  - buttons / feedback / forms / navigation / data
 - **32 条体检规则**：`scripts/audit.mjs`
 - **完整协议**：`AUDIT.md` / `DEMO.md` / `ITERATE.md`
 - **自检**：`scripts/check.mjs` + `tests/fixtures/`
+- **浏览器烟测**：`scripts/smoke.mjs`（390px + reduced-motion + 控制台错误）
+- **自动化**：`scripts/brief.mjs` / `scripts/iterate.mjs` / `scripts/sanitize.mjs`
+- **框架适配**：`library/motion-kit.esm.js`、`motion-kit.d.ts`、`adapters/react.js`、`adapters/vue.js`
+- **主题预设**：`presets/editorial.css` / `glass.css` / `soft.css`
 
 ## 快速开始
 
@@ -54,6 +64,21 @@ node scripts/audit.mjs ./src --json --out ui-runs/my-app/audit.json
 支持 HTML / CSS / JS / JSX / TSX / Vue / Svelte / Astro / 小程序 WXML / WXSS。
 会跟随 HTML 的本地 CSS/JS 与 CSS `@import`，跳过构建产物与压缩文件。
 
+### 从体检 JSON 到 brief
+
+```bash
+node scripts/audit.mjs ./src --json --out ui-runs/my-app/audit.json
+node scripts/brief.mjs --in ui-runs/my-app/audit.json --out ui-runs/my-app/brief.md --max 5
+node scripts/new-demo.mjs --name my-refresh --title "我的改版" --blank   --from-audit ui-runs/my-app/audit.json
+```
+
+### 迭代与脱敏
+
+```bash
+node scripts/iterate.mjs --run ui-runs/my-refresh --note "CR-1：CTA 收敛"
+node scripts/sanitize.mjs --in old.html --out old.safe.html
+```
+
 ### 生成改版对照
 
 ```bash
@@ -80,13 +105,16 @@ node scripts/check.mjs
 
 ```text
 .
+├── index.html               # GitHub Pages / 本地演示首页
 ├── SKILL.md                 # 主入口：四模式路由 + 核心决策
 ├── AUDIT.md / DEMO.md / ITERATE.md
 ├── PATTERNS.md / INDEX.md   # 56 模式代码与速查
 ├── references/              # 映射 / 反模式 / 性能预算全文
 ├── library/                 # motion-kit + manifest
-├── templates/               # 7 套页面
-├── scripts/                 # audit / new-demo / bundle / check
+├── components/              # 5 组可复制组件
+├── presets/                 # 3 套主题令牌 + 预览
+├── templates/               # 9 套页面
+├── scripts/                 # audit / new-demo / bundle / check / smoke / brief / iterate / sanitize
 ├── tests/fixtures/          # 体检规则回归样例
 ├── examples/                # 体检报告 / demo brief / 迭代记录
 └── evals/                   # 对抗性行为评测场景

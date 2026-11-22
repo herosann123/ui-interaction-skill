@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Components · Buttons</title>
+<link rel="stylesheet" href="../library/motion-kit.css">
+<link rel="stylesheet" href="./components.css">
+<script>
+  document.documentElement.classList.add('mk-js');
+  setTimeout(function () { if (!window.MotionKit) document.documentElement.classList.remove('mk-js'); }, 2500);
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="../index.html"><i>UI</i> Motion Kit · Components</a>
+    <nav aria-label="组件导航">
+      <a href="./buttons.html" aria-current="page">Buttons</a>
+      <a href="./feedback.html">Feedback</a>
+      <a href="./forms.html">Forms</a>
+      <a href="./navigation.html">Navigation</a>
+      <a href="./data.html">Data</a>
+    </nav>
+  </header>
+
+  <section class="head">
+    <p class="eyebrow" data-reveal="fade">Components / Actions</p>
+    <h1 data-reveal="scale">Buttons<br><em>& actions</em></h1>
+    <p class="lead" data-reveal data-reveal-delay="80">最小 44px 点击区、按下 0.96、focus-visible、触摸端不依赖 hover。复制 HTML 即可用；颜色通过 <code>--mk-*</code> 覆盖。</p>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>Variants</h2><span>mk-btn · primary · ghost · glass</span></div>
+    <div class="demo">
+      <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="主操作（演示）">主操作</button>
+      <button type="button" class="mk-btn mk-btn--ghost" data-ripple data-ripple-color="rgba(26,23,18,.12)">次要操作</button>
+      <button type="button" class="mk-btn mk-btn--primary" style="background:#c0392b" data-ripple data-haptic="warn" data-toast="危险操作需要确认">危险操作</button>
+      <button type="button" class="mk-btn" disabled>禁用</button>
+    </div>
+    <div class="demo demo--dark" style="margin-top:12px">
+      <button type="button" class="mk-btn mk-btn--glass" data-ripple data-haptic="tap" data-toast="玻璃按钮（演示）">玻璃按钮</button>
+      <button type="button" class="mk-btn mk-btn--ghost" style="border-color:rgba(244,240,231,.24);color:var(--bg)">深色描边</button>
+    </div>
+    <p class="note">玻璃按钮需要深色/复杂背景；纯白背景上看不见 blur，不要用。</p>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>Sizes & icons</h2><span>44px 最小点击区</span></div>
+    <div class="demo">
+      <button type="button" class="mk-btn mk-btn--ghost" style="min-height:36px;padding:6px 12px;font-size:12px">Small</button>
+      <button type="button" class="mk-btn mk-btn--ghost">Default</button>
+      <button type="button" class="mk-btn mk-btn--ghost" style="min-height:52px;padding:14px 28px;font-size:16px">Large</button>
+      <button type="button" class="mk-btn mk-btn--primary" aria-label="添加" data-ripple style="width:44px;padding:0;font-size:20px">＋</button>
+    </div>
+    <p class="note">图标按钮必须有 <code>aria-label</code>；不要用纯图标表达关键操作。</p>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>Feedback</h2><span>磁吸 · 涟漪 · 触感 · 加载</span></div>
+    <div class="demo">
+      <button type="button" class="mk-btn mk-btn--primary" data-magnetic="0.3" data-ripple data-haptic="tap" data-toast="磁吸 + 涟漪 + 触感">磁吸 CTA</button>
+      <button type="button" class="mk-btn mk-btn--ghost" data-ripple data-ripple-color="rgba(184,89,64,.2)">涟漪</button>
+      <button type="button" class="mk-btn mk-btn--primary" id="loadingBtn">开始加载</button>
+      <button type="button" class="mk-btn mk-btn--ghost" data-toast="已复制链接（演示）">复制链接</button>
+    </div>
+    <p class="note">磁吸只在 <code>(hover:hover) and (pointer:fine)</code> 启用；触摸端自动退化为按压。</p>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>States</h2><span>default / focus / pressed / disabled</span></div>
+    <div class="grid">
+      <div class="spec"><h3>Default</h3><p>44px 高，圆角 999px，主色背景。</p></div>
+      <div class="spec"><h3>Focus</h3><p>Tab 聚焦时出现 <code>:focus-visible</code> 焦点环。</p></div>
+      <div class="spec"><h3>Pressed</h3><p><code>scale(.96)</code>，给手指/鼠标即时反馈。</p></div>
+    </div>
+  </section>
+
+  <footer><span>components/buttons.html</span><span>依赖 library/motion-kit · 可复制</span></footer>
+</div>
+
+<script src="../library/motion-kit.js" defer></script>
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    var btn = document.getElementById('loadingBtn');
+    var label = btn.textContent;
+    btn.addEventListener('click', function () {
+      if (btn.disabled) return;
+      btn.disabled = true;
+      btn.textContent = '处理中…';
+      setTimeout(function () {
+        btn.disabled = false;
+        btn.textContent = label;
+        if (window.MotionKit) window.MotionKit.toast('已完成（演示）');
+      }, 1200);
+    });
+  });
+</script>
+</body>
+</html>

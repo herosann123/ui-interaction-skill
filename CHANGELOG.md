@@ -1,5 +1,27 @@
 # CHANGELOG · ui-interaction-skill
 
+## v3.1.0 · 2026-11-22
+
+### 新增
+
+- **组件库 `components/`**：buttons / feedback / forms / navigation / data，5 组可复制组件 + 统一外壳；模板扩容到 9 套（新增 checkout、settings）。
+- **主题 Preset `presets/`**：editorial / glass / soft 三套 `--mk-*` 令牌 + 预览页。
+- **框架适配**：`motion-kit.esm.js`、`motion-kit.d.ts`、`adapters/react.js`、`adapters/vue.js`；`motion-kit.js` 增加 SSR no-op 分支，Node/Next 服务端不再访问 DOM。
+- **自动化脚本**：
+  - `scripts/brief.mjs`：audit JSON → demo brief
+  - `scripts/iterate.mjs`：版本快照 + manifest/CHANGELOG 更新
+  - `scripts/smoke.mjs`：零依赖 CDP 烟测（390px + reduced-motion + 控制台错误）
+  - `scripts/sanitize.mjs`：移除脚本 / on* 事件 / javascript: URL，遮盖常见密钥
+  - `new-demo --from-audit` / `--blank`：从体检自动选 3–5 项；空白骨架
+- **体检器**：`--sarif`（GitHub Code Scanning）、`--baseline`（只报新增问题）、按文件的 touch-action、role/tabindex 键盘复核。
+- **CI / Pages**：`.github/workflows/check.yml`、`smoke.yml`；根目录 `index.html` 演示导航首页。
+- **自检**：check.mjs 覆盖 18 个页面、组件/presets、166 个文档路径；smoke 17 页通过。
+
+### 说明
+
+- `library/package.json` 只提供 exports 映射，方便复制/本地打包，不是已发布 npm 包。
+- 行为评测仍需要独立宿主；本地 `check.mjs` 不替代行为评测。
+
 ## v3.0.0 · 2026-11-20
 
 从「模式知识库 + 展示页」升级为「可审查 / 可生成 / 可迭代」的交互工作台。
@@ -14,7 +36,7 @@
 - **自检** `scripts/check.mjs` + `tests/fixtures/`：JS / inline script 语法、manifest、clean after 体检、模板 P0、规则 fixtures、文档本地链接。
 - **页面模板** `templates/`
   - `demo-shell/`：Before / After / Split 对照壳 + 一份「反例 before → 升级 after」完整示例。
-  - `hero/`、`feature-grid/`、`ai-chat/`、`mobile-feed/`、`mobile-detail/`、`dashboard/`：7 套可运行页面。
+  - `hero/`、`feature-grid/`、`ai-chat/`、`mobile-feed/`、`mobile-detail/`、`dashboard/`、`checkout/`、`settings/`：9 套可运行页面。
   - `README.md`：模板清单、改造规则、自检清单。
 - **代码体检** `AUDIT.md` + `scripts/audit.mjs`
   - 32 条规则，覆盖 reduced-motion、键盘语义、表单、触摸手势、布局动画、blur 性能、max-height 手风琴、setInterval 轮播等。

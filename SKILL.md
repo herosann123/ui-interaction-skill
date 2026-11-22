@@ -1,6 +1,6 @@
 ---
 name: ui-interaction-skill
-description: 选择并实现高级 UI 交互模式（视差 / 滚动 / 手势 / 磁吸 / 3D 倾斜 / 玻璃 / 流式打字等 56 种），内置零依赖 motion-kit 交互库与 7 套页面模板。支持代码体检、生成 Before/After 可运行改版 demo、按反馈版本化迭代；也用于「高级感 / premium / motion」升级。
+description: 选择并实现高级 UI 交互模式（视差 / 滚动 / 手势 / 磁吸 / 3D 倾斜 / 玻璃 / 流式打字等 56 种），内置零依赖 motion-kit 交互库与 9 套页面模板。支持代码体检、生成 Before/After 可运行改版 demo、按反馈版本化迭代；也用于「高级感 / premium / motion」升级。
 type: design-pattern
 version: 3.0.0
 user-invocable: true
@@ -33,7 +33,7 @@ allowed-tools:
 > 25 种核心交互模式 + 15 种移动端手感/高级手感模式 + 8 种移动端组件与情绪模式 + 8 种前沿 CSS 原生动效 + 模块级映射表 + 决策树。
 > 配套 demo：`./10-ui-interactions.html`（①-⑩）+ `./advanced-ui-v2.html`（⑪-⑰）+ `./advanced-ui-v3.html`（⑱-㉕）+ `./mobile-ui.html`（㉖-㉜ 手机端试玩）+ `./mobile-ui-pro.html`（㉝-㊵ 高级手感试玩）+ `./mobile-ui-plus.html`（㊶-㊽ 组件与情绪试玩）+ `./frontier-css.html`（49-56 前沿 CSS 原生，渐进增强）
 > 配套技术手册：`./PATTERNS.md`（每种模式的完整代码模板 + 调参指南）
-> **v3 新增**：`library/motion-kit.css/js`（零依赖交互库）+ `library/manifest.json`（56 模式索引）+ `templates/`（7 套页面）+ `scripts/audit.mjs`（体检）+ `scripts/new-demo.mjs`（改版脚手架）+ `scripts/check.mjs`（自检）+ `AUDIT.md` / `DEMO.md` / `ITERATE.md`（审查 → demo → 迭代协议）+ `references/`（映射与反模式全文）
+> **v3 新增**：`library/motion-kit.css/js`（零依赖交互库）+ `library/manifest.json`（56 模式索引）+ `templates/`（9 套页面）+ `scripts/audit.mjs`（体检）+ `scripts/new-demo.mjs`（改版脚手架）+ `scripts/check.mjs`（自检）+ `AUDIT.md` / `DEMO.md` / `ITERATE.md`（审查 → demo → 迭代协议）+ `references/`（映射与反模式全文）
 
 ---
 
@@ -70,8 +70,13 @@ allowed-tools:
 | --- | --- |
 | `library/motion-kit.css` / `.js` | 零依赖交互库：reveal / parallax / magnetic / tilt / ripple / counter / stream / dialog / sheet / tabs / swipe-row / cmdk / haptic / toast / bump / flip |
 | `library/manifest.json` | 56 个模式 → demo / PATTERNS 章节 / kit 行为 / 移动端注意 / reduced 降级，机器可读 |
-| `templates/` | 7 套可运行页面：demo-shell、hero、feature-grid、ai-chat、mobile-feed、mobile-detail、dashboard |
-| `scripts/audit.mjs` | 静态体检器（P0/P1/P2 + file:line + 推荐模式） |
+| `components/` | 5 组可复制组件：buttons / feedback / forms / navigation / data |
+| `presets/` | 3 套主题令牌：editorial / glass / soft（预览 `presets/index.html`） |
+| `library/adapters/` + `motion-kit.esm.js` + `.d.ts` | SSR 安全、React hook / Vue directive、TypeScript 类型 |
+| `templates/` | 9 套可运行页面：demo-shell、hero、feature-grid、ai-chat、mobile-feed、mobile-detail、dashboard、checkout、settings |
+| `scripts/audit.mjs` | 静态体检器（P0/P1/P2 + file:line + 推荐模式 + SARIF / baseline） |
+| `scripts/brief.mjs` / `iterate.mjs` | 体检 JSON → demo brief；run 版本快照 + CHANGELOG |
+| `scripts/smoke.mjs` / `sanitize.mjs` | 390px + reduced-motion 浏览器烟测；演示页脱敏 |
 | `scripts/new-demo.mjs` | 生成 Before/After/Split run 目录 |
 | `scripts/bundle-demo.mjs` | 把 motion-kit 内联成单文件 |
 | `AUDIT.md` / `DEMO.md` / `ITERATE.md` | 三个工作流的完整协议 |
@@ -430,11 +435,14 @@ if (reduce.matches) {
 - **反馈迭代协议**：`./ITERATE.md` → CR 拆分、版本化、冲突处理、回滚
 - **内置交互库**：`./library/motion-kit.css` / `.js` · 用法见 `./library/README.md`
 - **56 模式机器清单**：`./library/manifest.json`
-- **页面模板（7 套）**：`./templates/` · 索引见 `./templates/README.md`
+- **页面模板（9 套）**：`./templates/` · 索引见 `./templates/README.md`
 - **体检器**：`node scripts/audit.mjs <path>`
 - **Demo 脚手架**：`node scripts/new-demo.mjs --name <slug>`
 - **单文件打包**：`node scripts/bundle-demo.mjs --in <html>`
 - **自检**：`node scripts/check.mjs`（语法 / inline script / manifest / 体检回归 / fixtures / 文档链接）
+- **烟测**：`node scripts/smoke.mjs`（390px + reduced-motion + 控制台错误）
+- **自动化**：`scripts/brief.mjs` / `scripts/iterate.mjs`；脱敏 `scripts/sanitize.mjs`
+- **浏览器烟测**：`node scripts/smoke.mjs`（390px / reduced-motion / 控制台错误）
 - **完整链路示例**：`./examples/README.md`（体检报告 → demo brief → 迭代记录）
 - **版本记录**：`./CHANGELOG.md`（v3 新增资产与修复）
 

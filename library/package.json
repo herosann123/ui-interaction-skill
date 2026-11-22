@@ -1,0 +1,40 @@
+{
+  "name": "ui-interaction-motion-kit",
+  "version": "1.0.0",
+  "description": "Zero-dependency interaction behaviors for the ui-interaction-skill",
+  "type": "module",
+  "main": "./motion-kit.esm.js",
+  "module": "./motion-kit.esm.js",
+  "types": "./motion-kit.d.ts",
+  "exports": {
+    ".": {
+      "types": "./motion-kit.d.ts",
+      "import": "./motion-kit.esm.js",
+      "default": "./motion-kit.esm.js"
+    },
+    "./global": "./motion-kit.js",
+    "./react": "./adapters/react.js",
+    "./vue": "./adapters/vue.js",
+    "./motion-kit.css": "./motion-kit.css"
+  },
+  "files": [
+    "motion-kit.css",
+    "motion-kit.js",
+    "motion-kit.esm.js",
+    "motion-kit.d.ts",
+    "adapters"
+  ],
+  "peerDependencies": {
+    "react": ">=18",
+    "vue": ">=3"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "license": "MIT"
+}

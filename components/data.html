@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Components · Data</title>
+<link rel="stylesheet" href="../library/motion-kit.css">
+<link rel="stylesheet" href="./components.css">
+<style>
+  .spark { display: flex; align-items: end; gap: 4px; height: 34px; margin-top: 12px; }
+  .spark i { flex: 1; height: var(--h, 40%); border-radius: 2px 2px 0 0; background: rgba(47, 93, 80, 0.28); }
+  .table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+  .pill { display: inline-flex; padding: 3px 8px; border-radius: 999px; font-family: var(--mono); font-size: 9px; }
+  .pill--ok { background: rgba(47, 93, 80, 0.14); color: var(--green); }
+  .pill--warn { background: rgba(184, 89, 64, 0.14); color: var(--accent); }
+</style>
+<script>
+  document.documentElement.classList.add('mk-js');
+  setTimeout(function () { if (!window.MotionKit) document.documentElement.classList.remove('mk-js'); }, 2500);
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="../index.html"><i>UI</i> Motion Kit · Components</a>
+    <nav aria-label="组件导航">
+      <a href="./buttons.html">Buttons</a>
+      <a href="./feedback.html">Feedback</a>
+      <a href="./forms.html">Forms</a>
+      <a href="./navigation.html">Navigation</a>
+      <a href="./data.html" aria-current="page">Data</a>
+    </nav>
+  </header>
+
+  <section class="head">
+    <p class="eyebrow" data-reveal="fade">Components / Data</p>
+    <h1 data-reveal="scale">Numbers<br><em>that hold still</em></h1>
+    <p class="lead" data-reveal data-reveal-delay="80">统计卡、表格、进度、角标、火花线。数字用 <code>tabular-nums</code>；进入视口再滚动，避免首屏跳数。</p>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>Stat cards</h2><span>data-counter · tabular-nums</span></div>
+    <div class="stat-row" data-reveal>
+      <div class="stat">
+        <small>激活率</small>
+        <b data-counter="62.4" data-counter-decimals="1" data-counter-suffix="%">0%</b>
+        <em>↑ 14.2% vs 上周</em>
+        <div class="spark" aria-hidden="true"><i style="--h:30%"></i><i style="--h:44%"></i><i style="--h:38%"></i><i style="--h:56%"></i><i style="--h:62%"></i><i style="--h:58%"></i><i style="--h:78%"></i></div>
+      </div>
+      <div class="stat">
+        <small>周留存</small>
+        <b data-counter="41.8" data-counter-decimals="1" data-counter-suffix="%">0%</b>
+        <em>↑ 6.2% vs 上周</em>
+        <div class="spark" aria-hidden="true"><i style="--h:40%"></i><i style="--h:36%"></i><i style="--h:48%"></i><i style="--h:52%"></i><i style="--h:49%"></i><i style="--h:60%"></i><i style="--h:64%"></i></div>
+      </div>
+      <div class="stat">
+        <small>MRR</small>
+        <b data-counter="482" data-counter-prefix="¥" data-counter-suffix="k">¥0k</b>
+        <em>↑ 12.0% vs 上月</em>
+        <div class="spark" aria-hidden="true"><i style="--h:34%"></i><i style="--h:42%"></i><i style="--h:46%"></i><i style="--h:44%"></i><i style="--h:58%"></i><i style="--h:66%"></i><i style="--h:72%"></i></div>
+      </div>
+    </div>
+    <p class="note">数字进入视口后 0→N；reduced-motion 下直接显示终值。</p>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>Table</h2><span>semantic table · status pills</span></div>
+    <div class="table-wrap" data-reveal>
+      <table class="table">
+        <caption class="sr-only">重点账户</caption>
+        <thead>
+          <tr><th scope="col">账户</th><th scope="col">状态</th><th scope="col">MRR</th><th scope="col">健康度</th><th scope="col">负责人</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Acme</th><td><span class="pill pill--ok">健康</span></td><td>¥86k</td><td>92</td><td>LIN</td></tr>
+          <tr><th scope="row">Globex</th><td><span class="pill pill--ok">健康</span></td><td>¥64k</td><td>88</td><td>ZHOU</td></tr>
+          <tr><th scope="row">Initech</th><td><span class="pill pill--warn">关注</span></td><td>¥41k</td><td>61</td><td>CHEN</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">表格用 <code>scope</code> 标清行列；小屏横向滚动，不要压缩到不可读。</p>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>Progress</h2><span>track + fill · 宽度由数据驱动</span></div>
+    <div class="demo demo--col">
+      <div style="width:100%">
+        <div class="row" style="justify-content:space-between;margin-bottom:6px"><span style="font-size:12px">自然搜索</span><span class="note" style="margin:0">54%</span></div>
+        <div class="progress"><span style="--w:54%"></span></div>
+      </div>
+      <div style="width:100%">
+        <div class="row" style="justify-content:space-between;margin-bottom:6px"><span style="font-size:12px">内容合作</span><span class="note" style="margin:0">47%</span></div>
+        <div class="progress"><span style="--w:47%"></span></div>
+      </div>
+      <div style="width:100%">
+        <div class="row" style="justify-content:space-between;margin-bottom:6px"><span style="font-size:12px">付费搜索</span><span class="note" style="margin:0">31%</span></div>
+        <div class="progress"><span style="--w:31%"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer><span>components/data.html</span><span>依赖 library/motion-kit · 可复制</span></footer>
+</div>
+
+<script src="../library/motion-kit.js" defer></script>
+</body>
+</html>

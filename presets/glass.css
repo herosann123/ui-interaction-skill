@@ -1,0 +1,22 @@
+/* 深空玻璃 · Deep glass */
+[data-theme="glass"] {
+  --bg: #0b0e14;
+  --bg-2: #111722;
+  --panel: #141924;
+  --ink: #eef2f8;
+  --ink-soft: #c2cada;
+  --muted: #96a0b5;
+  --line: rgba(235, 240, 255, 0.14);
+  --accent: #8fb8ff;
+  --accent-2: #6ee7c8;
+  --serif: "Iowan Old Style", "Palatino Linotype", "Songti SC", Georgia, serif;
+  --mk-accent: var(--accent);
+  --mk-accent-ink: #0a0c11;
+  --mk-surface: var(--panel);
+  --mk-ink: var(--ink);
+  --mk-muted: var(--muted);
+  --mk-border: var(--line);
+  --mk-glass-bg: rgba(20, 25, 36, 0.62);
+  --mk-glass-border: rgba(235, 240, 255, 0.15);
+  --mk-glow: rgba(143, 184, 255, 0.25);
+}

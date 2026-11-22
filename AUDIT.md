@@ -53,6 +53,8 @@ node scripts/audit.mjs <路径> --json --out ui-runs/<slug>/audit.json
 ```
 
 - `--quiet` 只看数量；`--fail-on p0` 可用于 CI。
+- `--sarif --out audit.sarif` 输出 SARIF 2.1.0，可接 GitHub Code Scanning。
+- `--baseline audit.json` 过滤上一轮已存在的问题，只报新增项（按 rule+file+line）。
 - 支持 `.html / .css / .scss / .js / .jsx / .tsx / .vue / .svelte / .astro / .wxml / .wxss` 等源码；
   JSX / TSX 里的标签规则同样生效。
 - 扫描器会跟随 HTML 里的本地 `<link>` / `<script src>` 与 CSS `@import`，但**不会**展开 npm 包、CSS-in-JS、构建产物。

@@ -34,3 +34,6 @@ uiux-design-suite-v1.0.0/
 # 本地 agent 配置 / 计划
 .claude/
 .zcode/
+
+# 浏览器烟测截图
+.smoke-shots/

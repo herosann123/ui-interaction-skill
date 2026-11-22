@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Components · Navigation</title>
+<link rel="stylesheet" href="../library/motion-kit.css">
+<link rel="stylesheet" href="./components.css">
+<style>
+  .tab-panel { padding: 18px; border: 1px solid var(--line); border-radius: 0 0 14px 14px; background: var(--panel); }
+  .tab-panel p { color: var(--muted); font-size: 13px; }
+  .segmented { display: inline-flex; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); }
+  .segmented button { min-height: 32px; padding: 4px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; }
+  .segmented button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .bottom-nav { display: grid; grid-template-columns: repeat(4, 1fr); width: min(420px, 100%); border: 1px solid var(--line); border-radius: 16px; background: var(--panel); overflow: hidden; }
+  .bottom-nav a { display: grid; place-items: center; gap: 3px; min-height: 56px; color: var(--muted); font-size: 9px; text-decoration: none; }
+  .bottom-nav a[aria-current="page"] { color: var(--accent); background: rgba(184,89,64,.06); }
+  .bottom-nav i { font-style: normal; font-size: 18px; }
+</style>
+<script>
+  document.documentElement.classList.add('mk-js');
+  setTimeout(function () { if (!window.MotionKit) document.documentElement.classList.remove('mk-js'); }, 2500);
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="../index.html"><i>UI</i> Motion Kit · Components</a>
+    <nav aria-label="组件导航">
+      <a href="./buttons.html">Buttons</a>
+      <a href="./feedback.html">Feedback</a>
+      <a href="./forms.html">Forms</a>
+      <a href="./navigation.html" aria-current="page">Navigation</a>
+      <a href="./data.html">Data</a>
+    </nav>
+  </header>
+
+  <section class="head">
+    <p class="eyebrow" data-reveal="fade">Components / Navigation</p>
+    <h1 data-reveal="scale">Wayfinding<br><em>without noise</em></h1>
+    <p class="lead" data-reveal data-reveal-delay="80">Tabs 用原生 scroll-snap，指示器由 scrollLeft 驱动；面包屑、分页、分段控制、手机底栏都保持可键盘操作。</p>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>Tabs</h2><span>data-tabs · scroll-snap + 指示器</span></div>
+    <div class="mk-tabs tabs-demo" data-tabs>
+      <div class="mk-tabs__bar" role="tablist" aria-label="项目视图">
+        <button type="button" class="mk-tabs__tab" role="tab" aria-selected="true" id="tab-a" aria-controls="panel-a">概览</button>
+        <button type="button" class="mk-tabs__tab" role="tab" aria-selected="false" tabindex="-1" id="tab-b" aria-controls="panel-b">活动</button>
+        <button type="button" class="mk-tabs__tab" role="tab" aria-selected="false" tabindex="-1" id="tab-c" aria-controls="panel-c">成员</button>
+        <span class="mk-tabs__indicator" aria-hidden="true"></span>
+      </div>
+      <div class="mk-tabs__viewport" data-tabs-viewport>
+        <div class="mk-tabs__panel tab-panel" role="tabpanel" id="panel-a" aria-labelledby="tab-a" tabindex="0">
+          <p>本周新增 12 个活跃用户，留存保持稳定。</p>
+        </div>
+        <div class="mk-tabs__panel tab-panel" role="tabpanel" id="panel-b" aria-labelledby="tab-b" tabindex="0">
+          <p>最近活动：创建项目、邀请成员、导出报表。</p>
+        </div>
+        <div class="mk-tabs__panel tab-panel" role="tabpanel" id="panel-c" aria-labelledby="tab-c" tabindex="0">
+          <p>成员 8 人，2 位待接受邀请。</p>
+        </div>
+      </div>
+    </div>
+    <p class="note">Tab ≤6 个；每个 panel 都要有 <code>role="tabpanel"</code> 和对应 <code>aria-labelledby</code>。</p>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>Breadcrumb</h2><span>当前位置，不是历史</span></div>
+    <div class="demo">
+      <nav class="crumbs" aria-label="面包屑">
+        <span><a href="#">项目</a></span>
+        <span><a href="#">Northwind</a></span>
+        <span aria-current="page">设置</span>
+      </nav>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>Pagination & segmented</h2><span>页码 · 视图切换</span></div>
+    <div class="demo">
+      <div class="pager" role="navigation" aria-label="分页">
+        <button type="button" aria-label="上一页">←</button>
+        <button type="button" aria-current="page">1</button>
+        <button type="button">2</button>
+        <button type="button">3</button>
+        <button type="button" aria-label="下一页">→</button>
+      </div>
+      <div class="segmented" role="group" aria-label="视图">
+        <button type="button" aria-pressed="true" data-toast="已切换到看板">看板</button>
+        <button type="button" aria-pressed="false" data-toast="已切换到列表">列表</button>
+        <button type="button" aria-pressed="false" data-toast="已切换到日历">日历</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><h2>Mobile bottom nav</h2><span>4 项以内 · 当前项高亮</span></div>
+    <div class="demo">
+      <nav class="bottom-nav" aria-label="底部导航">
+        <a href="#" aria-current="page"><i>⌂</i> 首页</a>
+        <a href="#" data-toast="发现（演示）"><i>⌕</i> 发现</a>
+        <a href="#" data-toast="消息（演示）"><i>✉</i> 消息</a>
+        <a href="#" data-toast="我的（演示）"><i>◯</i> 我的</a>
+      </nav>
+    </div>
+    <p class="note">底栏固定在安全区内；页面底部要留出与底栏等高的 padding，避免内容被遮住。</p>
+  </section>
+
+  <footer><span>components/navigation.html</span><span>依赖 library/motion-kit · 可复制</span></footer>
+</div>
+
+<script src="../library/motion-kit.js" defer></script>
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    Array.prototype.forEach.call(document.querySelectorAll('.segmented button'), function (btn) {
+      btn.addEventListener('click', function () {
+        Array.prototype.forEach.call(btn.parentElement.querySelectorAll('button'), function (other) {
+          other.setAttribute('aria-pressed', String(other === btn));
+        });
+      });
+    });
+  });
+</script>
+</body>
+</html>

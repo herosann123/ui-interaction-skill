@@ -1127,6 +1127,59 @@ function statsOf(findings) {
   );
 }
 
+function toSarif(findings) {
+  const ruleMap = new Map();
+  for (const f of findings) {
+    if (!ruleMap.has(f.rule)) {
+      ruleMap.set(f.rule, {
+        id: f.rule,
+        name: f.title,
+        shortDescription: { text: f.title },
+        help: { text: f.why + ' 修复：' + f.fix },
+        properties: { tags: f.patterns || [] },
+      });
+    }
+  }
+  return JSON.stringify(
+    {
+      $schema: 'https://json.schemastore.org/sarif-2.1.0.json',
+      version: '2.1.0',
+      runs: [
+        {
+          tool: {
+            driver: {
+              name: 'ui-interaction-skill-audit',
+              informationUri: 'https://github.com/herosann123/ui-interaction-skill',
+              version: VERSION,
+              rules: Array.from(ruleMap.values()),
+            },
+          },
+          results: findings.map((f) => ({
+            ruleId: f.rule,
+            level: f.severity === 'P0' ? 'error' : f.severity === 'P1' ? 'warning' : 'note',
+            message: { text: f.title + (f.message ? '：' + f.message : '') + ' ' + f.why },
+            locations: [
+              {
+                physicalLocation: {
+                  artifactLocation: { uri: f.file },
+                  region: { startLine: f.line, startColumn: Math.max(1, f.column) },
+                },
+              },
+            ],
+            properties: {
+              severity: f.severity,
+              confidence: f.confidence,
+              patterns: f.patterns,
+            },
+          })),
+        },
+      ],
+    },
+    null,
+    2
+  );
+}
+
 function toMarkdown(findings, scannedCount) {
   const stats = statsOf(findings);
   const lines = [];
@@ -1195,12 +1248,14 @@ function toMarkdown(findings, scannedCount) {
    CLI
    --------------------------------------------------------------------- */
 function parseArgs(argv) {
-  const out = { targets: [], json: false, out: null, failOn: null, quiet: false };
+  const out = { targets: [], json: false, sarif: false, out: null, failOn: null, quiet: false, baseline: null };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--json') out.json = true;
+    else if (arg === '--sarif') out.sarif = true;
     else if (arg === '--quiet') out.quiet = true;
     else if (arg === '--out') out.out = argv[++i];
+    else if (arg === '--baseline') out.baseline = argv[++i];
     else if (arg === '--fail-on') out.failOn = (argv[++i] || '').toUpperCase();
     else if (arg === '--help' || arg === '-h') out.help = true;
     else if (arg === '--version' || arg === '-v') out.version = true;
@@ -1219,7 +1274,9 @@ function help() {
     '',
     '选项：',
     '  --json            输出 JSON（默认 Markdown）',
+    '  --sarif           输出 SARIF 2.1.0（GitHub Code Scanning）',
     '  --out <file>      写入文件；不写则打印到 stdout',
+    '  --baseline <json> 过滤上一轮 audit JSON 中已有的问题（按 rule+file+line）',
     '  --fail-on p0|p1   出现对应级别及以上问题时退出码 1',
     '  --quiet           只打印摘要',
     '  -h, --help        帮助',
@@ -1246,25 +1303,47 @@ function main() {
   const targets = args.targets.length ? args.targets : ['.'];
   const files = collect(targets);
   expandDependencies(files);
-  const findings = runRules(files);
+  let findings = runRules(files);
+  if (args.baseline) {
+    try {
+      const baselinePath = resolve(CWD, args.baseline);
+      const baselineReport = JSON.parse(readFileSync(baselinePath, 'utf8'));
+      const baselineFindings = baselineReport.findings || baselineReport;
+      const keys = new Set(
+        baselineFindings.map((f) => f.rule + '|' + f.file + '|' + f.line)
+      );
+      const before = findings.length;
+      findings = findings.filter((f) => !keys.has(f.rule + '|' + f.file + '|' + f.line));
+      if (!args.quiet) console.error('[audit] baseline 过滤 ' + (before - findings.length) + ' 项');
+    } catch (err) {
+      console.error('[audit] 无法读取 baseline：' + err.message);
+      process.exitCode = 1;
+      return;
+    }
+  }
   const stats = statsOf(findings);
 
-  const report = args.json
-    ? JSON.stringify(
-        {
-          meta: {
-            version: VERSION,
-            cwd: CWD,
-            scannedFiles: files.length,
-            generatedAt: new Date().toISOString(),
-          },
-          stats,
-          findings,
+  let report;
+  if (args.sarif) {
+    report = toSarif(findings);
+  } else if (args.json) {
+    report = JSON.stringify(
+      {
+        meta: {
+          version: VERSION,
+          cwd: CWD,
+          scannedFiles: files.length,
+          generatedAt: new Date().toISOString(),
         },
-        null,
-        2
-      )
-    : toMarkdown(findings, files.length);
+        stats,
+        findings,
+      },
+      null,
+      2
+    );
+  } else {
+    report = toMarkdown(findings, files.length);
+  }
 
   if (args.out) {
     const outFile = resolve(CWD, args.out);

@@ -4,8 +4,10 @@
   "skill": "ui-interaction-skill",
   "counts": {
     "patterns": 56,
-    "templates": 7,
-    "behaviors": 18
+    "templates": 9,
+    "behaviors": 18,
+    "components": 5,
+    "presets": 3
   },
   "kit": {
     "css": "library/motion-kit.css",
@@ -221,6 +223,28 @@
         "㊹"
       ],
       "use": "工具型后台：Cmd+K、scroll-snap Tabs、数字卡、圆形主题揭示"
+    },
+    {
+      "name": "checkout",
+      "path": "templates/checkout/",
+      "patterns": [
+        "⑧",
+        "⑬",
+        "㉜",
+        "②"
+      ],
+      "use": "手机/桌面结算：步骤、配送/支付选项、订单摘要、支付成功态"
+    },
+    {
+      "name": "settings",
+      "path": "templates/settings/",
+      "patterns": [
+        "㉘",
+        "⑩",
+        "㉜",
+        "②"
+      ],
+      "use": "设置页：分区 Tabs、表单、开关、保存栏、安全/账单"
     }
   ],
   "patterns": [
@@ -895,6 +919,50 @@
       "deps": "none",
       "fallback": "IntersectionObserver 兜底",
       "mobile": "实验性"
+    }
+  ],
+  "components": [
+    {
+      "name": "buttons",
+      "path": "components/buttons.html",
+      "use": "按钮变体 / 尺寸 / 图标 / 磁吸 / 涟漪 / 加载态"
+    },
+    {
+      "name": "feedback",
+      "path": "components/feedback.html",
+      "use": "toast / 骨架 / 空状态 / 错误成功 / 确认弹窗"
+    },
+    {
+      "name": "forms",
+      "path": "components/forms.html",
+      "use": "输入 / 选择 / 开关 / 选择组 / 校验"
+    },
+    {
+      "name": "navigation",
+      "path": "components/navigation.html",
+      "use": "Tabs / 面包屑 / 分页 / 分段控制 / 底栏"
+    },
+    {
+      "name": "data",
+      "path": "components/data.html",
+      "use": "统计卡 / 表格 / 进度 / 角标 / 火花线"
+    }
+  ],
+  "presets": [
+    {
+      "name": "editorial",
+      "path": "presets/editorial.css",
+      "use": "暖纸 / 衬线 / 陶土色"
+    },
+    {
+      "name": "glass",
+      "path": "presets/glass.css",
+      "use": "深空 / 冷色 / 玻璃"
+    },
+    {
+      "name": "soft",
+      "path": "presets/soft.css",
+      "use": "浅灰 / 柔和绿 / 低对比"
     }
   ]
 }

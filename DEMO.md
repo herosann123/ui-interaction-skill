@@ -127,6 +127,19 @@ node scripts/new-demo.mjs --name x --after ./new-page.html --before ./old-page.h
 
 ## 5. 实现规则
 
+### 5.0 脱敏
+
+用户页面可能夹带 API key、手机号、真实支付配置或第三方跟踪脚本。分享前：
+
+```bash
+node scripts/sanitize.mjs --in ui-runs/x/before.html --out ui-runs/x/before.safe.html
+```
+
+- 默认移除 `<script>`、`on*` 内联事件、`javascript:` URL 与外链 iframe
+- 遮盖常见密钥（OpenAI / GitHub / Slack / AWS / Google）
+- 需要保留交互脚本时加 `--keep-scripts`，并人工复核
+- 脱敏后重新跑 `node scripts/audit.mjs before.safe.html` 和 `node scripts/smoke.mjs`
+
 ### 5.1 默认零依赖
 
 - 优先 `library/motion-kit.css/js`。

@@ -15,7 +15,7 @@
 | 按反馈修 demo | `ITERATE.md` | vN + CHANGELOG |
 | 单文件分享 | `scripts/bundle-demo.mjs` | `*.standalone.html` |
 
-内置资产：`library/motion-kit.*`（零依赖交互库）· `templates/`（7 套页面）· `library/manifest.json`（56 模式索引）。
+内置资产：`library/motion-kit.*`（零依赖交互库）· `templates/`（9 套页面）· `library/manifest.json`（56 模式索引）。
 
 ---
 
@@ -240,8 +240,14 @@ ui-interaction-skill/
 ├── library/
 │   ├── motion-kit.css                # 零依赖交互样式库
 │   ├── motion-kit.js                 # 18 个行为 / data-attribute + API
+│   ├── motion-kit.esm.js             # ESM wrapper（SSR 安全）
+│   ├── motion-kit.d.ts               # TypeScript 类型
+│   ├── adapters/                     # React hook / Vue directive
 │   ├── manifest.json                 # 56 模式 → demo / 章节 / kit 映射
 │   └── README.md                     # 库用法 + 扩展指南
+├── components/                       # 5 组组件：buttons / feedback / forms / navigation / data
+├── presets/                          # 3 套主题令牌 + 预览
+├── index.html                        # GitHub Pages / 本地演示首页
 ├── templates/
 │   ├── demo-shell/                   # Before/After/Split 对照壳 + 示例
 │   ├── hero/                         # 视差 / 揭示 / 磁吸 / 倾斜
@@ -250,12 +256,18 @@ ui-interaction-skill/
 │   ├── mobile-feed/                  # snap / 滑动行 / 双击赞 / 抽屉
 │   ├── mobile-detail/                # push/pop / 滑动返回 / 下拉刷新
 │   ├── dashboard/                    # Cmd+K / Tabs / 主题揭示
+│   ├── checkout/                     # 结算流 / 支付成功
+│   ├── settings/                     # 设置 Tabs / 保存栏
 │   └── README.md
 ├── scripts/
 │   ├── audit.mjs                     # 静态体检器
 │   ├── new-demo.mjs                  # demo 脚手架
 │   ├── bundle-demo.mjs               # 单文件内联
-│   └── check.mjs                     # 自检：语法 / manifest / 体检回归 / fixtures
+│   ├── check.mjs                     # 自检：语法 / manifest / 体检回归 / fixtures
+│   ├── smoke.mjs                     # 浏览器烟测（390px + reduced-motion）
+│   ├── brief.mjs                     # audit JSON → demo brief
+│   ├── iterate.mjs                   # 版本快照 + CHANGELOG
+│   └── sanitize.mjs                  # 演示页脱敏
 ├── tests/fixtures/                   # 体检器回归样例（good / bad / bad.jsx）
 ├── examples/                         # 体检报告示例（见 examples/README.md）
 ├── evals/scenarios.md                # 对抗性测试场景

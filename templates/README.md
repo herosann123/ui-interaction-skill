@@ -9,7 +9,7 @@
 
 | 模板 | 展示的模式 | 适合的改版 |
 | --- | --- | --- |
-| `demo-shell/` | ① ② ④ ⑤ ⑧ ⑨ ⑬ ㉖ ㉜ 53 | **Before/After/Split 对照壳**；`new-demo` 默认模板。`before.html` 是一个故意堆满反例的页面，`after.html` 是同一内容的升级版 |
+| `demo-shell/` | ① ② ④ ⑤ ⑧ ⑨ ⑬ ㉖ ㉜ 53 | **Before/After/Split 对照壳**；`new-demo` 默认模板。完整案例：`demo-shell/CASE-STUDY.md`。`before.html` 是一个故意堆满反例的页面，`after.html` 是同一内容的升级版 |
 | `hero/` | ① ② ④ ⑤ ⑥ ⑧ ⑨ ⑬ ㉜ | 落地页首屏 / 产品发布页：分层视差、词级揭示、磁吸 CTA、SVG logo 描边 |
 | `feature-grid/` | ② ⑦ ⑧ ⑨ | 定价页 / 特性网格：3D 倾斜、月付年付开关、数字滚动 |
 | `ai-chat/` | ⑩ ⑫ ⑰ ㉜ | AI 产品 / Copilot：流式打字、玻璃输入区、可暂停粒子背景 |

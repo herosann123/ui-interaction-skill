@@ -15,7 +15,8 @@
   - `new-demo --from-audit` / `--blank`：从体检自动选 3–5 项；空白骨架
 - **体检器**：`--sarif`（GitHub Code Scanning）、`--baseline`（只报新增问题）、按文件的 touch-action、role/tabindex 键盘复核。
 - **CI / Pages**：`.github/workflows/check.yml`、`smoke.yml`；根目录 `index.html` 演示导航首页。
-- **自检**：check.mjs 覆盖 18 个页面、组件/presets、166 个文档路径；smoke 17 页通过。
+- **完整案例**：`templates/demo-shell/CASE-STUDY.md` + 桌面/手机前后截图；`scripts/screenshot.mjs`。
+- **自检**：check.mjs 覆盖 18 个页面、组件/presets、172 个文档路径；smoke 17 页通过。
 
 ### 说明
 

@@ -76,7 +76,7 @@ allowed-tools:
 | `templates/` | 9 套可运行页面：demo-shell、hero、feature-grid、ai-chat、mobile-feed、mobile-detail、dashboard、checkout、settings |
 | `scripts/audit.mjs` | 静态体检器（P0/P1/P2 + file:line + 推荐模式 + SARIF / baseline） |
 | `scripts/brief.mjs` / `iterate.mjs` | 体检 JSON → demo brief；run 版本快照 + CHANGELOG |
-| `scripts/smoke.mjs` / `sanitize.mjs` | 390px + reduced-motion 浏览器烟测；演示页脱敏 |
+| `scripts/smoke.mjs` / `screenshot.mjs` / `sanitize.mjs` | 390px + reduced-motion 烟测；页面截图；演示页脱敏 |
 | `scripts/new-demo.mjs` | 生成 Before/After/Split run 目录 |
 | `scripts/bundle-demo.mjs` | 把 motion-kit 内联成单文件 |
 | `AUDIT.md` / `DEMO.md` / `ITERATE.md` | 三个工作流的完整协议 |

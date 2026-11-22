@@ -30,9 +30,16 @@
 - **完整协议**：`AUDIT.md` / `DEMO.md` / `ITERATE.md`
 - **自检**：`scripts/check.mjs` + `tests/fixtures/`
 - **浏览器烟测**：`scripts/smoke.mjs`（390px + reduced-motion + 控制台错误）
+- **截图**：`scripts/screenshot.mjs`（案例 / 对比图 / 交付截图）
 - **自动化**：`scripts/brief.mjs` / `scripts/iterate.mjs` / `scripts/sanitize.mjs`
 - **框架适配**：`library/motion-kit.esm.js`、`motion-kit.d.ts`、`adapters/react.js`、`adapters/vue.js`
 - **主题预设**：`presets/editorial.css` / `glass.css` / `soft.css`
+
+## 完整案例
+
+- **Northwind Analytics Before / After**：`templates/demo-shell/`
+- 图文说明：`templates/demo-shell/CASE-STUDY.md`
+- 在线试玩：https://herosann123.github.io/ui-interaction-skill/templates/demo-shell/
 
 ## 快速开始
 

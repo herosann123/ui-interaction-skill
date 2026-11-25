@@ -1,0 +1,11 @@
+{
+  "title": "Northwind Analytics",
+  "archetype": "editorial",
+  "density": "normal",
+  "layout": "landing",
+  "typeScale": 1.25,
+  "accent": "#b4552f",
+  "motionBudget": { "primary": 2, "secondary": 1 },
+  "states": ["default", "hover", "focus", "active", "disabled", "loading", "error", "success"],
+  "verify": { "viewports": [390, 768, 1280], "reducedMotion": true }
+}

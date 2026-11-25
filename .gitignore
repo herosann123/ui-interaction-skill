@@ -37,3 +37,6 @@ uiux-design-suite-v1.0.0/
 
 # 浏览器烟测截图
 .smoke-shots/
+
+# 浏览器验收报告
+.smoke-report.md

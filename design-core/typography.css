@@ -1,0 +1,100 @@
+/* Design Core · typography utilities
+   依赖 tokens.css。只提供角色，不绑定具体页面布局。 */
+
+.d-display,
+.d-h1,
+.d-h2,
+.d-h3 {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight, 400);
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.d-display {
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--display-tracking, 0);
+}
+
+.d-h1 {
+  font-size: var(--fs-h1);
+  line-height: var(--lh-heading);
+  letter-spacing: -0.02em;
+}
+
+.d-h2 {
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+  letter-spacing: -0.015em;
+}
+
+.d-h3 {
+  font-family: var(--font-body);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.d-body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--ink);
+}
+
+.d-small {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.d-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-tag);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.d-num {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  letter-spacing: -0.02em;
+}
+
+.d-prose {
+  max-width: var(--prose);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-prose);
+  color: var(--ink-72);
+}
+
+.d-prose > * + * {
+  margin-top: var(--sp-3);
+}
+
+.d-prose h2,
+.d-prose h3 {
+  color: var(--ink);
+}
+
+.d-faint {
+  color: var(--ink-52);
+}
+
+.d-rule {
+  height: 1px;
+  border: 0;
+  background: var(--line);
+}

@@ -9,6 +9,7 @@
 
 | 需求 | 入口 | 产物 |
 | --- | --- | --- |
+| 设计定调 | `DESIGN.md` + `design-core/` | `design.json` + tokens |
 | 选型 / 解释 | `SKILL.md` §4–§6 | 模式推荐（四层分级） |
 | 体检现有代码 | `AUDIT.md` + `scripts/audit.mjs` | P0/P1/P2 报告 + 3–5 条改动 |
 | 生成 Before/After demo | `DEMO.md` + `scripts/new-demo.mjs` | `ui-runs/<slug>/` 可运行对照 |
@@ -232,6 +233,8 @@ ui-interaction-skill/
 ├── DEMO.md                           # Before/After demo 生成协议
 ├── ITERATE.md                        # 反馈迭代协议（CR / 版本 / 回滚）
 ├── CHANGELOG.md                      # v3 变更记录
+├── DESIGN.md                         # 设计定调：archetype / density / layout / design.json
+├── design-core/                      # tokens / typography / layout / rules / schema
 ├── references/
 │   ├── mapping.md                    # 模块映射 / 56 模式速查 / 组合配方全文
 │   └── anti-patterns.md              # 反模式 / 性能预算 / reduced fallback 全文
@@ -246,7 +249,7 @@ ui-interaction-skill/
 │   ├── manifest.json                 # 56 模式 → demo / 章节 / kit 映射
 │   └── README.md                     # 库用法 + 扩展指南
 ├── components/                       # 5 组组件：buttons / feedback / forms / navigation / data
-├── presets/                          # 3 套主题令牌 + 预览
+├── presets/                          # 4 套主题令牌 + 预览
 ├── index.html                        # GitHub Pages / 本地演示首页
 ├── templates/
 │   ├── demo-shell/                   # Before/After/Split 对照壳 + 示例

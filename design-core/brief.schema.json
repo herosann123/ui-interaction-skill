@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/herosann123/ui-interaction-skill/design-core/brief.schema.json",
+  "title": "Design Brief",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["archetype", "density", "layout", "typeScale", "accent", "motionBudget", "states", "verify"],
+  "properties": {
+    "title": { "type": "string" },
+    "archetype": { "enum": ["editorial", "gallery", "deep-space", "old-money"] },
+    "density": { "enum": ["tight", "normal", "loose"] },
+    "layout": { "enum": ["landing", "reading", "flow", "dashboard", "gallery", "app"] },
+    "typeScale": { "type": "number", "minimum": 1.2, "maximum": 1.35 },
+    "accent": { "type": "string", "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$" },
+    "motionBudget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary", "secondary"],
+      "properties": {
+        "primary": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "secondary": { "type": "integer", "minimum": 0, "maximum": 2 }
+      }
+    },
+    "states": {
+      "type": "array",
+      "minItems": 8,
+      "uniqueItems": true,
+      "items": {
+        "enum": ["default", "hover", "focus", "active", "disabled", "loading", "error", "success"]
+      }
+    },
+    "verify": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["viewports", "reducedMotion"],
+      "properties": {
+        "viewports": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "type": "integer", "minimum": 320, "maximum": 2560 }
+        },
+        "reducedMotion": { "type": "boolean" }
+      }
+    }
+  }
+}

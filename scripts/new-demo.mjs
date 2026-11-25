@@ -66,6 +66,7 @@ function help() {
     '  --before <file>      直接指定改版前页面',
     '  --out <dir>          输出目录（默认 ui-runs/<日期-slug>）',
     '  --blank              生成空白 before/after 骨架（推荐交付用）',
+    '  --design <json>      design.json；复制 design-core tokens 并注入 data-theme/density',
     '  --from-audit <json>  从 audit --json 结果自动选 3–5 项，生成 BRIEF.md',
     '  --max <n>            从体检里最多选几项（默认 5）',
     '  --patterns <文本>    本次使用的模式，如 "①,⑤,④,⑬"',
@@ -159,14 +160,22 @@ function placeholderBefore(safeTitle) {
 `;
 }
 
-function placeholderAfter(title) {
+function placeholderAfter(title, design) {
+  const theme = design ? ' data-theme="' + design.archetype + '" data-density="' + design.density + '"' : '';
+  const links = design
+    ? '<link rel="stylesheet" href="assets/design-tokens.css"><link rel="stylesheet" href="assets/design-typography.css"><link rel="stylesheet" href="assets/design-layout.css">'
+    : '';
+  const mainClass = design ? ' class="d-container d-section"' : '';
+  const eyebrowClass = design ? ' class="d-eyebrow"' : ' class="eyebrow"';
+  const titleClass = design ? ' class="d-display"' : '';
+  const proseClass = design ? ' class="d-prose"' : '';
   return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN"${theme}>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>After · ${title}</title>
-<link rel="stylesheet" href="assets/motion-kit.css">
+${links}<link rel="stylesheet" href="assets/motion-kit.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -186,10 +195,10 @@ function placeholderAfter(title) {
 </script>
 </head>
 <body>
-  <main data-reveal>
-    <p class="eyebrow">AFTER / BLANK</p>
-    <h1>把改版后页面放到这里</h1>
-    <p>这是空白骨架。把模板内容或用户的新页面写入 <code>after.html</code>，保留 before 的文案与信息结构；只改交互、层级与质感。</p>
+  <main${mainClass} data-reveal>
+    <p${eyebrowClass}>AFTER / BLANK</p>
+    <h1${titleClass}>把改版后页面放到这里</h1>
+    <p${proseClass}>这是空白骨架。把模板内容或用户的新页面写入 <code>after.html</code>，保留 before 的文案与信息结构；只改交互、层级与质感。</p>
     <div class="actions">
       <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="motion-kit 已加载">测试 motion-kit</button>
       <a class="mk-btn mk-btn--ghost" href="index.html">返回对照壳</a>
@@ -230,6 +239,27 @@ function main() {
   // 1. 库资产
   copyFile(join(ROOT, 'library', 'motion-kit.css'), join(outDir, 'assets', 'motion-kit.css'));
   copyFile(join(ROOT, 'library', 'motion-kit.js'), join(outDir, 'assets', 'motion-kit.js'));
+
+  let design = null;
+  if (args.design && args.design !== true) {
+    const designPath = resolve(CWD, String(args.design));
+    if (!existsSync(designPath)) {
+      console.error('[new-demo] 找不到 design.json：' + args.design);
+      process.exitCode = 1;
+      return;
+    }
+    design = JSON.parse(readText(designPath));
+    const tokens = JSON.parse(readText(join(ROOT, 'design-core', 'tokens.json')));
+    if (!tokens.archetypes[design.archetype] || !['tight', 'normal', 'loose'].includes(design.density)) {
+      console.error('[new-demo] design.json 的 archetype / density 不合法');
+      process.exitCode = 1;
+      return;
+    }
+    copyFile(join(ROOT, 'design-core', 'tokens.css'), join(outDir, 'assets', 'design-tokens.css'));
+    copyFile(join(ROOT, 'design-core', 'typography.css'), join(outDir, 'assets', 'design-typography.css'));
+    copyFile(join(ROOT, 'design-core', 'layout.css'), join(outDir, 'assets', 'design-layout.css'));
+    writeText(join(outDir, 'design.json'), JSON.stringify(design, null, 2));
+  }
 
   // 2. before / after / shell
   let shellSource;
@@ -301,8 +331,12 @@ function main() {
 
   let afterHtml = afterSource
     ? rewriteAssets(readText(afterSource))
-    : placeholderAfter(safeTitle);
+    : placeholderAfter(safeTitle, design);
   afterHtml = afterHtml.replace(/<title>[\s\S]*?<\/title>/i, '<title>After · ' + safeTitle + '</title>');
+  if (design && afterSource) {
+    afterHtml = afterHtml.replace(/<html([^>]*)>/i, '<html$1 data-theme="' + design.archetype + '" data-density="' + design.density + '">');
+    afterHtml = afterHtml.replace('</head>', '<link rel="stylesheet" href="assets/design-tokens.css"><link rel="stylesheet" href="assets/design-typography.css"><link rel="stylesheet" href="assets/design-layout.css"></head>');
+  }
   writeText(join(outDir, 'after.html'), afterHtml);
 
   if (beforeSource) {
@@ -349,13 +383,14 @@ function main() {
       audit: auditSource,
     },
     patterns,
+    design: design ? { archetype: design.archetype, density: design.density, layout: design.layout, file: 'design.json' } : null,
     files: [
       'index.html',
       'before.html',
       'after.html',
       'assets/motion-kit.css',
       'assets/motion-kit.js',
-    ].concat(briefText ? ['BRIEF.md'] : []),
+    ].concat(design ? ['design.json', 'assets/design-tokens.css', 'assets/design-typography.css', 'assets/design-layout.css'] : []).concat(briefText ? ['BRIEF.md'] : []),
     notes: args.files && args.files !== true ? String(args.files) : '',
     status: 'draft',
     versions: [{ version: 1, at: new Date().toISOString(), changes: ['初始改版 Demo'] }],

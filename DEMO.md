@@ -34,6 +34,7 @@ ui-runs/<YYYYMMDD>-<slug>/
 | 源码 / 页面 | 是 | 路径或粘贴的 HTML / 组件；用于生成 before 与提取文案 |
 | 选中的 findings | 是 | 来自 `AUDIT.md` §6；没有就先做体检 |
 | 必须保留 | 是 | 文案、品牌色、logo、埋点、业务入口 |
+| design.json | 推荐 | archetype / density / layout / typeScale / accent / motionBudget / states / verify；没有就先用 `scripts/design-brief.mjs` 定调 |
 | 技术栈 | 推荐 | demo 默认纯 HTML；用户要 React/Vue 时按栈输出 |
 | 设备 / 浏览器 | 推荐 | 默认桌面 + 390px |
 | 依赖限制 | 可选 | 默认零依赖；GSAP 仅在模式确实需要时用 CDN 并锁版本 |
@@ -65,7 +66,8 @@ ui-runs/<YYYYMMDD>-<slug>/
 
 ```bash
 # 空白骨架（推荐交付用；before/after 都是占位）
-node scripts/new-demo.mjs --name my-refresh --title "我的改版" --blank
+node scripts/design-brief.mjs --archetype editorial --density normal --layout landing --out design.json
+node scripts/new-demo.mjs --name my-refresh --title "我的改版" --blank --design design.json
 
 # demo-shell + Northwind 示例（适合先看效果；交付前必须替换内容）
 node scripts/new-demo.mjs --name northwind --title "Northwind 改版"

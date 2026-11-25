@@ -47,7 +47,17 @@
 
 ### 第 2 步 · 跑静态扫描
 
+如果页面已有设计定调，先跑设计层检查：
+
 ```bash
+node scripts/design-lint.mjs --brief design.json
+```
+
+它检查 tokens 对比度、type scale、spacing、CJK fallback、组件 8 态与 design.json 合法性。
+与下面的交互体检分开：design-lint 管「排版/色彩/布局/状态」，audit 管「动效/性能/可访问性」。
+
+```bash
+node scripts/design-lint.mjs --brief design.json
 node scripts/audit.mjs <用户源码目录或文件...> --out ui-runs/<slug>/audit.md
 node scripts/audit.mjs <路径> --json --out ui-runs/<slug>/audit.json
 ```

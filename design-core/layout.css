@@ -1,0 +1,76 @@
+/* Design Core · layout utilities
+   依赖 tokens.css。五条底线：无横向溢出 / 行长 / 触控 / 间距 scale / 层级。
+   这些是起点，不是唯一答案。 */
+
+.d-container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+}
+
+.d-section {
+  padding-block: var(--sp-6);
+}
+
+.d-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.d-stack--tight {
+  gap: var(--sp-1);
+}
+
+.d-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.d-grid {
+  display: grid;
+  gap: var(--sp-3);
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+}
+
+.d-grid--wide {
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+}
+
+.d-flow {
+  max-width: var(--prose);
+  margin-inline: auto;
+}
+
+.d-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  box-shadow: var(--shadow-1);
+}
+
+.d-touch {
+  min-width: var(--touch);
+  min-height: var(--touch);
+}
+
+.d-safe-bottom {
+  padding-bottom: max(var(--sp-4), env(safe-area-inset-bottom));
+}
+
+/* 内容驱动断点：只在“形态翻转”时使用，数值可按内容替换 */
+@media (min-width: 720px) {
+  .d-section {
+    padding-block: var(--sp-7);
+  }
+}
+
+@media (min-width: 1024px) {
+  .d-grid--sidebar {
+    grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+    align-items: start;
+  }
+}

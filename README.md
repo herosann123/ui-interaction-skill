@@ -23,17 +23,27 @@
   - reveal / stagger / parallax / magnetic / tilt / ripple / counter / stream / dialog / sheet / tabs / swipe-row / cmdk / haptic / toast / bump / flip / animateValue
 - **9 套可运行页面**：`templates/`
   - demo-shell / hero / feature-grid / ai-chat / mobile-feed / mobile-detail / dashboard / checkout / settings
-- **3 套主题**：`presets/`（editorial / glass / soft）
+- **Design Core**：`design-core/`（4 套 archetype / type scale / spacing / 组件 8 态）
+- **4 套主题**：`presets/`（editorial / glass / soft）
 - **5 组组件**：`components/`
   - buttons / feedback / forms / navigation / data
 - **32 条体检规则**：`scripts/audit.mjs`
 - **完整协议**：`AUDIT.md` / `DEMO.md` / `ITERATE.md`
 - **自检**：`scripts/check.mjs` + `tests/fixtures/`
-- **浏览器烟测**：`scripts/smoke.mjs`（390px + reduced-motion + 控制台错误）
+- **浏览器验收**：`scripts/smoke.mjs`（390/768/1280 + reduced-motion + 溢出 + 44px 目标 + 控制台错误）
 - **截图**：`scripts/screenshot.mjs`（案例 / 对比图 / 交付截图）
 - **自动化**：`scripts/brief.mjs` / `scripts/iterate.mjs` / `scripts/sanitize.mjs`
 - **框架适配**：`library/motion-kit.esm.js`、`motion-kit.d.ts`、`adapters/react.js`、`adapters/vue.js`
 - **主题预设**：`presets/editorial.css` / `glass.css` / `soft.css`
+
+## 设计定调
+
+写页面前先定 `design.json`：archetype / density / layout / type scale / accent / motion budget / states / verify。
+```bash
+node scripts/design-brief.mjs --archetype editorial --density normal --layout landing --out design.json
+node scripts/design-lint.mjs
+```
+详见 `DESIGN.md` 与 `design-core/README.md`。
 
 ## 完整案例
 
@@ -113,13 +123,15 @@ node scripts/check.mjs
 ```text
 .
 ├── index.html               # GitHub Pages / 本地演示首页
+├── DESIGN.md                # 设计定调协议（design.json）
+├── design-core/             # tokens / typography / layout / rules
 ├── SKILL.md                 # 主入口：四模式路由 + 核心决策
 ├── AUDIT.md / DEMO.md / ITERATE.md
 ├── PATTERNS.md / INDEX.md   # 56 模式代码与速查
 ├── references/              # 映射 / 反模式 / 性能预算全文
 ├── library/                 # motion-kit + manifest
 ├── components/              # 5 组可复制组件
-├── presets/                 # 3 套主题令牌 + 预览
+├── presets/                 # 4 套主题令牌 + 预览
 ├── templates/               # 9 套页面
 ├── scripts/                 # audit / new-demo / bundle / check / smoke / brief / iterate / sanitize
 ├── tests/fixtures/          # 体检规则回归样例

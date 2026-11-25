@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Core · 排版 / 色彩 / 布局</title>
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./typography.css">
+<link rel="stylesheet" href="./layout.css">
+<link rel="stylesheet" href="../library/motion-kit.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  .top { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .brand { font-weight: 700; letter-spacing: -0.02em; }
+  .top nav { display: flex; gap: 16px; margin-left: auto; color: var(--muted); font-size: 12px; }
+  .top nav a:hover { color: var(--ink); }
+  .hero { padding: clamp(40px, 7vw, 90px) 0 40px; }
+  .hero h1 { max-width: 14ch; }
+  .hero .d-prose { margin-top: var(--sp-2); }
+  .swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-2); margin-top: var(--sp-4); }
+  .swatch { padding: var(--sp-3); border-radius: var(--radius); border: 1px solid var(--line); background: var(--panel); }
+  .swatch b { display: block; font-family: var(--font-display); font-size: 20px; font-weight: var(--display-weight); }
+  .swatch span { display: block; margin-top: 4px; color: var(--muted); font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.06em; }
+  .swatch i { display: block; height: 38px; margin-top: var(--sp-2); border-radius: 8px; background: var(--accent); }
+  .scale { display: grid; gap: 8px; margin-top: var(--sp-3); }
+  .scale div { display: flex; align-items: center; gap: 12px; color: var(--muted); font-family: var(--font-mono); font-size: 10px; }
+  .scale i { display: block; height: 8px; border-radius: 999px; background: var(--accent); width: var(--w, 20%); }
+  .themes { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-2); margin-top: var(--sp-3); }
+  .theme-card { padding: var(--sp-4); border-radius: var(--radius-lg); border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+  .theme-card .tag { font-family: var(--font-mono); font-size: var(--fs-tag); letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; }
+  .theme-card h3 { margin-top: 10px; font-family: var(--font-display); font-size: 28px; font-weight: var(--display-weight); letter-spacing: var(--display-tracking); }
+  .theme-card p { margin-top: 8px; color: var(--muted); font-size: 13px; }
+  .theme-card .actions { display: flex; gap: 8px; margin-top: var(--sp-3); flex-wrap: wrap; }
+  .type-demo { padding: var(--sp-4); border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); margin-top: var(--sp-3); }
+  .type-demo > * + * { margin-top: var(--sp-2); }
+  .type-demo .d-display { font-size: clamp(40px, 7vw, 72px); }
+  .grid-demo { margin-top: var(--sp-3); }
+  .grid-demo .d-card { padding: var(--sp-3); }
+  .grid-demo .d-card b { display: block; font-size: 14px; }
+  .grid-demo .d-card span { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
+  footer { margin-top: var(--sp-5); padding: var(--sp-3) 0 var(--sp-5); border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+  @media (max-width: 860px) { .swatches, .themes { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .swatches, .themes { grid-template-columns: 1fr; } .top nav { display: none; } }
+</style>
+<script>
+  document.documentElement.classList.add('mk-js');
+  setTimeout(function () { if (!window.MotionKit) document.documentElement.classList.remove('mk-js'); }, 2500);
+</script>
+</head>
+<body>
+<div class="d-container">
+  <header class="top">
+    <a class="brand" href="../index.html">UI Interaction Skill · Design Core</a>
+    <nav aria-label="页面导航">
+      <a href="#type">排版</a>
+      <a href="#space">间距</a>
+      <a href="#themes">气质</a>
+      <a href="#layout">布局</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <p class="d-eyebrow" data-reveal="fade">Design Core / v1</p>
+    <h1 class="d-display" data-reveal="scale">先定气质，<br>再写页面</h1>
+    <p class="d-prose" data-reveal>4 套 archetype、1.25 type scale、3 档 spacing、5 条布局底线。不是更多文档，是可执行的 tokens 与规则。</p>
+    <div class="swatches" data-reveal>
+      <div class="swatch" data-theme="editorial"><b>Editorial</b><span>#F7F3EA / #B4552F</span><i></i></div>
+      <div class="swatch" data-theme="gallery"><b>Gallery</b><span>#FAF9F7 / #C8401F</span><i></i></div>
+      <div class="swatch" data-theme="deep-space"><b>Deep Space</b><span>#0B0D10 / #6FD3B5</span><i></i></div>
+      <div class="swatch" data-theme="old-money"><b>Old Money</b><span>#F4F1E8 / #2F4A3D</span><i></i></div>
+    </div>
+  </section>
+
+  <section class="d-section" id="type">
+    <p class="d-eyebrow">01 / Type scale</p>
+    <h2 class="d-h2">1.25 倍率，最多 7 级</h2>
+    <div class="type-demo">
+      <div class="d-display">Aa 文字</div>
+      <div class="d-h1">H1 · 一句话主张</div>
+      <div class="d-h2">H2 · 分区标题</div>
+      <div class="d-h3">H3 · 卡片标题</div>
+      <p class="d-body">正文 15px / 行高 1.8。行长控制在 45–75ch，长文宁大勿小。</p>
+      <p class="d-small">Small · 辅助说明与注释。</p>
+      <p class="d-eyebrow">Eyebrow · 宽排标签</p>
+      <p class="d-num" style="font-size:32px">12,000+</p>
+    </div>
+  </section>
+
+  <section class="d-section" id="space">
+    <p class="d-eyebrow">02 / Spacing</p>
+    <h2 class="d-h2">三档，不混用</h2>
+    <div class="scale">
+      <div><span>tight · 4/8/12/16/24/32/48</span><i style="--w:32%"></i></div>
+      <div><span>normal · 8/16/24/32/48/64/96</span><i style="--w:56%"></i></div>
+      <div><span>loose · 12/24/36/48/72/96/144</span><i style="--w:84%"></i></div>
+    </div>
+  </section>
+
+  <section class="d-section" id="themes">
+    <p class="d-eyebrow">03 / Archetypes</p>
+    <h2 class="d-h2">同一套组件，四种气质</h2>
+    <div class="themes">
+      <article class="theme-card" data-theme="editorial">
+        <span class="tag">Editorial</span>
+        <h3>编辑暖夜</h3>
+        <p>奶油纸、赤陶、衬线。品牌页 / 作品集 / 内容产品。</p>
+        <div class="actions">
+          <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="Editorial">主操作</button>
+          <button type="button" class="mk-btn mk-btn--ghost">次要</button>
+        </div>
+      </article>
+      <article class="theme-card" data-theme="gallery">
+        <span class="tag">Gallery</span>
+        <h3>极简画廊</h3>
+        <p>暖白、炭黑、朱砂一点。工作室 / 摄影 / SaaS。</p>
+        <div class="actions">
+          <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="Gallery">主操作</button>
+          <button type="button" class="mk-btn mk-btn--ghost">次要</button>
+        </div>
+      </article>
+      <article class="theme-card" data-theme="deep-space">
+        <span class="tag">Deep Space</span>
+        <h3>深空科技</h3>
+        <p>近黑蓝、薄荷、暗金。AI / DevTool / 夜间后台。</p>
+        <div class="actions">
+          <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="Deep Space">主操作</button>
+          <button type="button" class="mk-btn mk-btn--ghost">次要</button>
+        </div>
+      </article>
+      <article class="theme-card" data-theme="old-money">
+        <span class="tag">Old Money</span>
+        <h3>老钱墨绿</h3>
+        <p>米白、墨绿、旧金。酒店 / 品牌 / 财经 / 地产。</p>
+        <div class="actions">
+          <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="Old Money">主操作</button>
+          <button type="button" class="mk-btn mk-btn--ghost">次要</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="d-section" id="layout">
+    <p class="d-eyebrow">04 / Layout</p>
+    <h2 class="d-h2">容器 / 网格 / 行长</h2>
+    <div class="grid-demo d-grid" data-reveal>
+      <div class="d-card"><b>d-container</b><span>max 1120px + 流体边距</span></div>
+      <div class="d-card"><b>d-grid</b><span>auto-fit minmax(260px, 1fr)</span></div>
+      <div class="d-card"><b>d-flow</b><span>68ch 正文行长</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Design Core · tokens.css / typography.css / layout.css / rules.md</span>
+    <span><a href="./README.md">README</a> · <a href="../DESIGN.md">DESIGN 协议</a> · <a href="../index.html">返回首页</a></span>
+  </footer>
+</div>
+<script src="../library/motion-kit.js" defer></script>
+</body>
+</html>

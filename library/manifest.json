@@ -7,7 +7,7 @@
     "templates": 9,
     "behaviors": 18,
     "components": 5,
-    "presets": 3
+    "presets": 4
   },
   "kit": {
     "css": "library/motion-kit.css",
@@ -952,17 +952,22 @@
     {
       "name": "editorial",
       "path": "presets/editorial.css",
-      "use": "暖纸 / 衬线 / 陶土色"
+      "use": "兼容入口 → design-core editorial"
     },
     {
-      "name": "glass",
-      "path": "presets/glass.css",
-      "use": "深空 / 冷色 / 玻璃"
+      "name": "gallery",
+      "path": "presets/gallery.css",
+      "use": "兼容入口 → design-core gallery"
     },
     {
-      "name": "soft",
-      "path": "presets/soft.css",
-      "use": "浅灰 / 柔和绿 / 低对比"
+      "name": "deep-space",
+      "path": "presets/deep-space.css",
+      "use": "兼容入口 → design-core deep-space"
+    },
+    {
+      "name": "old-money",
+      "path": "presets/old-money.css",
+      "use": "兼容入口 → design-core old-money"
     }
   ]
 }

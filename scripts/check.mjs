@@ -61,6 +61,8 @@ const jsFiles = [
   'scripts/new-demo.mjs',
   'scripts/bundle-demo.mjs',
   'scripts/check.mjs',
+  'scripts/design-lint.mjs',
+  'scripts/design-brief.mjs',
   'scripts/smoke.mjs',
   'scripts/screenshot.mjs',
   'scripts/sanitize.mjs',
@@ -75,7 +77,7 @@ for (const file of jsFiles) {
 }
 
 console.log('\n[2/6] HTML 内联脚本');
-const htmlFiles = ['index.html'].concat(walk('templates'), walk('components'), walk('presets')).filter((f) => extname(f) === '.html');
+const htmlFiles = ['index.html'].concat(walk('templates'), walk('components'), walk('presets'), walk('design-core')).filter((f) => extname(f) === '.html');
 let inlineCount = 0;
 for (const file of htmlFiles) {
   const html = read(file);
@@ -127,6 +129,28 @@ function auditJson(args) {
   return JSON.parse(result.stdout);
 }
 
+console.log('');
+console.log('[3.5/6] Design Core');
+try {
+  const tokens = JSON.parse(read('design-core/tokens.json'));
+  const archetypes = Object.keys(tokens.archetypes || {});
+  if (archetypes.length === 4) ok('archetypes = 4 (' + archetypes.join(', ') + ')');
+  else fail('archetypes', String(archetypes.length));
+  if (Object.keys(tokens.spacing || {}).length === 3) ok('density = 3');
+  else fail('density', String(Object.keys(tokens.spacing || {}).length));
+  if ((tokens.states || []).length === 8) ok('states = 8');
+  else fail('states', String((tokens.states || []).length));
+  JSON.parse(read('design-core/brief.schema.json'));
+  ok('brief.schema.json');
+} catch (err) {
+  fail('design-core', err.message);
+}
+{
+  const result = runNode(['scripts/design-lint.mjs', '--quiet']);
+  if (result.status === 0) ok('design-lint = 0');
+  else fail('design-lint', (result.stdout || result.stderr || '').trim().split('\n').slice(-1)[0]);
+}
+
 console.log('\n[4/6] 体检回归');
 try {
   const clean = auditJson(['templates/demo-shell/after.html']);
@@ -145,6 +169,9 @@ try {
   const landing = auditJson(['index.html']);
   if (landing.findings.length === 0) ok('landing = 0');
   else fail('landing', landing.findings.length + ' 项');
+  const core = auditJson(['design-core/index.html']);
+  if (core.findings.length === 0) ok('design-core = 0');
+  else fail('design-core', core.findings.length + ' 项');
 } catch (err) {
   fail('components audit', err.message);
 }
@@ -209,11 +236,15 @@ const docs = [
   'INDEX.md',
   'CHANGELOG.md',
   'library/README.md',
+  'components/STATES.md',
   'templates/README.md',
   'templates/demo-shell/CASE-STUDY.md',
   'examples/README.md',
   'examples/demo-brief.md',
   'examples/iteration-example.md',
+  'DESIGN.md',
+  'design-core/README.md',
+  'design-core/rules.md',
   'references/mapping.md',
   'references/anti-patterns.md',
 ];
@@ -237,7 +268,11 @@ function checkLocal(doc, raw, fromBacktick) {
   let absolute = null;
   if (target.startsWith('./') || target.startsWith('../')) {
     absolute = resolve(ROOT, dirname(doc), target);
-  } else if (knownPrefix.test(target) || rootDocs.has(target)) {
+  } else if (knownPrefix.test(target)) {
+    const local = resolve(ROOT, dirname(doc), target);
+    const root = resolve(ROOT, target);
+    absolute = existsSync(local) ? local : root;
+  } else if (rootDocs.has(target)) {
     absolute = resolve(ROOT, target);
   } else if (!target.includes('/')) {
     // 裸文件名：可能是同一目录或根目录的文档，存在就计数；不存在则视为文字引用，不报错

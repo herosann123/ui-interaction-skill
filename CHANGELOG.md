@@ -1,5 +1,24 @@
 # CHANGELOG · ui-interaction-skill
 
+## v3.2.0 · 2026-11-25
+
+### Design Core
+
+- `DESIGN.md`：设计定调协议（archetype / density / layout / typeScale / accent / motionBudget / states / verify）。
+- `design-core/`：
+  - `tokens.json` / `tokens.css`：4 套 archetype（editorial / gallery / deep-space / old-money）、3 档 density、type scale、ink 阶梯、`--mk-*` 桥接。
+  - `typography.css` / `layout.css`：`.d-display/.d-prose/.d-eyebrow` 与 `.d-container/.d-grid/.d-flow`。
+  - `rules.md`：5 条布局底线 / 3 个决策问题 / 8 态 / 页面四态 / 验收矩阵。
+  - `brief.schema.json` + `design-core/examples/editorial.json`。
+  - `index.html`：4 套气质与排版/间距/布局预览。
+- `scripts/design-brief.mjs`：生成 / 校验 `design.json`。
+- `scripts/design-lint.mjs`：tokens 对比度、type scale、spacing、CJK fallback、组件状态、design.json 合法性。
+- `new-demo --design design.json`：复制 design-core，注入 `data-theme` / `data-density`，写入 manifest。
+- `presets/` 改为 design-core 的兼容别名（4 套 archetype + glass/soft 旧别名）。
+- `components/STATES.md`：8 态矩阵 / 表单规则 / 页面四态。
+- `smoke.mjs`：多视口 390/768/1280、元素级溢出、44px 触控目标、Markdown 报告；`smoke.yml` 同步。
+- `check.mjs`：增加 Design Core 结构、design-lint、design-core 页面检查。
+
 ## v3.1.0 · 2026-11-22
 
 ### 新增

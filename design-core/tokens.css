@@ -1,0 +1,213 @@
+/* =========================================================================
+   Design Core · tokens.css
+   4 套气质 archetype + type scale + spacing scale + ink 阶梯
+   用法：
+     <link rel="stylesheet" href="design-core/tokens.css">
+     <html data-theme="editorial" data-density="normal">
+   ========================================================================= */
+
+:root {
+  /* ---------- type scale (1.25) ---------- */
+  --fs-display: clamp(48px, 12vw, 120px);
+  --fs-h1: clamp(32px, 6vw, 56px);
+  --fs-h2: clamp(24px, 4.5vw, 36px);
+  --fs-h3: 20px;
+  --fs-body: 15px;
+  --fs-small: 13px;
+  --fs-tag: 11px;
+
+  --lh-display: 1.05;
+  --lh-heading: 1.15;
+  --lh-body: 1.8;
+  --lh-prose: 1.85;
+
+  /* ---------- spacing (normal default) ---------- */
+  --sp-1: 8px;
+  --sp-2: 16px;
+  --sp-3: 24px;
+  --sp-4: 32px;
+  --sp-5: 48px;
+  --sp-6: 64px;
+  --sp-7: 96px;
+
+  --container: 1120px;
+  --prose: 68ch;
+  --touch: 44px;
+
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  /* ---------- editorial defaults ---------- */
+  --bg: #f7f3ea;
+  --bg-2: #efe9db;
+  --panel: #fffdf8;
+  --ink: #1a1510;
+  --muted: #6f685d;
+  --line: rgba(26, 21, 16, 0.14);
+  --accent: #b4552f;
+  --accent-ink: #fff8f0;
+  --accent-2: #2f5d50;
+  --gold: #d9a862;
+  --ink-72: rgba(26, 21, 16, 0.72);
+  --ink-52: rgba(26, 21, 16, 0.52);
+
+  --font-display: "Fraunces", "Noto Serif SC", "Songti SC", serif;
+  --font-body: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", monospace;
+  --display-weight: 400;
+  --display-tracking: 0.01em;
+
+  --shadow-1: 0 1px 2px rgba(26, 21, 16, 0.08), 0 8px 24px rgba(26, 21, 16, 0.08);
+  --shadow-2: 0 2px 4px rgba(26, 21, 16, 0.1), 0 16px 48px rgba(26, 21, 16, 0.14);
+
+  /* motion-kit bridge */
+  --mk-accent: var(--accent);
+  --mk-accent-ink: var(--accent-ink);
+  --mk-surface: var(--panel);
+  --mk-ink: var(--ink);
+  --mk-muted: var(--muted);
+  --mk-border: var(--line);
+  --mk-glow: rgba(217, 168, 98, 0.3);
+  --mk-shadow-1: var(--shadow-1);
+  --mk-shadow-2: var(--shadow-2);
+}
+
+/* ---------- density ---------- */
+[data-density="tight"] {
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+}
+
+[data-density="normal"] {
+  --sp-1: 8px;
+  --sp-2: 16px;
+  --sp-3: 24px;
+  --sp-4: 32px;
+  --sp-5: 48px;
+  --sp-6: 64px;
+  --sp-7: 96px;
+}
+
+[data-density="loose"] {
+  --sp-1: 12px;
+  --sp-2: 24px;
+  --sp-3: 36px;
+  --sp-4: 48px;
+  --sp-5: 72px;
+  --sp-6: 96px;
+  --sp-7: 144px;
+}
+
+/* ---------- gallery ---------- */
+[data-theme="gallery"] {
+  --bg: #faf9f7;
+  --bg-2: #f1efeb;
+  --panel: #ffffff;
+  --ink: #141414;
+  --muted: #6f6b64;
+  --line: rgba(20, 20, 20, 0.12);
+  --accent: #c8401f;
+  --accent-ink: #fff8f0;
+  --accent-2: #1f4d3a;
+  --gold: #b99a5f;
+  --ink-72: rgba(20, 20, 20, 0.72);
+  --ink-52: rgba(20, 20, 20, 0.52);
+  --font-display: "Inter", "PingFang SC", "Noto Sans SC", sans-serif;
+  --font-body: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", monospace;
+  --display-weight: 600;
+  --display-tracking: -0.03em;
+  --shadow-1: 0 1px 2px rgba(20, 20, 20, 0.06), 0 8px 24px rgba(20, 20, 20, 0.06);
+  --shadow-2: 0 2px 4px rgba(20, 20, 20, 0.08), 0 16px 48px rgba(20, 20, 20, 0.1);
+  --mk-glow: rgba(200, 64, 31, 0.16);
+}
+
+/* ---------- deep-space ---------- */
+[data-theme="deep-space"] {
+  --bg: #0b0d10;
+  --bg-2: #11161d;
+  --panel: #13161c;
+  --ink: #e9ecf1;
+  --muted: #9aa4b8;
+  --line: rgba(233, 236, 241, 0.12);
+  --accent: #6fd3b5;
+  --accent-ink: #0b0d10;
+  --accent-2: #8fb8ff;
+  --gold: #d9b36a;
+  --ink-72: rgba(233, 236, 241, 0.72);
+  --ink-52: rgba(233, 236, 241, 0.52);
+  --font-display: "Space Grotesk", "Noto Sans SC", "PingFang SC", sans-serif;
+  --font-body: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", monospace;
+  --display-weight: 500;
+  --display-tracking: -0.02em;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 32px rgba(0, 0, 0, 0.32);
+  --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.45), 0 24px 60px rgba(0, 0, 0, 0.4);
+  --mk-glass-bg: rgba(20, 25, 36, 0.62);
+  --mk-glass-border: rgba(235, 240, 255, 0.15);
+  --mk-glow: rgba(111, 211, 181, 0.22);
+}
+
+/* ---------- old-money ---------- */
+[data-theme="old-money"] {
+  --bg: #f4f1e8;
+  --bg-2: #eae6d9;
+  --panel: #fffdf8;
+  --ink: #17211c;
+  --muted: #6f6a5e;
+  --line: rgba(23, 33, 28, 0.14);
+  --accent: #2f4a3d;
+  --accent-ink: #f7f3ea;
+  --accent-2: #b99a5f;
+  --gold: #b99a5f;
+  --ink-72: rgba(23, 33, 28, 0.72);
+  --ink-52: rgba(23, 33, 28, 0.52);
+  --font-display: "Playfair Display", "Noto Serif SC", "Songti SC", serif;
+  --font-body: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", monospace;
+  --display-weight: 400;
+  --display-tracking: 0;
+  --shadow-1: 0 1px 2px rgba(23, 33, 28, 0.07), 0 8px 24px rgba(23, 33, 28, 0.07);
+  --shadow-2: 0 2px 4px rgba(23, 33, 28, 0.09), 0 16px 48px rgba(23, 33, 28, 0.12);
+  --mk-glow: rgba(185, 154, 95, 0.24);
+}
+
+/* editorial explicit alias (root defaults already editorial) */
+[data-theme="editorial"] {
+  --bg: #f7f3ea;
+  --bg-2: #efe9db;
+  --panel: #fffdf8;
+  --ink: #1a1510;
+  --muted: #6f685d;
+  --line: rgba(26, 21, 16, 0.14);
+  --accent: #b4552f;
+  --accent-ink: #fff8f0;
+  --accent-2: #2f5d50;
+  --gold: #d9a862;
+  --ink-72: rgba(26, 21, 16, 0.72);
+  --ink-52: rgba(26, 21, 16, 0.52);
+  --font-display: "Fraunces", "Noto Serif SC", "Songti SC", serif;
+  --font-body: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", monospace;
+  --display-weight: 400;
+  --display-tracking: 0.01em;
+}
+
+/* keep motion-kit bridge in sync for themes that override colors */
+[data-theme] {
+  --mk-accent: var(--accent);
+  --mk-accent-ink: var(--accent-ink);
+  --mk-surface: var(--panel);
+  --mk-ink: var(--ink);
+  --mk-muted: var(--muted);
+  --mk-border: var(--line);
+  --mk-shadow-1: var(--shadow-1);
+  --mk-shadow-2: var(--shadow-2);
+}

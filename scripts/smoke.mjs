@@ -2,12 +2,13 @@
 /* =========================================================================
    浏览器烟测（零依赖 CDP）
    - 自动找 Chrome（或 --chrome <path>）
-   - 390 × 844、prefers-reduced-motion: reduce
-   - 检查：横向溢出、内容不可见、控制台错误
-   - 可选截图：--screenshots <dir>
+   - 多视口（默认 390；可 390,768,1280）、prefers-reduced-motion: reduce
+   - 检查：横向溢出、内容不可见、控制台错误、44px 触控目标、元素级溢出
+   - 可选截图 / Markdown 报告
 
    用法：
      node scripts/smoke.mjs
+     node scripts/smoke.mjs --viewports 390,768,1280 --report .smoke-report.md
      node scripts/smoke.mjs --screenshots .smoke-shots
    ========================================================================= */
 
@@ -21,12 +22,14 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 function parse(argv) {
-  const out = { port: 9222 };
+  const out = { port: 9222, viewports: [390], screenshots: null, report: null };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--chrome') out.chrome = argv[++i];
     else if (arg === '--port') out.port = parseInt(argv[++i], 10) || 9222;
     else if (arg === '--screenshots') out.screenshots = argv[++i] || '.smoke-shots';
+    else if (arg === '--viewports') out.viewports = String(argv[++i] || '390').split(',').map((n) => parseInt(n, 10)).filter(Boolean);
+    else if (arg === '--report') out.report = argv[++i] || '.smoke-report.md';
   }
   return out;
 }
@@ -77,7 +80,7 @@ function connect(url) {
   });
 }
 
-async function runPage(base, page, opts) {
+async function runPage(base, page, opts, width, height) {
   const url = 'file:///' + resolve(ROOT, page).replace(/\\/g, '/');
   const target = await (await fetch(base + '/json/new?' + encodeURIComponent(url), { method: 'PUT' })).json();
   const ws = await connect(target.webSocketDebuggerUrl);
@@ -101,10 +104,10 @@ async function runPage(base, page, opts) {
   await send('Log.enable');
   await send('Page.enable');
   await send('Emulation.setDeviceMetricsOverride', {
-    width: 390,
-    height: 844,
+    width,
+    height,
     deviceScaleFactor: 1,
-    mobile: true,
+    mobile: width < 600,
   });
   await send('Emulation.setEmulatedMedia', {
     features: [{ name: 'prefers-reduced-motion', value: 'reduce' }],
@@ -112,12 +115,29 @@ async function runPage(base, page, opts) {
   await send('Page.navigate', { url });
   await sleep(1300);
   const result = await send('Runtime.evaluate', {
-    expression: `(() => ({
-      kit: !!window.MotionKit,
-      hidden: [...document.querySelectorAll('[data-reveal]')].filter(e => getComputedStyle(e).opacity === '0').length,
-      overflow: document.documentElement.scrollWidth - window.innerWidth,
-      title: document.title
-    }))()`,
+    expression: `(() => {
+      const vw = document.documentElement.clientWidth;
+      const overflowEls = Array.from(document.querySelectorAll('*')).filter((el) => {
+        const r = el.getBoundingClientRect();
+        return r.width > 0 && (r.right > vw + 1 || r.left < -1);
+      }).slice(0, 8).map((el) => el.tagName.toLowerCase() + (el.className ? '.' + String(el.className).split(' ')[0] : ''));
+      const controls = Array.from(document.querySelectorAll('button, input, select, textarea, [role="button"]')).filter((el) => {
+        const r = el.getBoundingClientRect();
+        return r.width > 0 && r.height > 0;
+      });
+      const smallTargets = controls.filter((el) => {
+        const r = el.getBoundingClientRect();
+        return r.width < 44 || r.height < 44;
+      }).slice(0, 8).map((el) => el.tagName.toLowerCase() + (el.textContent ? ':' + el.textContent.trim().slice(0, 12) : ''));
+      return {
+        kit: !!window.MotionKit,
+        hidden: Array.from(document.querySelectorAll('[data-reveal]')).filter((e) => getComputedStyle(e).opacity === '0').length,
+        overflow: document.documentElement.scrollWidth - window.innerWidth,
+        title: document.title,
+        smallTargets,
+        overflowEls
+      };
+    })()`,
     returnByValue: true,
   });
   const errors = events.filter(
@@ -128,7 +148,7 @@ async function runPage(base, page, opts) {
   let shotPath = null;
   if (opts.screenshots) {
     const shot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
-    const name = page.replace(/[\\/]/g, '__').replace(/\.html$/, '.png');
+    const name = page.replace(/[\\/]/g, '__').replace(/\.html$/, '') + '@' + width + '.png';
     shotPath = join(resolve(ROOT, opts.screenshots), name);
     mkdirSync(dirname(shotPath), { recursive: true });
     writeFileSync(shotPath, Buffer.from(shot.result.data, 'base64'));
@@ -138,6 +158,7 @@ async function runPage(base, page, opts) {
   await fetch(base + '/json/close/' + target.id).catch(() => {});
   return {
     page,
+    width,
     ...result.result.result.value,
     errors: errors.length,
     shot: shotPath,
@@ -186,29 +207,34 @@ async function main() {
     ...walk('templates'),
     ...walk('components'),
     ...walk('presets'),
+    ...walk('design-core'),
   ])).filter((p) => !p.endsWith('templates/demo-shell/before.html'));
 
   let failed = 0;
   const rows = [];
   try {
     for (const page of pages) {
-      try {
-        const row = await runPage(base, page, opts);
-        rows.push(row);
-        const overflow = row.overflow > 1;
-        const hidden = row.hidden > 0;
-        const bad = overflow || hidden || row.errors > 0;
-        if (bad) failed += 1;
-        console.log(
-          (bad ? '✗' : '✓') + ' ' + page +
-          ' · overflow ' + row.overflow +
-          ' · hidden ' + row.hidden +
-          ' · errors ' + row.errors +
-          (row.shot ? ' · ' + row.shot : '')
-        );
-      } catch (err) {
-        failed += 1;
-        console.log('✗ ' + page + ' — ' + err.message);
+      for (const width of opts.viewports) {
+        const height = width <= 430 ? 844 : width <= 900 ? 1024 : 800;
+        try {
+          const row = await runPage(base, page, opts, width, height);
+          rows.push(row);
+          const overflow = row.overflow > 1;
+          const hidden = row.hidden > 0;
+          const bad = overflow || hidden || row.errors > 0;
+          if (bad) failed += 1;
+          console.log(
+            (bad ? '✗' : '✓') + ' ' + page + ' @' + width +
+            ' · overflow ' + row.overflow +
+            ' · hidden ' + row.hidden +
+            ' · small ' + (row.smallTargets || []).length +
+            ' · errors ' + row.errors +
+            (row.shot ? ' · ' + row.shot : '')
+          );
+        } catch (err) {
+          failed += 1;
+          console.log('✗ ' + page + ' @' + width + ' — ' + err.message);
+        }
       }
     }
   } finally {
@@ -225,7 +251,24 @@ async function main() {
     }
   }
 
-  console.log('\n' + (failed ? '✗ ' + failed + ' 页失败' : '✓ ' + pages.length + ' 页通过'));
+  if (opts.report) {
+    const lines = [
+      '# Browser verify',
+      '',
+      '| page | viewport | overflow | hidden | small targets | errors |',
+      '| --- | --- | --- | --- | --- | --- |',
+    ];
+    rows.forEach((row) => {
+      lines.push('| `' + row.page + '` | ' + row.width + ' | ' + row.overflow + ' | ' + row.hidden + ' | ' + (row.smallTargets || []).length + ' | ' + row.errors + ' |');
+    });
+    const file = resolve(ROOT, opts.report);
+    mkdirSync(dirname(file), { recursive: true });
+    writeFileSync(file, lines.join(String.fromCharCode(10)) + String.fromCharCode(10), 'utf8');
+    console.log('[smoke] report → ' + opts.report);
+  }
+
+  const total = pages.length * opts.viewports.length;
+  console.log((failed ? '✗ ' + failed + ' / ' + total + ' 页失败' : '✓ ' + total + ' 页通过'));
   if (failed) process.exitCode = 1;
 }
 

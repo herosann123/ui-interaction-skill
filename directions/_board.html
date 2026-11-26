@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{title}} · {{label}}</title>
+<link rel="stylesheet" href="{{root}}design-core/tokens.css">
+<link rel="stylesheet" href="{{root}}design-core/typography.css">
+<link rel="stylesheet" href="{{root}}design-core/layout.css">
+<link rel="stylesheet" href="{{root}}library/motion-kit.css">
+<link rel="stylesheet" href="{{root}}directions/specimens.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-body); background: #e9e5db; }
+  a { color: inherit; text-decoration: none; }
+  .board-back { position: fixed; top: 16px; left: 16px; z-index: 10; padding: 7px 12px; border-radius: 999px; border: 1px solid rgba(26,23,18,.18); background: rgba(255,253,248,.86); color: #1a1712; font-size: 11px; text-decoration: none; }
+</style>
+<script>
+  document.documentElement.classList.add('mk-js');
+  setTimeout(function () { if (!window.MotionKit) document.documentElement.classList.remove('mk-js'); }, 2500);
+</script>
+</head>
+<body>
+<a class="board-back" href="./index.html">← 返回方向选择</a>
+<main class="direction direction--board" data-direction="{{direction}}">
+  <div class="board-inner">
+    <p class="dir-tag">{{index}} · {{label}}</p>
+    <h1>{{title}}</h1>
+    <p class="dir-copy">{{copy}}</p>
+    <div class="dir-actions">
+      <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="方向 {{index}}">选择这个方向</button>
+      <button type="button" class="mk-btn mk-btn--ghost" data-toast="稍后对比">先看看</button>
+    </div>
+    <div class="dir-card"><b>{{metric}}</b><span>{{metricLabel}}</span></div>
+    <p class="dir-note">{{why}} · 字体：{{font}} · 圆角：{{radius}}</p>
+  </div>
+</main>
+<script src="{{root}}library/motion-kit.js" defer></script>
+</body>
+</html>

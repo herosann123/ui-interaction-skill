@@ -208,7 +208,8 @@ async function main() {
     ...walk('components'),
     ...walk('presets'),
     ...walk('design-core'),
-  ])).filter((p) => !p.endsWith('templates/demo-shell/before.html'));
+    ...walk('directions'),
+  ])).filter((p) => !p.endsWith('templates/demo-shell/before.html') && !p.split('/').pop().startsWith('_'));
 
   let failed = 0;
   const rows = [];

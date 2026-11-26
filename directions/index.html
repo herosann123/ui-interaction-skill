@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Directions · 9 套设计方向样张</title>
+<link rel="stylesheet" href="../design-core/tokens.css">
+<link rel="stylesheet" href="../design-core/typography.css">
+<link rel="stylesheet" href="../design-core/layout.css">
+<link rel="stylesheet" href="../library/motion-kit.css">
+<link rel="stylesheet" href="./specimens.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  a { color: inherit; text-decoration: none; }
+  body { background: #e9e5db; color: #1a1712; font-family: var(--font-body); line-height: 1.55; padding: 26px 0 60px; }
+  .wrap { width: min(1120px, calc(100% - 32px)); margin-inline: auto; }
+  .top { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid rgba(26,23,18,.14); }
+  .brand { font-weight: 700; letter-spacing: -0.02em; }
+  .top nav { display: flex; gap: 16px; margin-left: auto; color: #756e62; font-size: 12px; }
+  .top nav a { color: inherit; text-decoration: none; }
+  .top nav a:hover { color: #1a1712; }
+  .intro { padding: 34px 0 24px; }
+  .intro h1 { max-width: 16ch; font-family: "Fraunces", "Noto Serif SC", serif; font-size: clamp(34px, 5vw, 54px); font-weight: 400; line-height: 1.05; letter-spacing: -0.02em; }
+  .intro p { max-width: 64ch; margin-top: 12px; color: #756e62; font-size: 14px; }
+  .intro .hint { margin-top: 10px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; color: #8a8378; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px; }
+  .direction:nth-child(1) { grid-column: span 2; }
+  .direction h2 { font-size: clamp(28px, 3.6vw, 44px); }
+  @media (max-width: 820px) {
+    .grid { grid-template-columns: 1fr; }
+    .direction:nth-child(1) { grid-column: auto; }
+    .top nav { display: none; }
+  }
+</style>
+<script>
+  document.documentElement.classList.add('mk-js');
+  setTimeout(function () { if (!window.MotionKit) document.documentElement.classList.remove('mk-js'); }, 2500);
+</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="../index.html">UI Interaction Skill · Directions</a>
+    <nav aria-label="页面导航">
+      <a href="../design-core/index.html">Design Core</a>
+      <a href="../DESIGN.md">DESIGN 协议</a>
+      <a href="../templates/demo-shell/index.html">案例</a>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <h1>9 套方向，<br>不是 9 张配色卡</h1>
+    <p>每套都是真实的标题、正文、按钮、卡片与字体组合，可直接落到 design-core tokens。新页面先从这里挑 3 个方向做成初稿，再让用户选；不要直接做第一版。</p>
+    <p class="hint">三方向门：最佳设计师 / 现实参照 / 秒数轮盘 · 详见 DIRECTION.md</p>
+  </section>
+
+  <main class="grid">
+    <article class="direction" data-direction="editorial-warm" data-reveal>
+      <p class="dir-tag">01 · EDITORIAL / WARM</p>
+      <h2>把数据变成<br>真正的决策</h2>
+      <p class="dir-copy">奶油纸、赤陶与衬线。适合品牌页、作品集、内容产品；温度来自纸张而不是圆角。</p>
+      <div class="dir-actions">
+        <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="Editorial warm">开始使用</button>
+        <button type="button" class="mk-btn mk-btn--ghost">了解更多</button>
+      </div>
+      <div class="dir-card"><b>62.4%</b><span>本周激活率 · +14.2%</span></div>
+      <p class="dir-note">适合：品牌 / 内容 / 作品集 · 字体：Fraunces + Noto Serif SC · 圆角 14</p>
+    </article>
+
+    <article class="direction" data-direction="editorial-ink" data-reveal>
+      <p class="dir-tag">02 · EDITORIAL / INK</p>
+      <h2>读一页<br>慢下来的文字</h2>
+      <p class="dir-copy">深墨底、旧金、衬线标题。适合文化、出版、建筑与高客单品牌。</p>
+      <div class="dir-actions">
+        <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="Editorial ink">阅读样章</button>
+        <button type="button" class="mk-btn mk-btn--ghost">目录</button>
+      </div>
+      <div class="dir-card"><b>No. 04</b><span>季度刊 · 2026 冬</span></div>
+      <p class="dir-note">适合：出版 / 文化 / 酒店 · 字体：Playfair + Noto Serif · 圆角 2</p>
+    </article>
+
+    <article class="direction" data-direction="gallery-swiss" data-reveal>
+      <p class="dir-tag">03 · GALLERY / SWISS</p>
+      <h2>让作品<br>自己说话</h2>
+      <p class="dir-copy">暖白、炭黑、朱砂一点。单字族纪律，层级靠字重、字号与留白。</p>
+      <div class="dir-actions">
+        <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="Gallery Swiss">查看作品</button>
+        <button type="button" class="mk-btn mk-btn--ghost">关于</button>
+      </div>
+      <div class="dir-card"><b>24</b><span>Selected works · 2024–2026</span></div>
+      <p class="dir-note">适合：工作室 / 摄影 / SaaS · 字体：Inter · 圆角 0</p>
+    </article>
+
+    <article class="direction" data-direction="gallery-brutalist" data-reveal>
+      <p class="dir-tag">04 · GALLERY / BRUTALIST</p>
+      <h2>直接、<br>有棱角</h2>
+      <p class="dir-copy">硬边框、荧光底、等宽字。适合独立杂志、实验品牌、活动页。</p>
+      <div class="dir-actions">
+        <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="Gallery brutalist">进入</button>
+        <button type="button" class="mk-btn mk-btn--ghost">索引</button>
+      </div>
+      <div class="dir-card"><b>2026</b><span>ISSUE 07 / NOISE</span></div>
+      <p class="dir-note">适合：独立杂志 / 活动 / 实验品牌 · 字体：JetBrains Mono · 圆角 0</p>
+    </article>
+
+    <article class="direction" data-direction="deep-terminal" data-reveal>
+      <p class="dir-tag">05 · DEEP / TERMINAL</p>
+      <h2>系统<br>正在运行</h2>
+      <p class="dir-copy">近黑底、薄荷绿、等宽标题。适合 DevTool、AI 基础设施、监控面板。</p>
+      <div class="dir-actions">
+        <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="Deep terminal">连接</button>
+        <button type="button" class="mk-btn mk-btn--ghost">文档</button>
+      </div>
+      <div class="dir-card"><b>99.99%</b><span>UPTIME · 30 DAYS</span></div>
+      <p class="dir-note">适合：DevTool / AI 基础设施 / 监控 · 字体：JetBrains Mono · 圆角 2</p>
+    </article>
+
+    <article class="direction" data-direction="deep-aurora" data-reveal>
+      <p class="dir-tag">06 · DEEP / AURORA</p>
+      <h2>把想法<br>变成光</h2>
+      <p class="dir-copy">深空、冷蓝、柔光。适合 AI 产品、创作者工具、夜间体验。</p>
+      <div class="dir-actions">
+        <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="Deep aurora">开始创造</button>
+        <button type="button" class="mk-btn mk-btn--ghost">看演示</button>
+      </div>
+      <div class="dir-card"><b>4.9/5</b><span>18,000+ creators</span></div>
+      <p class="dir-note">适合：AI / 创作者工具 / 夜间 · 字体：Space Grotesk · 圆角 24</p>
+    </article>
+
+    <article class="direction" data-direction="old-heritage" data-reveal>
+      <p class="dir-tag">07 · OLD MONEY / HERITAGE</p>
+      <h2>时间<br>留下的质感</h2>
+      <p class="dir-copy">米白、墨绿、旧金细线。适合酒店、地产、财经与传承型品牌。</p>
+      <div class="dir-actions">
+        <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="Old heritage">预订</button>
+        <button type="button" class="mk-btn mk-btn--ghost">故事</button>
+      </div>
+      <div class="dir-card"><b>1926</b><span>EST. · ONE HUNDRED YEARS</span></div>
+      <p class="dir-note">适合：酒店 / 地产 / 财经 · 字体：Playfair + Noto Serif · 圆角 2</p>
+    </article>
+
+    <article class="direction" data-direction="old-luxe" data-reveal>
+      <p class="dir-tag">08 · OLD MONEY / LUXE</p>
+      <h2>夜里的<br>私人俱乐部</h2>
+      <p class="dir-copy">墨绿黑底、香槟金、衬线。适合高端服务、会员制与限量产品。</p>
+      <div class="dir-actions">
+        <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="Old luxe">申请加入</button>
+        <button type="button" class="mk-btn mk-btn--ghost">了解</button>
+      </div>
+      <div class="dir-card"><b>By invite</b><span>MEMBERS ONLY · 2026</span></div>
+      <p class="dir-note">适合：会员制 / 高端服务 / 限量 · 字体：Playfair · 圆角 0</p>
+    </article>
+
+    <article class="direction" data-direction="soft-care" data-reveal>
+      <p class="dir-tag">09 · SOFT / CARE</p>
+      <h2>今天，<br>也照顾好自己</h2>
+      <p class="dir-copy">浅灰、柔和绿、较大圆角。适合健康、教育、日常工具；低刺激但不低对比。</p>
+      <div class="dir-actions">
+        <button type="button" class="mk-btn mk-btn--primary" data-ripple data-haptic="tap" data-toast="Soft care">开始记录</button>
+        <button type="button" class="mk-btn mk-btn--ghost">看看</button>
+      </div>
+      <div class="dir-card"><b>7 天</b><span>连续记录 · 保持下去</span></div>
+      <p class="dir-note">适合：健康 / 教育 / 日常工具 · 字体：Inter · 圆角 20</p>
+    </article>
+  </main>
+</div>
+<script src="../library/motion-kit.js" defer></script>
+</body>
+</html>

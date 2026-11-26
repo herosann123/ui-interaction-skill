@@ -5,6 +5,12 @@
 
 ---
 
+## -1. 上游（新视觉任务）
+
+- **方向未定**：先走 `DIRECTION.md` 的三方向门，生成 3 个真实方向。
+- **涉及品牌**：先走 `BRAND.md`，拿到真实 logo / 产品图 / UI 截图。
+- 方向和品牌确定后，再回到本协议生成 `design.json`。
+
 ## 0. 输出契约
 
 ```text
@@ -139,6 +145,7 @@ DESIGN.md            # 本协议
 - `node scripts/design-lint.mjs`：对比度、间距、字号层级、状态选择器。
 - `node scripts/audit.mjs`：动效/性能/可访问性。
 - `node scripts/smoke.mjs` / `verify`：视口矩阵 + reduced-motion + 溢出 + 键盘。
+- 视觉评审：`CRITIQUE.md` + `scripts/critique.mjs`（6 维、证据、四态）。
 - 结论四态：✅ / ❌ / ⚠️ / ➖。
 
 ---

@@ -9,7 +9,9 @@
 
 | 需求 | 入口 | 产物 |
 | --- | --- | --- |
+| 设计方向 | `DIRECTION.md` + `directions/` | 3 个真实方向 + 选择记录 |
 | 设计定调 | `DESIGN.md` + `design-core/` | `design.json` + tokens |
+| 视觉评审 | `CRITIQUE.md` + `scripts/critique.mjs` | 6 维报告 + Keep/Fix/Quick Wins |
 | 选型 / 解释 | `SKILL.md` §4–§6 | 模式推荐（四层分级） |
 | 体检现有代码 | `AUDIT.md` + `scripts/audit.mjs` | P0/P1/P2 报告 + 3–5 条改动 |
 | 生成 Before/After demo | `DEMO.md` + `scripts/new-demo.mjs` | `ui-runs/<slug>/` 可运行对照 |
@@ -234,7 +236,12 @@ ui-interaction-skill/
 ├── ITERATE.md                        # 反馈迭代协议（CR / 版本 / 回滚）
 ├── CHANGELOG.md                      # v3 变更记录
 ├── DESIGN.md                         # 设计定调：archetype / density / layout / design.json
+├── DIRECTION.md                      # 三方向门
+├── BRAND.md                          # 品牌资产协议
+├── CRITIQUE.md                       # 6 维视觉评审
 ├── design-core/                      # tokens / typography / layout / rules / schema
+├── directions/                       # 9 套方向样张 + 生成输出
+├── brand/                            # 品牌 schema / 示例
 ├── references/
 │   ├── mapping.md                    # 模块映射 / 56 模式速查 / 组合配方全文
 │   └── anti-patterns.md              # 反模式 / 性能预算 / reduced fallback 全文

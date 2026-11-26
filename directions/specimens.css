@@ -1,0 +1,214 @@
+/* Direction specimens · 依赖 design-core/tokens.css + library/motion-kit.css */
+.direction {
+  --dir-bg: #f7f3ea;
+  --dir-ink: #1a1510;
+  --dir-muted: #6f685d;
+  --dir-panel: #fffdf8;
+  --dir-line: rgba(26, 21, 16, 0.14);
+  --dir-accent: #b4552f;
+  --dir-accent-ink: #fff8f0;
+  --dir-gold: #d9a862;
+  --dir-display: "Fraunces", "Noto Serif SC", "Songti SC", serif;
+  --dir-weight: 400;
+  --dir-tracking: 0.01em;
+  --dir-radius: 14px;
+  --dir-border: 1px solid var(--dir-line);
+  --dir-shadow: 0 18px 50px rgba(26, 21, 16, 0.1);
+  position: relative;
+  overflow: hidden;
+  padding: clamp(22px, 4vw, 38px);
+  border-radius: var(--dir-radius);
+  border: var(--dir-border);
+  background: var(--dir-bg);
+  color: var(--dir-ink);
+  box-shadow: var(--dir-shadow);
+}
+
+.direction .dir-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dir-accent);
+}
+
+.direction h2,
+.direction h1 {
+  margin-top: 12px;
+  font-family: var(--dir-display);
+  font-weight: var(--dir-weight);
+  font-size: clamp(30px, 4.2vw, 48px);
+  line-height: 1.05;
+  letter-spacing: var(--dir-tracking);
+  color: var(--dir-ink);
+}
+
+.direction .dir-copy {
+  max-width: 46ch;
+  margin-top: 12px;
+  color: var(--dir-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.direction .dir-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.direction .dir-card {
+  margin-top: 20px;
+  padding: 14px 16px;
+  border: var(--dir-border);
+  border-radius: calc(var(--dir-radius) * 0.7);
+  background: var(--dir-panel);
+}
+
+.direction .dir-card b {
+  display: block;
+  font-family: var(--dir-display);
+  font-weight: var(--dir-weight);
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: var(--dir-tracking);
+  color: var(--dir-accent);
+}
+
+.direction .dir-card span {
+  display: block;
+  margin-top: 4px;
+  color: var(--dir-muted);
+  font-size: 11px;
+}
+
+.direction .dir-note {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--dir-line);
+  color: var(--dir-muted);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+}
+
+.direction .mk-btn--primary {
+  background: var(--dir-accent);
+  color: var(--dir-accent-ink);
+}
+
+.direction .mk-btn--ghost {
+  border-color: var(--dir-line);
+  color: var(--dir-ink);
+}
+
+/* 01 Editorial · warm */
+[data-direction="editorial-warm"] {
+  --dir-bg: #f7f3ea; --dir-ink: #1a1510; --dir-muted: #6f685d; --dir-panel: #fffdf8;
+  --dir-line: rgba(26, 21, 16, 0.14); --dir-accent: #b4552f; --dir-accent-ink: #fff8f0;
+  --dir-display: "Fraunces", "Noto Serif SC", "Songti SC", serif; --dir-weight: 400;
+  --dir-tracking: 0.01em; --dir-radius: 14px;
+}
+
+/* 02 Editorial · ink */
+[data-direction="editorial-ink"] {
+  --dir-bg: #1b1611; --dir-ink: #f4efe4; --dir-muted: #b9ad9c; --dir-panel: #241d16;
+  --dir-line: rgba(244, 239, 228, 0.14); --dir-accent: #d9a862; --dir-accent-ink: #1b1611;
+  --dir-display: "Playfair Display", "Noto Serif SC", serif; --dir-weight: 400;
+  --dir-tracking: 0; --dir-radius: 2px;
+  --dir-shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
+}
+
+/* 03 Gallery · swiss */
+[data-direction="gallery-swiss"] {
+  --dir-bg: #faf9f7; --dir-ink: #141414; --dir-muted: #6f6b64; --dir-panel: #ffffff;
+  --dir-line: rgba(20, 20, 20, 0.14); --dir-accent: #c8401f; --dir-accent-ink: #fff8f0;
+  --dir-display: "Inter", "PingFang SC", "Noto Sans SC", sans-serif; --dir-weight: 600;
+  --dir-tracking: -0.03em; --dir-radius: 0;
+  --dir-shadow: 0 18px 50px rgba(20, 20, 20, 0.08);
+}
+
+/* 04 Gallery · brutalist */
+[data-direction="gallery-brutalist"] {
+  --dir-bg: #f0efeb; --dir-ink: #000000; --dir-muted: #3d3b37; --dir-panel: #d6ff00;
+  --dir-line: #000000; --dir-accent: #000000; --dir-accent-ink: #d6ff00;
+  --dir-display: "JetBrains Mono", "SFMono-Regular", monospace; --dir-weight: 800;
+  --dir-tracking: -0.04em; --dir-radius: 0;
+  --dir-border: 2px solid #000000;
+  --dir-shadow: 8px 8px 0 #000000;
+}
+
+/* 05 Deep-space · terminal */
+[data-direction="deep-terminal"] {
+  --dir-bg: #0b0d10; --dir-ink: #e9ecf1; --dir-muted: #9aa4b8; --dir-panel: #10141a;
+  --dir-line: rgba(233, 236, 241, 0.16); --dir-accent: #6ee7c8; --dir-accent-ink: #0b0d10;
+  --dir-display: "JetBrains Mono", "SFMono-Regular", monospace; --dir-weight: 500;
+  --dir-tracking: -0.02em; --dir-radius: 2px;
+  --dir-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
+/* 06 Deep-space · aurora */
+[data-direction="deep-aurora"] {
+  --dir-bg: #0b0f1a; --dir-ink: #eef3ff; --dir-muted: #9da9c4; --dir-panel: #131b2c;
+  --dir-line: rgba(238, 243, 255, 0.14); --dir-accent: #8fb8ff; --dir-accent-ink: #0b0f1a;
+  --dir-display: "Space Grotesk", "Noto Sans SC", "PingFang SC", sans-serif; --dir-weight: 500;
+  --dir-tracking: -0.02em; --dir-radius: 24px;
+  --dir-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+  background:
+    radial-gradient(420px 280px at 82% 0%, rgba(143, 184, 255, 0.2), transparent 64%),
+    radial-gradient(380px 260px at 8% 82%, rgba(110, 231, 200, 0.16), transparent 62%),
+    #0b0f1a;
+}
+
+/* 07 Old-money · heritage */
+[data-direction="old-heritage"] {
+  --dir-bg: #f4f1e8; --dir-ink: #17211c; --dir-muted: #6f6a5e; --dir-panel: #fffdf8;
+  --dir-line: rgba(23, 33, 28, 0.14); --dir-accent: #2f4a3d; --dir-accent-ink: #f7f3ea;
+  --dir-display: "Playfair Display", "Noto Serif SC", serif; --dir-weight: 400;
+  --dir-tracking: 0; --dir-radius: 2px;
+  --dir-shadow: 0 18px 50px rgba(23, 33, 28, 0.1);
+}
+
+/* 08 Old-money · luxe */
+[data-direction="old-luxe"] {
+  --dir-bg: #101713; --dir-ink: #f1ece0; --dir-muted: #b6ab96; --dir-panel: #18231d;
+  --dir-line: rgba(241, 236, 224, 0.14); --dir-accent: #c9a368; --dir-accent-ink: #101713;
+  --dir-display: "Playfair Display", "Noto Serif SC", serif; --dir-weight: 400;
+  --dir-tracking: 0; --dir-radius: 0;
+  --dir-shadow: 0 18px 50px rgba(0, 0, 0, 0.4);
+}
+
+/* 09 Soft · care */
+[data-direction="soft-care"] {
+  --dir-bg: #f3f1ec; --dir-ink: #2b2a27; --dir-muted: #77736b; --dir-panel: #fffefa;
+  --dir-line: rgba(43, 42, 39, 0.12); --dir-accent: #6b8f71; --dir-accent-ink: #f8fbf7;
+  --dir-display: "Inter", "PingFang SC", "Noto Sans SC", sans-serif; --dir-weight: 500;
+  --dir-tracking: -0.02em; --dir-radius: 20px;
+  --dir-shadow: 0 18px 50px rgba(43, 42, 39, 0.08);
+}
+
+/* Full-page board for generated directions */
+.direction--board {
+  min-height: 100dvh;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+}
+
+.direction--board .board-inner {
+  width: min(920px, 100%);
+  margin-inline: auto;
+  padding: clamp(28px, 6vw, 80px);
+}
+
+.direction--board h1 {
+  font-size: clamp(42px, 7vw, 86px);
+}
+
+.direction--board .dir-copy {
+  font-size: 16px;
+}

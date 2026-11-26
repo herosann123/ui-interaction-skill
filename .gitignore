@@ -40,3 +40,11 @@ uiux-design-suite-v1.0.0/
 
 # 浏览器验收报告
 .smoke-report.md
+
+# 本地设计外观账本
+.design-ledger.json
+
+# 方向生成输出 / 临时截图
+.directions/runs/
+directions/runs/
+_shots/

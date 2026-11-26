@@ -45,6 +45,22 @@ node scripts/design-lint.mjs
 ```
 详见 `DESIGN.md` 与 `design-core/README.md`。
 
+## 设计方向 / 品牌 / 评审
+
+- **9 套方向样张**：`directions/index.html`；先选 3 个方向再做第一版
+- **方向生成**：`scripts/direction.mjs --title "..." --copy "..." --slug name`
+- **品牌协议**：`BRAND.md` + `brand/brand.schema.json` + `scripts/brand-check.mjs`
+- **6 维评审**：`CRITIQUE.md` + `scripts/critique.mjs`
+- **外观账本**：`scripts/design-ledger.mjs`（避免每个项目都长同一套）
+
+## 方向 / 品牌 / 评审
+
+- **9 套方向样张**：`directions/index.html`
+- **生成 3 个方向**：`node scripts/direction.mjs --title "..." --copy "..." --slug name`
+- **品牌资产**：`BRAND.md` + `scripts/brand-check.mjs`
+- **6 维评审**：`CRITIQUE.md` + `scripts/critique.mjs`
+- **外观账本**：`scripts/design-ledger.mjs`
+
 ## 完整案例
 
 - **Northwind Analytics Before / After**：`templates/demo-shell/`
@@ -124,7 +140,12 @@ node scripts/check.mjs
 .
 ├── index.html               # GitHub Pages / 本地演示首页
 ├── DESIGN.md                # 设计定调协议（design.json）
+├── DIRECTION.md             # 三方向门
+├── BRAND.md                 # 品牌资产协议
+├── CRITIQUE.md              # 6 维视觉评审
 ├── design-core/             # tokens / typography / layout / rules
+├── directions/              # 9 套方向样张 + 生成脚本输出
+├── brand/                   # 品牌资产协议 / schema / 示例
 ├── SKILL.md                 # 主入口：四模式路由 + 核心决策
 ├── AUDIT.md / DEMO.md / ITERATE.md
 ├── PATTERNS.md / INDEX.md   # 56 模式代码与速查

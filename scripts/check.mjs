@@ -63,6 +63,10 @@ const jsFiles = [
   'scripts/check.mjs',
   'scripts/design-lint.mjs',
   'scripts/design-brief.mjs',
+  'scripts/direction.mjs',
+  'scripts/brand-check.mjs',
+  'scripts/design-ledger.mjs',
+  'scripts/critique.mjs',
   'scripts/smoke.mjs',
   'scripts/screenshot.mjs',
   'scripts/sanitize.mjs',
@@ -77,7 +81,7 @@ for (const file of jsFiles) {
 }
 
 console.log('\n[2/6] HTML 内联脚本');
-const htmlFiles = ['index.html'].concat(walk('templates'), walk('components'), walk('presets'), walk('design-core')).filter((f) => extname(f) === '.html');
+const htmlFiles = ['index.html'].concat(walk('templates'), walk('components'), walk('presets'), walk('design-core'), walk('directions')).filter((f) => extname(f) === '.html');
 let inlineCount = 0;
 for (const file of htmlFiles) {
   const html = read(file);
@@ -142,6 +146,8 @@ try {
   else fail('states', String((tokens.states || []).length));
   JSON.parse(read('design-core/brief.schema.json'));
   ok('brief.schema.json');
+  JSON.parse(read('brand/brand.schema.json'));
+  ok('brand.schema.json');
 } catch (err) {
   fail('design-core', err.message);
 }
@@ -172,6 +178,9 @@ try {
   const core = auditJson(['design-core/index.html']);
   if (core.findings.length === 0) ok('design-core = 0');
   else fail('design-core', core.findings.length + ' 项');
+  const directions = auditJson(['directions/index.html']);
+  if (directions.findings.length === 0) ok('directions = 0');
+  else fail('directions', directions.findings.length + ' 项');
 } catch (err) {
   fail('components audit', err.message);
 }
@@ -243,6 +252,11 @@ const docs = [
   'examples/demo-brief.md',
   'examples/iteration-example.md',
   'DESIGN.md',
+  'DIRECTION.md',
+  'BRAND.md',
+  'CRITIQUE.md',
+  'directions/README.md',
+  'brand/README.md',
   'design-core/README.md',
   'design-core/rules.md',
   'references/mapping.md',

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Brand Asset Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["brand", "assets", "colors", "fonts", "sources", "verifiedAt"],
+  "properties": {
+    "brand": { "type": "string", "minLength": 1 },
+    "assets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["logo", "productShots", "uiScreenshots"],
+      "properties": {
+        "logo": { "type": ["string", "null"] },
+        "productShots": { "type": "array", "items": { "type": "string" } },
+        "uiScreenshots": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "colors": {
+      "type": "object",
+      "additionalProperties": { "type": "string", "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$" }
+    },
+    "fonts": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^https?://" }
+    },
+    "verifiedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "notes": { "type": "string" }
+  }
+}

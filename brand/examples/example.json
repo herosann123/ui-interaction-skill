@@ -1,0 +1,23 @@
+{
+  "brand": "Example Brand",
+  "assets": {
+    "logo": null,
+    "productShots": [],
+    "uiScreenshots": []
+  },
+  "colors": {
+    "bg": "#f7f3ea",
+    "ink": "#1a1510",
+    "accent": "#b4552f",
+    "accentInk": "#fff8f0"
+  },
+  "fonts": {
+    "display": "Fraunces",
+    "body": "Inter"
+  },
+  "sources": [
+    "https://example.com/brand"
+  ],
+  "verifiedAt": "2026-11-26",
+  "notes": "示例：未找到官方 logo，使用文字标识；真实项目请替换为官方资产。"
+}

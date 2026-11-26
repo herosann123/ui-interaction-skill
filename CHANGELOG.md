@@ -1,5 +1,17 @@
 # CHANGELOG · ui-interaction-skill
 
+## v3.3.0 · 2026-11-26
+
+### Direction & Brand
+
+- `DIRECTION.md`：三方向门（6 候选 → 3 个真实方向；只对新视觉任务生效）。
+- `directions/`：9 套真实方向样张（editorial / gallery / deep-space / old-money / soft 变体）+ 预览页。
+- `scripts/direction.mjs`：按标题/文案生成 3 个真实方向页、入口与 `DIRECTIONS.md`。
+- `BRAND.md` + `brand/brand.schema.json` + `scripts/brand-check.mjs`：品牌资产 5 步协议、资产 / 颜色 / 来源校验。
+- `CRITIQUE.md` + `scripts/critique.mjs`：6 维视觉评审、证据规范、四态与 Keep/Fix/Quick Wins。
+- `scripts/design-ledger.mjs`：记录最近方向/字体/accent，提醒避免同一外观家族。
+- `check.mjs`：增加 directions / brand / critique 的语法与结构检查。
+
 ## v3.2.0 · 2026-11-25
 
 ### Design Core

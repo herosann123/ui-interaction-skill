@@ -17,10 +17,12 @@ jobs:
       - name: Check Chrome
         run: google-chrome --version
       - name: Browser smoke (390px + reduced-motion)
-        run: node scripts/smoke.mjs --screenshots .smoke-shots
+        run: node scripts/smoke.mjs --viewports 390,768,1280 --report .smoke-report.md --screenshots .smoke-shots
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: smoke-shots
-          path: .smoke-shots
+          path: |
+            .smoke-shots
+            .smoke-report.md
           if-no-files-found: ignore

@@ -12,7 +12,7 @@
 | `checkout/` | editorial + 陶土 accent | ✅ 已迁移 |
 | `settings/` | editorial + green accent | ✅ 已迁移 |
 | `ai-chat/` | deep-space + blue accent | ✅ 已迁移 |
-| `dashboard/` | 自有 light/dark 主题 | ⏸ 保留（有 `html[data-theme="dark"]` 体系，单独迁移） |
+| `dashboard/` | editorial + `data-scheme="dark"` | ✅ 已迁移（保留独立深浅色） |
 | `demo-shell/index.html` | 对照壳 UI | ➖ 不是设计页面 |
 
 ## 迁移步骤
@@ -51,5 +51,5 @@
 
 - 不要为了迁移重写模板布局。
 - 不要把 `--mk-*` 全部写回模板，design-core 已经桥接。
-- 不要迁移 `dashboard` 的 light/dark 体系到单一 archetype；它需要单独设计。
+- `dashboard` 用 `data-scheme="light|dark"` 保留独立深浅色，基础 tokens 来自 design-core editorial。
 - 不要在模板里再定义第二套 type scale / spacing。

@@ -55,6 +55,11 @@ node scripts/design-lint.mjs
 - **模板迁移状态**：`design-core/MIGRATION.md`
 - **外观账本**：`scripts/design-ledger.mjs`（避免每个项目都长同一套）
 
+## 案例
+
+- 案例/能力画廊：[cases/index.html](cases/index.html)
+- Northwind Before/After：`templates/demo-shell/`
+
 ## 方向 / 品牌 / 评审
 
 - **9 套方向样张**：`directions/index.html`
@@ -149,6 +154,7 @@ node scripts/check.mjs
 ├── CRITIQUE.md              # 6 维视觉评审
 ├── design-core/             # tokens / typography / layout / rules
 ├── directions/              # 9 套方向样张 + 生成脚本输出
+├── cases/                   # 案例/能力画廊
 ├── brand/                   # 品牌资产协议 / schema / 示例
 ├── SKILL.md                 # 主入口：四模式路由 + 核心决策
 ├── AUDIT.md / DEMO.md / ITERATE.md

@@ -1,35 +1,23 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN" data-scheme="light" data-theme="editorial" data-density="normal">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Template · Dashboard（Cmd+K / Tabs / 数字 / 主题揭示）</title>
+<link rel="stylesheet" href="../../design-core/tokens.css">
 <link rel="stylesheet" href="../../library/motion-kit.css">
 <style>
   :root {
     color-scheme: light;
-    --bg: #f2efe6;
-    --panel: #fffdf8;
-    --panel-2: #f7f3ea;
-    --ink: #1a1712;
-    --ink-soft: #4e4a41;
-    --muted: #756f64;
-    --line: rgba(26, 23, 18, 0.13);
-    --accent: #2f5d50;
-    --accent-2: #b85940;
-    --gold: #c9a368;
-    --serif: "Iowan Old Style", "Palatino Linotype", "Songti SC", Georgia, serif;
-    --sans: "Inter", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
-    --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
-    --mk-accent: var(--accent);
-    --mk-accent-ink: #f7f3ea;
-    --mk-surface: var(--panel);
-    --mk-ink: var(--ink);
-    --mk-muted: var(--muted);
-    --mk-border: var(--line);
-    --mk-radius: 16px;
+    /* 模板专属：dashboard 的浅色品牌面；基础 tokens 来自 design-core */
+    --bg:#f2efe6; --panel:#fffdf8; --panel-2:#f7f3ea;
+    --ink:#1a1712; --ink-soft:#4e4a41; --muted:#756f64;
+    --line:rgba(26,23,18,.13); --accent:#2f5d50; --accent-2:#b85940; --gold:#c9a368;
+    --font-display:"Iowan Old Style","Palatino Linotype","Songti SC",Georgia,serif;
+    --mk-accent:var(--accent); --mk-accent-ink:#f7f3ea; --mk-surface:var(--panel);
+    --mk-ink:var(--ink); --mk-muted:var(--muted); --mk-border:var(--line); --mk-radius:16px;
   }
-  html[data-theme="dark"] {
+  html[data-scheme="dark"] {
     color-scheme: dark;
     --bg: #0f1210;
     --panel: #171b18;
@@ -134,7 +122,7 @@
   .kpi em.down { color: var(--accent-2); }
   .spark { display: flex; align-items: end; gap: 3px; height: 26px; margin-top: 12px; }
   .spark i { flex: 1; height: var(--h, 40%); border-radius: 2px 2px 0 0; background: rgba(47, 93, 80, 0.25); }
-  html[data-theme="dark"] .spark i { background: rgba(143, 191, 168, 0.28); }
+  html[data-scheme="dark"] .spark i { background: rgba(143, 191, 168, 0.28); }
 
   /* ---------- Tabs / 面板 ---------- */
   .panel { margin-top: 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); overflow: hidden; }
@@ -410,13 +398,13 @@
 
     /* ---------- 主题切换：View Transitions 圆形揭示（㊹） ---------- */
     function applyTheme(next) {
-      html.dataset.theme = next;
+      html.dataset.scheme = next;
       var btn = document.getElementById('themeBtn');
       if (btn) btn.setAttribute('aria-label', next === 'dark' ? '切换到浅色主题' : '切换到深色主题');
     }
 
     function toggleTheme(x, y) {
-      var next = html.dataset.theme === 'dark' ? 'light' : 'dark';
+      var next = html.dataset.scheme === 'dark' ? 'light' : 'dark';
       if (!document.startViewTransition || (kit && kit.reduced)) {
         applyTheme(next);
         return;

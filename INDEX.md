@@ -241,6 +241,7 @@ ui-interaction-skill/
 ├── CRITIQUE.md                       # 6 维视觉评审
 ├── design-core/                      # tokens / typography / layout / rules / schema
 ├── directions/                       # 9 套方向样张 + 生成输出
+├── cases/                            # 案例/能力画廊
 ├── brand/                            # 品牌 schema / 示例
 ├── references/
 │   ├── mapping.md                    # 模块映射 / 56 模式速查 / 组合配方全文

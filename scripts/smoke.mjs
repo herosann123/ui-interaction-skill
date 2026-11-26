@@ -209,6 +209,7 @@ async function main() {
     ...walk('presets'),
     ...walk('design-core'),
     ...walk('directions'),
+    ...walk('cases'),
   ])).filter((p) => !p.endsWith('templates/demo-shell/before.html') && !p.split('/').pop().startsWith('_'));
 
   let failed = 0;

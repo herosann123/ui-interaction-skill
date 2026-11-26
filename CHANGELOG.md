@@ -1,13 +1,24 @@
 # CHANGELOG · ui-interaction-skill
 
+## v3.5.0 · 2026-11-26
+
+### Cases & Dashboard
+
+- 9/9 模板迁移到 `design-core`；dashboard 用 `data-scheme="light|dark"` 保留独立深浅色。
+- 新增 `cases/index.html`：案例/能力画廊（Northwind / Directions / Design Core / Components）。
+- 新增 `directions/screenshots/gallery.png` 与案例配图。
+- `screenshot.mjs` 增加 `--scheme light|dark`，可截取 dashboard 深色版。
+- 验证：`smoke --viewports 390,768,1280` 60 页通过；`check.mjs` 全绿。
+
 ## v3.4.0 · 2026-11-26
 
 ### Export & Migration
 
 - `scripts/export.mjs`：HTML → PDF / PNG，支持 `--full-page` / `--width/--height` / `--mobile` / `--reduced`，零依赖 CDP。
-- 8 套模板迁移到 `design-core`（demo-shell/after、hero、feature-grid、mobile-feed、mobile-detail、checkout、settings、ai-chat）；`dashboard` 保留自有 light/dark 体系；状态见 `design-core/MIGRATION.md`。
+- 9 套模板全部迁移到 `design-core`（含 dashboard；dashboard 用 `data-scheme` 保留独立深浅色）；状态见 `design-core/MIGRATION.md`。
 - 模板只保留品牌 accent 覆盖，基础色/字体/间距/动效桥接来自 design-core。
 - `check.mjs` 增加 export 语法与迁移文档路径检查；smoke 覆盖 57 个页面/视口组合。
+- `cases/index.html`：案例/能力画廊（Northwind / Directions / Design Core / Components）。
 
 ## v3.3.0 · 2026-11-26
 
@@ -21,7 +32,7 @@
 - `scripts/design-ledger.mjs`：记录最近方向/字体/accent，提醒避免同一外观家族。
 - `check.mjs`：增加 directions / brand / critique 的语法与结构检查。
 - `scripts/export.mjs`：HTML → PDF / PNG（零依赖 CDP）。
-- 8 套模板迁移到 design-core；`dashboard` 保留自有 light/dark 体系；迁移状态见 `design-core/MIGRATION.md`。
+- 9 套模板迁移到 design-core；dashboard 用 `data-scheme` 保留独立深浅色；迁移状态见 `design-core/MIGRATION.md`。
 
 ## v3.2.0 · 2026-11-25
 

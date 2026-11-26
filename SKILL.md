@@ -2,7 +2,7 @@
 name: ui-interaction-skill
 description: 选择并实现高级 UI 交互模式（56 种），内置零依赖 motion-kit、9 套页面模板与排版/色彩/布局的 Design Core（4 套气质 / type scale / spacing / 组件 8 态）。支持代码体检、生成 Before/After 可运行改版 demo、按反馈版本化迭代；也用于「高级感 / premium / motion」升级。
 type: design-pattern
-version: 3.4.0
+version: 3.5.0
 user-invocable: true
 argument-hint: "[audit <path> | demo <template> | iterate <feedback> | <module> <pattern-id>]"
 license: MIT

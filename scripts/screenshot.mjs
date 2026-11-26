@@ -12,7 +12,7 @@ import { dirname, resolve } from 'node:path';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 function parse(argv) {
-  const out = { width: 1440, height: 1000, wait: 1400, mobile: false, reduced: false };
+  const out = { width: 1440, height: 1000, wait: 1400, mobile: false, reduced: false, scheme: null };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--in') out.in = argv[++i];
@@ -23,6 +23,7 @@ function parse(argv) {
     else if (arg === '--wait') out.wait = parseInt(argv[++i], 10) || 1400;
     else if (arg === '--mobile') out.mobile = true;
     else if (arg === '--reduced') out.reduced = true;
+    else if (arg === '--scheme') out.scheme = argv[++i];
     else if (arg === '--help' || arg === '-h') out.help = true;
   }
   return out;
@@ -130,6 +131,10 @@ async function main() {
     }
     await send('Page.navigate', { url: targetUrl });
     await sleep(args.wait);
+    if (args.scheme) {
+      await send('Runtime.evaluate', { expression: `document.documentElement.dataset.scheme='${args.scheme}'` });
+      await sleep(250);
+    }
     const shot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
     const out = resolve(process.cwd(), args.out);
     mkdirSync(dirname(out), { recursive: true });

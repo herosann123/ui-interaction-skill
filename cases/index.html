@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="editorial" data-density="normal">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cases · 从方向到交付</title>
+<link rel="stylesheet" href="../design-core/tokens.css">
+<link rel="stylesheet" href="../design-core/typography.css">
+<link rel="stylesheet" href="../design-core/layout.css">
+<link rel="stylesheet" href="../library/motion-kit.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  .top { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .brand { font-weight: 700; letter-spacing: -0.02em; }
+  .top nav { display: flex; gap: 16px; margin-left: auto; color: var(--muted); font-size: 12px; }
+  .top nav a:hover { color: var(--ink); }
+  .hero { padding: clamp(40px, 7vw, 84px) 0 36px; }
+  .hero h1 { max-width: 16ch; }
+  .hero .d-prose { margin-top: var(--sp-2); }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: var(--sp-4); overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--line); }
+  .stat { padding: 18px; background: var(--panel); }
+  .stat b { display: block; font-family: var(--font-display); font-size: 34px; font-weight: var(--display-weight); line-height: 1; letter-spacing: var(--display-tracking); }
+  .stat span { display: block; margin-top: 6px; color: var(--muted); font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.06em; }
+  .grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: var(--sp-3); margin-top: var(--sp-4); }
+  .card { position: relative; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--panel); box-shadow: var(--shadow-1); }
+  .card__media { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: var(--bg-2); }
+  .card__body { padding: 20px; }
+  .card__tag { color: var(--accent); font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; }
+  .card h2 { margin-top: 10px; font-family: var(--font-display); font-size: 26px; font-weight: var(--display-weight); letter-spacing: var(--display-tracking); }
+  .card p { margin-top: 8px; color: var(--muted); font-size: 13px; }
+  .card__meta { display: flex; justify-content: space-between; gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-family: var(--font-mono); font-size: 9px; }
+  .card a { position: absolute; inset: 0; }
+  .card a:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: inherit; }
+  .mini { display: grid; gap: var(--sp-2); margin-top: var(--sp-4); }
+  .mini a { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; padding: 13px 2px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .mini a span { color: var(--muted); font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.06em; }
+  .mini a em { margin-left: auto; color: var(--muted); font-style: normal; font-family: var(--font-mono); font-size: 9px; }
+  footer { margin-top: var(--sp-5); padding: var(--sp-3) 0 var(--sp-5); border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } .stats { grid-template-columns: 1fr 1fr; } .top nav { display: none; } }
+  @media (max-width: 520px) { .stats { grid-template-columns: 1fr; } }
+</style>
+<script>
+  document.documentElement.classList.add('mk-js');
+  setTimeout(function () { if (!window.MotionKit) document.documentElement.classList.remove('mk-js'); }, 2500);
+</script>
+</head>
+<body>
+<div class="d-container">
+  <header class="top">
+    <a class="brand" href="../index.html">UI Interaction Skill · Cases</a>
+    <nav aria-label="页面导航">
+      <a href="../directions/index.html">Directions</a>
+      <a href="../design-core/index.html">Design Core</a>
+      <a href="../components/buttons.html">Components</a>
+      <a href="../templates/demo-shell/CASE-STUDY.md">Case Study</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <p class="d-eyebrow" data-reveal="fade">Case gallery</p>
+    <h1 class="d-display" data-reveal="scale">不是效果图，<br>是能交付的链路</h1>
+    <p class="d-prose" data-reveal>每个案例都从真实页面/内容出发：方向 → 体检 → Before/After → 6 维评审 → PDF/PNG。不是只换一张皮。</p>
+    <div class="stats" data-reveal>
+      <div class="stat"><b>36 → 0</b><span>NORTHWIND 体检项</span></div>
+      <div class="stat"><b>9</b><span>DESIGN DIRECTIONS</span></div>
+      <div class="stat"><b>57</b><span>PAGE / VIEWPORT CHECKS</span></div>
+    </div>
+  </section>
+
+  <main class="grid">
+    <article class="card" data-reveal>
+      <a href="../templates/demo-shell/index.html" aria-label="打开 Northwind Before/After 案例"></a>
+      <img class="card__media" src="../templates/demo-shell/screenshots/after-desktop.png" alt="Northwind 改版后首屏">
+      <div class="card__body">
+        <span class="card__tag">CASE 01 / BEFORE → AFTER</span>
+        <h2>Northwind Analytics</h2>
+        <p>同一份文案与信息结构：体检 36 项 → 0；视差、揭示、磁吸、倾斜、snap、details、dialog 全链路。</p>
+        <div class="card__meta"><span>AUDIT 36 → 0</span><span>OPEN ↗</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-reveal data-reveal-delay="80">
+      <a href="../directions/index.html" aria-label="打开 9 套设计方向"></a>
+      <img class="card__media" src="../directions/screenshots/gallery.png" alt="9 套设计方向样张">
+      <div class="card__body">
+        <span class="card__tag">CASE 02 / DIRECTIONS</span>
+        <h2>9 套方向</h2>
+        <p>editorial / gallery / deep-space / old-money / soft 的真实标题、正文、按钮与字体组合。</p>
+        <div class="card__meta"><span>6 CANDIDATES → 3</span><span>OPEN ↗</span></div>
+      </div>
+    </article>
+  </main>
+
+  <section class="mini" aria-label="系统与文档" data-reveal>
+    <a href="../design-core/index.html"><span>DESIGN CORE</span><b>4 套 archetype / type scale / spacing</b><em>OPEN ↗</em></a>
+    <a href="../components/buttons.html"><span>COMPONENTS</span><b>buttons / feedback / forms / navigation / data</b><em>OPEN ↗</em></a>
+    <a href="../templates/demo-shell/CASE-STUDY.md"><span>CASE STUDY</span><b>Northwind 完整改造说明 + 截图</b><em>OPEN ↗</em></a>
+    <a href="../DIRECTION.md"><span>PROTOCOL</span><b>三方向门 / 品牌协议 / 6 维评审</b><em>OPEN ↗</em></a>
+  </section>
+
+  <footer>
+    <span>UI Interaction Skill · Cases · 2026</span>
+    <span><a href="../index.html">返回首页</a> · <a href="https://github.com/herosann123/ui-interaction-skill" target="_blank" rel="noopener noreferrer">GitHub ↗</a></span>
+  </footer>
+</div>
+<script src="../library/motion-kit.js" defer></script>
+</body>
+</html>

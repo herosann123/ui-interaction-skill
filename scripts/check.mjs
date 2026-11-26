@@ -82,7 +82,7 @@ for (const file of jsFiles) {
 }
 
 console.log('\n[2/6] HTML 内联脚本');
-const htmlFiles = ['index.html'].concat(walk('templates'), walk('components'), walk('presets'), walk('design-core'), walk('directions')).filter((f) => extname(f) === '.html');
+const htmlFiles = ['index.html'].concat(walk('templates'), walk('components'), walk('presets'), walk('design-core'), walk('directions'), walk('cases')).filter((f) => extname(f) === '.html');
 let inlineCount = 0;
 for (const file of htmlFiles) {
   const html = read(file);
@@ -182,6 +182,9 @@ try {
   const directions = auditJson(['directions/index.html']);
   if (directions.findings.length === 0) ok('directions = 0');
   else fail('directions', directions.findings.length + ' 项');
+  const cases = auditJson(['cases/index.html']);
+  if (cases.findings.length === 0) ok('cases = 0');
+  else fail('cases', cases.findings.length + ' 项');
 } catch (err) {
   fail('components audit', err.message);
 }
@@ -257,6 +260,7 @@ const docs = [
   'BRAND.md',
   'CRITIQUE.md',
   'directions/README.md',
+  'cases/README.md',
   'brand/README.md',
   'design-core/README.md',
   'design-core/rules.md',

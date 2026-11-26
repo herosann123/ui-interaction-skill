@@ -7,7 +7,7 @@
 - `scripts/export.mjs`：HTML → PDF / PNG，支持 `--full-page` / `--width/--height` / `--mobile` / `--reduced`，零依赖 CDP。
 - 8 套模板迁移到 `design-core`（demo-shell/after、hero、feature-grid、mobile-feed、mobile-detail、checkout、settings、ai-chat）；`dashboard` 保留自有 light/dark 体系；状态见 `design-core/MIGRATION.md`。
 - 模板只保留品牌 accent 覆盖，基础色/字体/间距/动效桥接来自 design-core。
-- `check.mjs` 增加 export 语法与迁移文档路径检查；smoke 覆盖 38 个页面/视口组合。
+- `check.mjs` 增加 export 语法与迁移文档路径检查；smoke 覆盖 57 个页面/视口组合。
 
 ## v3.3.0 · 2026-11-26
 

@@ -1,5 +1,14 @@
 # CHANGELOG · ui-interaction-skill
 
+## v3.4.0 · 2026-11-26
+
+### Export & Migration
+
+- `scripts/export.mjs`：HTML → PDF / PNG，支持 `--full-page` / `--width/--height` / `--mobile` / `--reduced`，零依赖 CDP。
+- 8 套模板迁移到 `design-core`（demo-shell/after、hero、feature-grid、mobile-feed、mobile-detail、checkout、settings、ai-chat）；`dashboard` 保留自有 light/dark 体系；状态见 `design-core/MIGRATION.md`。
+- 模板只保留品牌 accent 覆盖，基础色/字体/间距/动效桥接来自 design-core。
+- `check.mjs` 增加 export 语法与迁移文档路径检查；smoke 覆盖 38 个页面/视口组合。
+
 ## v3.3.0 · 2026-11-26
 
 ### Direction & Brand
@@ -11,6 +20,8 @@
 - `CRITIQUE.md` + `scripts/critique.mjs`：6 维视觉评审、证据规范、四态与 Keep/Fix/Quick Wins。
 - `scripts/design-ledger.mjs`：记录最近方向/字体/accent，提醒避免同一外观家族。
 - `check.mjs`：增加 directions / brand / critique 的语法与结构检查。
+- `scripts/export.mjs`：HTML → PDF / PNG（零依赖 CDP）。
+- 8 套模板迁移到 design-core；`dashboard` 保留自有 light/dark 体系；迁移状态见 `design-core/MIGRATION.md`。
 
 ## v3.2.0 · 2026-11-25
 

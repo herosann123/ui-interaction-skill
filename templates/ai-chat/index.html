@@ -1,31 +1,19 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="deep-space" data-density="normal">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Template · AI Chat（流式打字 / 玻璃 / 粒子）</title>
+<link rel="stylesheet" href="../../design-core/tokens.css">
 <link rel="stylesheet" href="../../library/motion-kit.css">
 <style>
   :root {
-    --bg: #0a0c11;
-    --panel: #12151d;
-    --panel-2: #181c26;
-    --line: rgba(235, 240, 255, 0.12);
-    --ink: #eef1f8;
-    --muted: #9aa3b5;
-    --accent: #8fb8ff;
-    --accent-2: #6ee7c8;
-    --serif: "Iowan Old Style", "Palatino Linotype", "Songti SC", Georgia, serif;
-    --sans: "Inter", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
-    --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
-    --mk-accent: var(--accent);
-    --mk-accent-ink: #0a0c11;
-    --mk-surface: var(--panel);
-    --mk-ink: var(--ink);
-    --mk-border: var(--line);
-    --mk-glass-bg: rgba(18, 21, 29, 0.62);
-    --mk-glass-border: rgba(235, 240, 255, 0.14);
-    --mk-glow: rgba(143, 184, 255, 0.22);
+    --bg:#0a0c11; --bg-2:#111722; --panel:#12151d; --panel-2:#181c26;
+    --ink:#eef1f8; --muted:#9aa3b5; --line:rgba(235,240,255,.12);
+    --accent:#8fb8ff; --accent-2:#6ee7c8; --font-display:"Iowan Old Style","Palatino Linotype","Songti SC",Georgia,serif;
+    --mk-accent:var(--accent); --mk-accent-ink:#0a0c11; --mk-surface:var(--panel);
+    --mk-ink:var(--ink); --mk-muted:var(--muted); --mk-border:var(--line);
+    --mk-glass-bg:rgba(18,21,29,.62); --mk-glass-border:rgba(235,240,255,.14); --mk-glow:rgba(143,184,255,.22);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { min-height: 100%; }

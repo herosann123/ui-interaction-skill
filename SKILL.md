@@ -2,7 +2,7 @@
 name: ui-interaction-skill
 description: 选择并实现高级 UI 交互模式（56 种），内置零依赖 motion-kit、9 套页面模板与排版/色彩/布局的 Design Core（4 套气质 / type scale / spacing / 组件 8 态）。支持代码体检、生成 Before/After 可运行改版 demo、按反馈版本化迭代；也用于「高级感 / premium / motion」升级。
 type: design-pattern
-version: 3.3.0
+version: 3.4.0
 user-invocable: true
 argument-hint: "[audit <path> | demo <template> | iterate <feedback> | <module> <pattern-id>]"
 license: MIT
@@ -447,7 +447,8 @@ if (reduce.matches) {
 - **自检**：`node scripts/check.mjs`（语法 / inline script / manifest / 体检回归 / fixtures / 文档链接）
 - **烟测 / 验收**：`node scripts/smoke.mjs --viewports 390,768,1280 --report .smoke-report.md`
 - **自动化**：`scripts/brief.mjs` / `scripts/iterate.mjs`；脱敏 `scripts/sanitize.mjs`
-- **浏览器烟测**：`node scripts/smoke.mjs`（390px / reduced-motion / 控制台错误）
+- **浏览器烟测**：`node scripts/smoke.mjs`（390/768/1280 / reduced-motion / 溢出 / 44px）
+- **导出**：`node scripts/export.mjs --in <html> --out <pdf|png>`
 - **设计定调**：`./DESIGN.md` + `./design-core/`（tokens / typography / layout / rules / schema）
 - **方向与品牌**：`./DIRECTION.md` · `./directions/` · `./BRAND.md` · `./brand/`
 - **视觉评审**：`./CRITIQUE.md` + `scripts/critique.mjs`

@@ -1,28 +1,20 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="deep-space" data-density="normal">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Template · Hero（视差 / 揭示 / 磁吸 / 数字）</title>
+<link rel="stylesheet" href="../../design-core/tokens.css">
 <link rel="stylesheet" href="../../library/motion-kit.css">
 <style>
   :root {
-    --bg: #0d0f0e;
-    --panel: #151817;
-    --line: rgba(243, 241, 234, 0.14);
-    --ink: #f3f1ea;
-    --muted: #9d9c93;
-    --accent: #d6ff5e;
-    --accent-ink: #0b0d0c;
-    --serif: "Iowan Old Style", "Palatino Linotype", "Songti SC", Georgia, serif;
-    --sans: "Inter", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
-    --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
-    --mk-accent: var(--accent);
-    --mk-accent-ink: var(--accent-ink);
-    --mk-surface: var(--panel);
-    --mk-ink: var(--ink);
-    --mk-border: var(--line);
-    --mk-glow: rgba(214, 255, 94, 0.2);
+    --bg:#0d0f0e; --bg-2:#151817; --panel:#151817; --ink:#f3f1ea; --muted:#9d9c93;
+    --line:rgba(243,241,234,.14); --accent:#d6ff5e; --accent-ink:#0b0d0c; --accent-2:#a8c4ff; --gold:#c9a368; --ink-soft:#b8b4a9;
+    --font-display:"Iowan Old Style","Palatino Linotype","Songti SC",Georgia,serif;
+    --font-body:"Inter","PingFang SC","Microsoft YaHei",sans-serif;
+    --font-mono:"JetBrains Mono",SFMono-Regular,monospace;
+    --mk-accent:var(--accent); --mk-accent-ink:var(--accent-ink); --mk-surface:var(--panel);
+    --mk-ink:var(--ink); --mk-muted:var(--muted); --mk-border:var(--line); --mk-glow:rgba(214,255,94,.2);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }

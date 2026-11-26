@@ -51,6 +51,8 @@ node scripts/design-lint.mjs
 - **方向生成**：`scripts/direction.mjs --title "..." --copy "..." --slug name`
 - **品牌协议**：`BRAND.md` + `brand/brand.schema.json` + `scripts/brand-check.mjs`
 - **6 维评审**：`CRITIQUE.md` + `scripts/critique.mjs`
+- **导出**：`scripts/export.mjs`（HTML → PDF / PNG）
+- **模板迁移状态**：`design-core/MIGRATION.md`
 - **外观账本**：`scripts/design-ledger.mjs`（避免每个项目都长同一套）
 
 ## 方向 / 品牌 / 评审
@@ -59,6 +61,8 @@ node scripts/design-lint.mjs
 - **生成 3 个方向**：`node scripts/direction.mjs --title "..." --copy "..." --slug name`
 - **品牌资产**：`BRAND.md` + `scripts/brand-check.mjs`
 - **6 维评审**：`CRITIQUE.md` + `scripts/critique.mjs`
+- **导出**：`scripts/export.mjs`（HTML → PDF / PNG）
+- **模板迁移状态**：`design-core/MIGRATION.md`
 - **外观账本**：`scripts/design-ledger.mjs`
 
 ## 完整案例

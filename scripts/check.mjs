@@ -67,6 +67,7 @@ const jsFiles = [
   'scripts/brand-check.mjs',
   'scripts/design-ledger.mjs',
   'scripts/critique.mjs',
+  'scripts/export.mjs',
   'scripts/smoke.mjs',
   'scripts/screenshot.mjs',
   'scripts/sanitize.mjs',
@@ -259,6 +260,7 @@ const docs = [
   'brand/README.md',
   'design-core/README.md',
   'design-core/rules.md',
+  'design-core/MIGRATION.md',
   'references/mapping.md',
   'references/anti-patterns.md',
 ];

@@ -1,28 +1,15 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="editorial" data-density="normal">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Template · Mobile Detail（push/pop / 滑动返回 / 坍缩头图 / 下拉刷新）</title>
+<link rel="stylesheet" href="../../design-core/tokens.css">
 <link rel="stylesheet" href="../../library/motion-kit.css">
 <style>
   :root {
-    --bg: #f2eee4;
-    --panel: #fffdf8;
-    --ink: #1b1813;
-    --muted: #756e62;
-    --line: rgba(27, 24, 19, 0.13);
-    --accent: #2f5d50;
-    --accent-2: #b85940;
-    --sans: "Inter", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
-    --serif: "Iowan Old Style", "Palatino Linotype", "Songti SC", Georgia, serif;
-    --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
-    --mk-accent: var(--accent);
-    --mk-accent-ink: #f7f3ea;
-    --mk-surface: var(--panel);
-    --mk-ink: var(--ink);
-    --mk-border: var(--line);
-    --mk-ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+    --bg:#f2eee4; --ink:#1b1813; --accent:#2f5d50; --accent-2:#b85940;
+    --mk-accent:var(--accent); --mk-accent-ink:#f7f3ea; --mk-glow:rgba(47,93,80,.16);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { min-height: 100%; }

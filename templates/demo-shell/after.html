@@ -1,34 +1,25 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="editorial" data-density="normal">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>After · Northwind Analytics</title>
+<link rel="stylesheet" href="../../design-core/tokens.css">
 <link rel="stylesheet" href="../../library/motion-kit.css">
 <style>
   :root {
-    --bg: #f7f3ea;
-    --bg-2: #efe9db;
-    --ink: #1a1712;
-    --ink-soft: #4f4a41;
-    --muted: #756f64;
-    --line: rgba(26, 23, 18, 0.14);
+    /* 模板专属：品牌 accent / 旧版别名；基础 tokens 来自 design-core */
     --accent: #b85940;
-    --accent-ink: #fff8f0;
+    --accent-2: #2f5d50;
     --green: #2f5d50;
     --gold: #c9a368;
-    --serif: "Iowan Old Style", "Palatino Linotype", "Songti SC", "SimSun", Georgia, serif;
-    --sans: "Inter", "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
-    --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    --ink-soft: #4f4a41;
     --mk-accent: var(--accent);
-    --mk-accent-ink: var(--accent-ink);
-    --mk-surface: #fffdf8;
+    --mk-surface: var(--panel);
     --mk-ink: var(--ink);
     --mk-muted: var(--muted);
     --mk-border: var(--line);
     --mk-radius: 18px;
-    --mk-shadow-1: 0 1px 2px rgba(26, 23, 18, 0.05), 0 14px 40px rgba(26, 23, 18, 0.08);
-    --mk-shadow-2: 0 2px 8px rgba(26, 23, 18, 0.06), 0 30px 70px rgba(26, 23, 18, 0.14);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }

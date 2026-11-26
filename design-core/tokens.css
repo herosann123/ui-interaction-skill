@@ -72,6 +72,9 @@
   --mk-glow: rgba(217, 168, 98, 0.3);
   --mk-shadow-1: var(--shadow-1);
   --mk-shadow-2: var(--shadow-2);
+  --serif: var(--font-display);
+  --sans: var(--font-body);
+  --mono: var(--font-mono);
 }
 
 /* ---------- density ---------- */
@@ -202,6 +205,9 @@
 
 /* keep motion-kit bridge in sync for themes that override colors */
 [data-theme] {
+  --serif: var(--font-display);
+  --sans: var(--font-body);
+  --mono: var(--font-mono);
   --mk-accent: var(--accent);
   --mk-accent-ink: var(--accent-ink);
   --mk-surface: var(--panel);

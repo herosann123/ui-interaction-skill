@@ -261,6 +261,7 @@ const docs = [
   'CRITIQUE.md',
   'directions/README.md',
   'cases/README.md',
+  'cases/morrow-coffee/CASE-STUDY.md',
   'brand/README.md',
   'design-core/README.md',
   'design-core/rules.md',

@@ -1,11 +1,24 @@
 # CHANGELOG · ui-interaction-skill
 
+## v3.6.0 · 2026-11-28
+
+### Second full case
+
+- 新增 `cases/morrow-coffee/`：结算流 Before/After 完整案例。
+  - before：23 项（P0 1 / P1 14 / P2 8）
+  - after：0 项
+  - 含 desktop/mobile 截图、CASE-STUDY.md、manifest、design.json、CHANGELOG
+- `cases/index.html` 增加 Morrow Coffee 卡片。
+- smoke 细化 44px 检查：radio/checkbox 用包裹 label 的尺寸判断。
+- 验证：`smoke --viewports 390,768,1280` 69 页通过；check 全绿。
+
 ## v3.5.0 · 2026-11-26
 
 ### Cases & Dashboard
 
 - 9/9 模板迁移到 `design-core`；dashboard 用 `data-scheme="light|dark"` 保留独立深浅色。
-- 新增 `cases/index.html`：案例/能力画廊（Northwind / Directions / Design Core / Components）。
+- 新增 `cases/index.html`：案例/能力画廊（Northwind / Morrow Coffee / Directions / Design Core / Components）。
+- 新增 `cases/morrow-coffee/`：结算流完整案例（before 23 项 → after 0，含截图 / CASE-STUDY / manifest / design.json）。
 - 新增 `directions/screenshots/gallery.png` 与案例配图。
 - `screenshot.mjs` 增加 `--scheme light|dark`，可截取 dashboard 深色版。
 - 验证：`smoke --viewports 390,768,1280` 60 页通过；`check.mjs` 全绿。

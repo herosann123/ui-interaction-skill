@@ -59,6 +59,7 @@ node scripts/design-lint.mjs
 
 - 案例/能力画廊：[cases/index.html](cases/index.html)
 - Northwind Before/After：`templates/demo-shell/`
+- Morrow Coffee 结算流：`cases/morrow-coffee/`（体检 23 → 0）
 
 ## 方向 / 品牌 / 评审
 

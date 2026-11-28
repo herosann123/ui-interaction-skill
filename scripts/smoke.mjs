@@ -123,7 +123,15 @@ async function runPage(base, page, opts, width, height) {
       }).slice(0, 8).map((el) => el.tagName.toLowerCase() + (el.className ? '.' + String(el.className).split(' ')[0] : ''));
       const controls = Array.from(document.querySelectorAll('button, input, select, textarea, [role="button"]')).filter((el) => {
         const r = el.getBoundingClientRect();
-        return r.width > 0 && r.height > 0;
+        if (r.width <= 0 || r.height <= 0) return false;
+        if (el.matches('input[type="radio"],input[type="checkbox"]')) {
+          const label = el.closest('label');
+          if (label) {
+            const lr = label.getBoundingClientRect();
+            if (lr.width >= 44 && lr.height >= 44) return false;
+          }
+        }
+        return true;
       });
       const smallTargets = controls.filter((el) => {
         const r = el.getBoundingClientRect();

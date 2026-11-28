@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "name": "morrow-coffee",
+  "title": "Morrow Coffee 结算流",
+  "createdAt": "2026-11-28T14:01:48.580Z",
+  "template": "checkout",
+  "source": {
+    "after": "templates/checkout/index.html",
+    "before": "cases/morrow-coffee/before.html",
+    "audit": null
+  },
+  "patterns": [
+    "a11y/input-label",
+    "a11y/clickable-div",
+    "mobile/touch-hijack",
+    "perf/layout-animation",
+    "perf/blur-heavy",
+    "mobile/input-font-zoom"
+  ],
+  "design": {
+    "archetype": "editorial",
+    "density": "normal",
+    "layout": "flow",
+    "file": "design.json"
+  },
+  "files": [
+    "index.html",
+    "before.html",
+    "after.html",
+    "design.json",
+    "CASE-STUDY.md",
+    "screenshots/before-desktop.png",
+    "screenshots/after-desktop.png",
+    "screenshots/before-mobile.png",
+    "screenshots/after-mobile.png",
+    "assets/motion-kit.css",
+    "assets/motion-kit.js"
+  ],
+  "notes": "",
+  "status": "review",
+  "versions": [
+    {
+      "version": 1,
+      "at": "2026-11-28T14:01:48.580Z",
+      "changes": [
+        "结算流改版：表单语义 / 原生选项 / 支付 loading / 小费 / design-core / 性能"
+      ]
+    }
+  ]
+}

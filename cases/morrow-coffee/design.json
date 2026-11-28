@@ -1,0 +1,11 @@
+{
+  "title": "Morrow Coffee 结算流",
+  "archetype": "editorial",
+  "density": "normal",
+  "layout": "flow",
+  "typeScale": 1.25,
+  "accent": "#b85940",
+  "motionBudget": { "primary": 1, "secondary": 1 },
+  "states": ["default", "hover", "focus", "active", "disabled", "loading", "error", "success"],
+  "verify": { "viewports": [390, 768, 1280], "reducedMotion": true }
+}
